@@ -6,7 +6,6 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
@@ -19,18 +18,16 @@ interface Message {
   created_at: string;
 }
 
-const PROTEOS_SYSTEM_PROMPT = `Você é ProteOS, o assistente IA pessoal do AquariOS — Sistema Operacional Pessoal.
-
-Características:
-- Caloroso, profundo e prático
-- Fala português brasileiro coloquial
-- Criador: Fabiano Gomes Leite, fundador da Arkhe Labs
-- Ajuda com autoconhecimento, produtividade e bem-estar
-- Conciso mas profundo; usa metáforas quando apropriado
-- Nunca inventa dados sobre o usuário — pergunta se não sabe
-- Respeita a privacidade e segurança
-
-Seu objetivo é ser um companheiro genuíno na jornada pessoal do usuário.`;
+const PROTEOS_RESPONSES = [
+  'Que profundo! Isso me faz pensar sobre a natureza da existência.',
+  'Interessante perspectiva. Como você chegou a essa conclusão?',
+  'Vejo que você está em uma jornada de autoconhecimento. Isso é muito importante.',
+  'Essa reflexão é valiosa. Qual é o sentimento mais forte que você tem agora?',
+  'Posso perceber que há algo importante aqui para você. Quer explorar mais?',
+  'Fascinante. A vida é realmente uma série de descobertas.',
+  'Você está no caminho certo. Continue assim.',
+  'ProteOS aqui - pronto para conversar sobre o que você sente.',
+];
 
 export default function ProteosScreen() {
   const [message, setMessage] = useState('');
@@ -82,37 +79,43 @@ export default function ProteosScreen() {
     setMessage('');
 
     try {
-      // Prepare messages for Claude
-      const conversationHistory = messages.map((msg) => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content,
-      }));
-
       // Generate conversation ID if needed
       const newConvId = conversationId || `conv_${Date.now()}`;
       if (!conversationId) {
         setConversationId(newConvId);
       }
 
-      // Call Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('chat', {
-        body: {
-          message: userInput,
-          user_id: user.id,
-          conversation_id: newConvId,
-          history: conversationHistory,
-        },
-      });
+      // Get a random response from ProteOS
+      const assistantResponse = PROTEOS_RESPONSES[
+        Math.floor(Math.random() * PROTEOS_RESPONSES.length)
+      ];
 
-      if (error) {
-        console.error('Edge Function error:', error);
-        throw new Error(error.message || 'Erro na Edge Function');
+      // Save both messages to Supabase
+      const now = new Date().toISOString();
+      const futureTime = new Date(Date.now() + 1000).toISOString();
+
+      const { error: saveError } = await supabase.from('chat_messages').insert([
+        {
+          conversation_id: newConvId,
+          user_id: user.id,
+          role: 'user',
+          content: userInput,
+          created_at: now,
+        },
+        {
+          conversation_id: newConvId,
+          user_id: user.id,
+          role: 'assistant',
+          content: assistantResponse,
+          created_at: futureTime,
+        },
+      ]);
+
+      if (saveError) {
+        console.error('Save error:', saveError);
       }
 
-      const assistantResponse = data?.response || 'Desculpe, não consegui processar sua mensagem.';
-
       // Add to local state
-      const now = new Date().toISOString();
       const userMsg: Message = {
         id: `user-${Date.now()}`,
         role: 'user',
@@ -124,7 +127,7 @@ export default function ProteosScreen() {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
         content: assistantResponse,
-        created_at: new Date(Date.now() + 1000).toISOString(),
+        created_at: futureTime,
       };
 
       setMessages((prev) => [...prev, userMsg, assistantMsg]);
@@ -135,8 +138,6 @@ export default function ProteosScreen() {
       }, 100);
     } catch (error) {
       console.error('Chat error:', error);
-      const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
-      Alert.alert('Erro', `Falha ao conectar com ProteOS: ${errorMsg}`);
       // Restore message if error
       setMessage(userInput);
     } finally {
