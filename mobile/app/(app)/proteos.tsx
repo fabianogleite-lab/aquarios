@@ -20,16 +20,12 @@ interface Message {
   created_at: string;
 }
 
-const PROTEOS_RESPONSES = [
-  'Que profundo! Isso me faz pensar sobre a natureza da existência.',
-  'Interessante perspectiva. Como você chegou a essa conclusão?',
-  'Vejo que você está em uma jornada de autoconhecimento. Isso é muito importante.',
-  'Essa reflexão é valiosa. Qual é o sentimento mais forte que você tem agora?',
-  'Posso perceber que há algo importante aqui para você. Quer explorar mais?',
-  'Fascinante. A vida é realmente uma série de descobertas.',
-  'Você está no caminho certo. Continue assim.',
-  'ProteOS aqui - pronto para conversar sobre o que você sente.',
-];
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
 
 export default function ProteosScreen() {
   const [message, setMessage] = useState('');
@@ -78,32 +74,67 @@ export default function ProteosScreen() {
     const userInput = message;
     setMessage('');
 
+    const now = new Date().toISOString();
+    const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', content: userInput, created_at: now };
+    setMessages((prev) => [...prev, userMsg]);
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+
     try {
-      const newConvId = conversationId || `conv_${Date.now()}`;
+      const newConvId = conversationId || generateUUID();
       if (!conversationId) setConversationId(newConvId);
 
-      const assistantResponse = PROTEOS_RESPONSES[
-        Math.floor(Math.random() * PROTEOS_RESPONSES.length)
+      const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
+
+      const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY;
+      const apiMessages = [
+        ...history,
+        { role: 'user', content: userInput },
       ];
 
-      const now = new Date().toISOString();
-      const futureTime = new Date(Date.now() + 1000).toISOString();
+      let assistantContent = 'Desculpe, não consegui processar. Tente novamente.';
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey || '',
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 1024,
+            system: 'Voce e ProteOS, o assistente IA pessoal do AquariOS - Sistema Operacional Pessoal. Caloroso, profundo e pratico. Fala portugues brasileiro coloquial. Criador: Fabiano Gomes Leite, fundador da Arkhe Labs. Ajuda com autoconhecimento, produtividade e bem-estar. Conciso mas profundo; usa metaforas quando apropriado. Nunca inventa dados sobre o usuario. Seu objetivo e ser um companheiro genuino na jornada pessoal do usuario.',
+            messages: apiMessages,
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          assistantContent = data.content?.[0]?.text || assistantContent;
+        } else {
+          console.error('API error:', res.status, await res.text());
+        }
+      } catch (apiErr) {
+        console.error('Anthropic API error:', apiErr);
+      }
+
+      const futureTime = new Date().toISOString();
 
       const { error: saveError } = await supabase.from('chat_messages').insert([
         { conversation_id: newConvId, user_id: user.id, role: 'user', content: userInput, created_at: now },
-        { conversation_id: newConvId, user_id: user.id, role: 'assistant', content: assistantResponse, created_at: futureTime },
+        { conversation_id: newConvId, user_id: user.id, role: 'assistant', content: assistantContent, created_at: futureTime },
       ]);
 
       if (saveError) console.error('Save error:', saveError);
 
-      const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', content: userInput, created_at: now };
-      const assistantMsg: Message = { id: `assistant-${Date.now()}`, role: 'assistant', content: assistantResponse, created_at: futureTime };
-
-      setMessages((prev) => [...prev, userMsg, assistantMsg]);
+      const assistantMsg: Message = { id: `assistant-${Date.now()}`, role: 'assistant', content: assistantContent, created_at: futureTime };
+      setMessages((prev) => [...prev, assistantMsg]);
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     } catch (error) {
       console.error('Chat error:', error);
-      setMessage(userInput);
+      const errorMsg: Message = { id: `err-${Date.now()}`, role: 'assistant', content: 'Erro de conexão. Verifique sua internet.', created_at: new Date().toISOString() };
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setLoading(false);
     }

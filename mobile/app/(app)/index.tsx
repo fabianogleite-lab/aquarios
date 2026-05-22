@@ -1,18 +1,20 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { PressableScale } from '../../components/PressableScale';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 const MODULES = [
-  { icon: '💬', title: 'ProteOS', desc: 'Assistente IA pessoal com memória' },
-  { icon: '✎', title: 'Diário do Ser', desc: 'Reflexões diárias e autoconhecimento' },
-  { icon: '🧬', title: 'Nutrição', desc: 'Tracking nutricional inteligente' },
-  { icon: '👥', title: 'Comunidades', desc: 'Círculos de crescimento coletivo' },
-  { icon: '🌙', title: 'Wonder Night', desc: 'Rituais noturnos de transformação' },
+  { icon: '💬', title: 'ProteOS', desc: 'Assistente IA pessoal com memória', route: '/proteos' as const },
+  { icon: '✎', title: 'Diário do Ser', desc: 'Reflexões diárias e autoconhecimento', route: '/diario' as const },
+  { icon: '🧬', title: 'Nutrição', desc: 'Tracking nutricional inteligente', route: '/nutricao' as const },
+  { icon: '👥', title: 'Comunidades', desc: 'Círculos de crescimento coletivo', route: '/comunidades' as const },
+  { icon: '🌙', title: 'Wonder Night', desc: 'Rituais noturnos de transformação', route: '/wonder-night' as const },
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Aquariano';
 
@@ -31,7 +33,7 @@ export default function HomeScreen() {
         <Text style={s.sectionTitle}>Módulos Ativos</Text>
         {MODULES.map((mod, i) => (
           <FadeInView key={mod.title} delay={100 + i * 80}>
-            <PressableScale style={s.card}>
+            <PressableScale style={s.card} onPress={() => router.push(mod.route)}>
               <Text style={s.cardIcon}>{mod.icon}</Text>
               <View style={s.cardContent}>
                 <Text style={s.cardTitle}>{mod.title}</Text>
