@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "AquariOS",
+    "slug": "aquarios-274s3k",
+    "version": "4.2.0",
+    "orientation": "portrait",
+    "scheme": "aquarios",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#090c14",
+    "splash": {
+      "backgroundColor": "#090c14",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.arkhe.aquarios"
+    },
+    "android": {
+      "package": "com.arkhe.aquarios",
+      "versionCode": 42,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#090c14"
+      },
+      "permissions": [
+        "android.permission.INTERNET"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "cli": {
+      "appVersionSource": "nativeVersion"
+    },
+    "runtimeVersion": {
+      "policy": "nativeVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d2385f57-b0ab-49f6-a29e-d0d82b92df55"
+      }
+    },
+    "owner": "aquarios",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ]
+  }
+}
