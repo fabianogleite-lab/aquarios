@@ -29,6 +29,22 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
+        name="nutricao"
+        options={{
+          title: 'Nutrição',
+          tabBarLabel: 'Nutrição',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'🥗'}</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="nutricao-novo"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="nutricao-metas"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
         name="proteos"
         options={{
           title: 'ProteOS',
@@ -37,11 +53,35 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
+        name="comunidades"
+        options={{
+          title: 'Comunidades',
+          tabBarLabel: 'Social',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'👥'}</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="comunidades-timeline"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
+        name="comunidades-notificacoes"
+        options={{ href: null }}
+      />
+      <Tabs.Screen
         name="diario"
         options={{
           title: 'Diário do Ser',
           tabBarLabel: 'Diário',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'✎'}</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="wonder-night"
+        options={{
+          title: 'Wonder Night',
+          tabBarLabel: 'Wonder',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'✦'}</Text>,
         }}
       />
       <Tabs.Screen

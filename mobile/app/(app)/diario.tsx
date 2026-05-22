@@ -82,6 +82,21 @@ export default function DiarioScreen() {
       )
   );
 
+  const shareEntry = async (entry: DiarioEntry) => {
+    if (!user?.id) return;
+    const { error } = await supabase.from('shares').insert({
+      user_id: user.id,
+      diario_id: entry.id,
+      content: entry.content,
+      is_public: true,
+    });
+    if (error) {
+      Alert.alert('Erro', 'Não foi possível compartilhar');
+    } else {
+      Alert.alert('Compartilhado!', 'Sua reflexão foi publicada no Feed.');
+    }
+  };
+
   const deleteEntry = (id: string) => {
     Alert.alert('Deletar Reflexão', 'Tem certeza que deseja deletar?', [
       { text: 'Cancelar', style: 'cancel' },
@@ -178,6 +193,13 @@ export default function DiarioScreen() {
                   )}
                 </View>
               )}
+
+              <TouchableOpacity
+                style={styles.shareBtn}
+                onPress={() => shareEntry(item)}
+              >
+                <Text style={styles.shareBtnText}>↑ Compartilhar</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           )}
         />
@@ -253,4 +275,10 @@ const styles = StyleSheet.create({
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   emptyText: { color: '#3a4a5a', fontSize: 16 },
+  shareBtn: {
+    marginTop: 8, paddingVertical: 6, paddingHorizontal: 12,
+    borderRadius: 8, borderWidth: 1, borderColor: '#b8952a44',
+    alignSelf: 'flex-start',
+  },
+  shareBtnText: { color: '#b8952a', fontSize: 12, fontWeight: '600' },
 });
