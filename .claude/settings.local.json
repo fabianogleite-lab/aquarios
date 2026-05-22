@@ -111,8 +111,21 @@
       "PowerShell(supabase --version 2>&1)",
       "mcp__Claude_in_Chrome__switch_browser",
       "mcp__Claude_in_Chrome__list_connected_browsers",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__*",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(Start-Sleep -Seconds 8)",
+      "Bash(Get-Content \"C:\\\\Users\\\\DWOS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-DWOS-Desktop-AquariOS-aquarios-v2-complete\\\\2f983291-9573-46ac-b223-cb633613f48e\\\\tasks\\\\bkz5ha8mj.output\")",
+      "Bash(npx supabase *)",
+      "Bash(timeout 8)",
+      "PowerShell($proc = Get-NetTCPConnection -LocalPort 8082 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -First 1; if \\($proc\\) { Stop-Process -Id $proc -Force; Write-Output \"Killed PID $proc\" } else { Write-Output \"Port 8082 free\" })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8082 -ErrorAction SilentlyContinue)",
+      "PowerShell(New-Item -ItemType Directory -Path C:\\\\Users\\\\DWOS\\\\Desktop\\\\AquariOS\\\\aquarios-v2-complete\\\\mobile\\\\components -Force)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\DWOS\\\\Desktop\\\\AquariOS\\\\aquarios-v2-complete\\\\mobile\\\\assets\" | Select-Object Name, @{N='SizeKB';E={[math]::Round\\($_.Length/1KB,1\\)}})",
+      "PowerShell(Set-Location C:\\\\Users\\\\DWOS\\\\Desktop\\\\AquariOS\\\\aquarios-v2-complete\\\\mobile; $env:EXPO_NO_HERMES_BYTECODE = \"1\"; npx expo export --platform android 2>&1 | Select-Object -Last 5; Remove-Item Env:\\\\EXPO_NO_HERMES_BYTECODE -ErrorAction SilentlyContinue)",
+      "PowerShell($file = \"C:\\\\Users\\\\DWOS\\\\AppData\\\\Local\\\\Temp\\\\expo-bundler-0.9742578162047083-1779469215532\\\\index.js\"; if \\(Test-Path $file\\) { $lines = [System.IO.File]::ReadAllLines\\($file\\); $lines[101863..101870] -join \"`n\" } else { \"File gone\" })",
+      "PowerShell($path = \"C:\\\\Users\\\\DWOS\\\\AppData\\\\Local\\\\Temp\\\\expo-bundler-0.1630670219024043-1779469386363\\\\index.js\"; if \\(Test-Path $path\\) { $reader = [System.IO.StreamReader]::new\\($path\\); $lineNum = 0; while \\($null -ne \\($line = $reader.ReadLine\\(\\)\\)\\) { $lineNum++; if \\($lineNum -ge 101864 -and $lineNum -le 101870\\) { \"$lineNum`: $line\" } }; $reader.Close\\(\\) } else { \"File already deleted\" })"
     ]
   }
 }
