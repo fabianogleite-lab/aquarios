@@ -2,7 +2,7 @@
   "expo": {
     "name": "AquariOS",
     "slug": "aquarios-274s3k",
-    "version": "4.2.0",
+    "version": "4.3.0",
     "orientation": "portrait",
     "scheme": "aquarios",
     "icon": "./assets/icon.png",
@@ -20,7 +20,7 @@
     },
     "android": {
       "package": "com.arkhe.aquarios",
-      "versionCode": 42,
+      "versionCode": 43,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090c14"
@@ -50,7 +50,9 @@
     "owner": "aquarios",
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-splash-screen",
+      "expo-status-bar"
     ]
   }
 }
