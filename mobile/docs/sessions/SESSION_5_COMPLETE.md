@@ -68,6 +68,14 @@ Manual completo para usuarios:
 - Verificado: nenhum .env tracked, nenhum build log tracked
 - Nenhum arquivo sensivel no repositorio
 
+### 7. GitHub Push + Tag
+
+- Remote configurado: `https://github.com/fabianogleite-lab/aquarios.git`
+- API key Anthropic removida do historico git via `git filter-branch` (estava em DEPLOY_GUIDE.md)
+- Force push `master -> main` concluido
+- Tag `v4.2.0` criada e pushed
+- Commit final: `cecba0c`
+
 ---
 
 ## Arquivos Criados
@@ -91,33 +99,34 @@ mobile/app/(auth)/_layout.tsx (fix cor hardcoded)
 ## Arquivos Removidos do Tracking
 
 ```
-mobile/.idea/.gitignore
-mobile/.idea/caches/deviceStreaming.xml
-mobile/.idea/misc.xml
-mobile/.idea/mobile.iml
-mobile/.idea/modules.xml
-mobile/.idea/vcs.xml
+mobile/.idea/ (6 arquivos)
 ```
 
 ---
 
-## O que NAO foi feito (e por que)
+## Estado Final do Projeto
 
-| Item | Razao |
-|---|---|
-| Build APK/AAB na cloud | Requer `eas build` pelo usuario, consome creditos EAS |
-| Upload Play Store | Depende do build estar pronto |
-| Tag v4.2.0 + push | Aguardando aprovacao do usuario para commit e push |
-| GitHub Release | Depende do push e da tag |
-
----
-
-## Estado do Projeto
-
-- **Branch**: master
+- **Repo**: https://github.com/fabianogleite-lab/aquarios
+- **Branch**: main (remote) / master (local)
+- **Tag**: v4.2.0
+- **Commit**: cecba0c
 - **TypeScript**: 0 erros
-- **Bundle**: compila sem erros (3.16 MB)
+- **Bundle**: compila sem erros (3.16 MB, 1044 modules)
 - **Telas**: 18 (14 visiveis + 4 hidden routes)
 - **Componentes**: 5 reutilizaveis
 - **Dependencias**: 12 prod, 5 dev
 - **Documentacao**: 4 docs completos (White Paper, Blueprint, README, Help)
+- **Seguranca**: API key removida do historico, .env nao tracked
+
+---
+
+## O que ficou pendente para proxima sessao
+
+| Item | Prioridade | Detalhes |
+|------|-----------|----------|
+| Build APK (preview) | ALTA | `eas build --platform android --profile preview` |
+| Build AAB (production) | ALTA | `eas build --platform android --profile production` |
+| Teste no celular real | ALTA | Instalar APK, testar todos os fluxos |
+| GitHub Release | MEDIA | Criar release page com notas a partir da tag v4.2.0 |
+| Limpeza de arquivos legados | BAIXA | Raiz tem ~30 arquivos .md/.txt/.html da Phase 1-2 |
+| Upload Play Store | MEDIA | Depende do AAB + screenshots + privacy policy |
