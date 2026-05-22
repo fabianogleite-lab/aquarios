@@ -88,77 +88,31 @@ export default function ProteosScreen() {
         content: msg.content,
       }));
 
-      // Call Anthropic API directly via fetch
-      const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY;
-      if (!apiKey) {
-        Alert.alert('Erro', 'API Key do Anthropic não configurada');
-        setLoading(false);
-        return;
-      }
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-        },
-        body: JSON.stringify({
-          model: 'claude-3-haiku-20240307',
-          max_tokens: 1024,
-          system: PROTEOS_SYSTEM_PROMPT,
-          messages: [
-            ...conversationHistory,
-            {
-              role: 'user',
-              content: userInput,
-            },
-          ],
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error('API Error:', errorData);
-        throw new Error(`API returned ${response.status}: ${errorData}`);
-      }
-
-      const data = await response.json();
-      const assistantResponse =
-        data.content?.[0]?.type === 'text'
-          ? data.content[0].text
-          : 'Desculpe, não consegui processar sua mensagem.';
-
-      // Generate new conversation ID if needed
+      // Generate conversation ID if needed
       const newConvId = conversationId || `conv_${Date.now()}`;
       if (!conversationId) {
         setConversationId(newConvId);
       }
 
-      // Save both messages to Supabase
-      const now = new Date().toISOString();
-      const { error: saveError } = await supabase.from('chat_messages').insert([
-        {
-          conversation_id: newConvId,
+      // Call Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('chat', {
+        body: {
+          message: userInput,
           user_id: user.id,
-          role: 'user',
-          content: userInput,
-          created_at: now,
-        },
-        {
           conversation_id: newConvId,
-          user_id: user.id,
-          role: 'assistant',
-          content: assistantResponse,
-          created_at: new Date(Date.now() + 1000).toISOString(),
+          history: conversationHistory,
         },
-      ]);
+      });
 
-      if (saveError) {
-        console.error('Save error:', saveError);
+      if (error) {
+        console.error('Edge Function error:', error);
+        throw new Error(error.message || 'Erro na Edge Function');
       }
 
+      const assistantResponse = data?.response || 'Desculpe, não consegui processar sua mensagem.';
+
       // Add to local state
+      const now = new Date().toISOString();
       const userMsg: Message = {
         id: `user-${Date.now()}`,
         role: 'user',
