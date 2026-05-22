@@ -1,4 +1,4 @@
-﻿import {
+import {
   View,
   Text,
   StyleSheet,
@@ -12,6 +12,8 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { FadeInView } from '../../components/FadeInView';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 const MOODS = [
   { key: 'happy', emoji: '😊', label: 'Feliz' },
@@ -41,205 +43,143 @@ export default function DiarioNewScreen() {
   const [tagsInput, setTagsInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [question] = useState(
-    INSPIRATIONAL_QUESTIONS[
-      Math.floor(Math.random() * INSPIRATIONAL_QUESTIONS.length)
-    ]
+    INSPIRATIONAL_QUESTIONS[Math.floor(Math.random() * INSPIRATIONAL_QUESTIONS.length)]
   );
   const router = useRouter();
   const { user } = useAuthStore();
 
-  const savEntry = async () => {
+  const saveEntry = async () => {
     if (!content.trim() || !user?.id) {
       Alert.alert('Erro', 'Escreva algo na sua reflexão');
       return;
     }
 
     setLoading(true);
+    const tags = tagsInput.split(',').map((t) => t.trim().toLowerCase()).filter((t) => t.length > 0);
 
-    const tags = tagsInput
-      .split(',')
-      .map((tag) => tag.trim().toLowerCase())
-      .filter((tag) => tag.length > 0);
-
-    const { error } = await supabase.from('diario_entries').insert([
-      {
-        user_id: user.id,
-        content: content.trim(),
-        mood,
-        tags,
-        created_at: new Date().toISOString(),
-      },
-    ]);
+    const { error } = await supabase.from('diario_entries').insert([{
+      user_id: user.id, content: content.trim(), mood, tags, created_at: new Date().toISOString(),
+    }]);
 
     setLoading(false);
-
-    if (error) {
-      console.error('Save error:', error);
-      Alert.alert('Erro', 'Não foi possível salvar sua reflexão');
-    } else {
-      Alert.alert('Sucesso', 'Reflexão salva! 💚', [
-        {
-          text: 'OK',
-          onPress: () => router.back(),
-        },
-      ]);
-    }
+    if (error) Alert.alert('Erro', 'Não foi possível salvar sua reflexão');
+    else Alert.alert('Sucesso', 'Reflexão salva!', [{ text: 'OK', onPress: () => router.back() }]);
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Nova Reflexão</Text>
+    <ScrollView style={s.container} showsVerticalScrollIndicator={false}>
+      <View style={s.content}>
+        <FadeInView>
+          <Text style={s.title}>Nova Reflexão</Text>
+        </FadeInView>
 
-        <View style={styles.questionBox}>
-          <Text style={styles.questionLabel}>Pergunta Inspiradora:</Text>
-          <Text style={styles.question}>{question}</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Sua Reflexão:</Text>
-          <TextInput
-            style={styles.textInput}
-            value={content}
-            onChangeText={setContent}
-            placeholder="Escreva seu pensamento, sentimento ou descoberta..."
-            placeholderTextColor="#3a4a5a"
-            multiline
-            numberOfLines={8}
-            editable={!loading}
-          />
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Como você se sente?</Text>
-          <View style={styles.moodsGrid}>
-            {MOODS.map((moodOption) => (
-              <TouchableOpacity
-                key={moodOption.key}
-                style={[
-                  styles.moodButton,
-                  mood === moodOption.key && styles.moodButtonActive,
-                ]}
-                onPress={() => setMood(moodOption.key)}
-                disabled={loading}
-              >
-                <Text style={styles.moodEmoji}>{moodOption.emoji}</Text>
-                <Text style={styles.moodLabel}>{moodOption.label}</Text>
-              </TouchableOpacity>
-            ))}
+        <FadeInView delay={100}>
+          <View style={s.questionBox}>
+            <Text style={s.questionLabel}>Pergunta Inspiradora:</Text>
+            <Text style={s.question}>{question}</Text>
           </View>
-        </View>
+        </FadeInView>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Tags (separadas por vírgula)</Text>
-          <TextInput
-            style={styles.tagsInput}
-            value={tagsInput}
-            onChangeText={setTagsInput}
-            placeholder="ex: meditação, gratidão, aprendizado"
-            placeholderTextColor="#3a4a5a"
-            editable={!loading}
-          />
-        </View>
+        <FadeInView delay={200}>
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>Sua Reflexão:</Text>
+            <TextInput
+              style={s.textInput}
+              value={content}
+              onChangeText={setContent}
+              placeholder="Escreva seu pensamento, sentimento ou descoberta..."
+              placeholderTextColor={colors.textMuted}
+              multiline
+              numberOfLines={8}
+              editable={!loading}
+            />
+          </View>
+        </FadeInView>
 
-        <TouchableOpacity
-          style={[styles.saveButton, loading && styles.saveButtonDisabled]}
-          onPress={savEntry}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator size="small" color="#090c14" />
-          ) : (
-            <Text style={styles.saveButtonText}>Salvar Reflexão</Text>
-          )}
-        </TouchableOpacity>
+        <FadeInView delay={300}>
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>Como você se sente?</Text>
+            <View style={s.moodsGrid}>
+              {MOODS.map((m) => (
+                <TouchableOpacity
+                  key={m.key}
+                  style={[s.moodButton, mood === m.key && s.moodButtonActive]}
+                  onPress={() => setMood(m.key)}
+                  disabled={loading}
+                >
+                  <Text style={s.moodEmoji}>{m.emoji}</Text>
+                  <Text style={s.moodLabel}>{m.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </FadeInView>
 
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => router.back()}
-          disabled={loading}
-        >
-          <Text style={styles.cancelButtonText}>Cancelar</Text>
-        </TouchableOpacity>
+        <FadeInView delay={400}>
+          <View style={s.section}>
+            <Text style={s.sectionLabel}>Tags (separadas por vírgula)</Text>
+            <TextInput
+              style={s.tagsInput}
+              value={tagsInput}
+              onChangeText={setTagsInput}
+              placeholder="ex: meditação, gratidão, aprendizado"
+              placeholderTextColor={colors.textMuted}
+              editable={!loading}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={[s.saveButton, loading && s.saveButtonDisabled]}
+            onPress={saveEntry}
+            disabled={loading}
+          >
+            {loading ? <ActivityIndicator size="small" color={colors.bg} /> : <Text style={s.saveButtonText}>Salvar Reflexão</Text>}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={s.cancelButton} onPress={() => router.back()} disabled={loading}>
+            <Text style={s.cancelButtonText}>Cancelar</Text>
+          </TouchableOpacity>
+        </FadeInView>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#090c14' },
-  content: { padding: 16, paddingBottom: 32 },
-  title: { fontSize: 24, fontWeight: '700', color: '#b8952a', marginBottom: 16 },
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.bg },
+  content: { padding: spacing.lg, paddingBottom: spacing.xxxl },
+  title: { fontSize: fontSize.hero, fontWeight: '700', color: colors.primary, marginBottom: spacing.lg },
   questionBox: {
-    backgroundColor: '#0d1520',
-    borderRadius: 12,
-    padding: 14,
-    borderLeftWidth: 4,
-    borderLeftColor: '#b8952a',
-    marginBottom: 20,
+    backgroundColor: colors.card, borderRadius: radius.lg, padding: 14,
+    borderLeftWidth: 4, borderLeftColor: colors.primary, marginBottom: spacing.xl,
   },
-  questionLabel: { color: '#3a4a5a', fontSize: 12, marginBottom: 6 },
-  question: { color: '#ccd6e8', fontSize: 15, lineHeight: 22, fontWeight: '500' },
-  section: { marginBottom: 20 },
-  sectionLabel: { color: '#ccd6e8', fontSize: 14, fontWeight: '600', marginBottom: 10 },
+  questionLabel: { color: colors.textMuted, fontSize: fontSize.sm, marginBottom: 6 },
+  question: { color: colors.text, fontSize: fontSize.lg, lineHeight: 22, fontWeight: '500' },
+  section: { marginBottom: spacing.xl },
+  sectionLabel: { color: colors.text, fontSize: fontSize.body, fontWeight: '600', marginBottom: 10 },
   textInput: {
-    backgroundColor: '#0d1520',
-    borderRadius: 12,
-    padding: 12,
-    color: '#ccd6e8',
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#141c28',
-    minHeight: 150,
-    textAlignVertical: 'top',
+    backgroundColor: colors.card, borderRadius: radius.lg, padding: spacing.md,
+    color: colors.text, fontSize: fontSize.lg, borderWidth: 1, borderColor: colors.border,
+    minHeight: 150, textAlignVertical: 'top',
   },
-  moodsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    justifyContent: 'space-between',
-  },
+  moodsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'space-between' },
   moodButton: {
-    width: '31%',
-    backgroundColor: '#0d1520',
-    borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#141c28',
+    width: '31%', backgroundColor: colors.card, borderRadius: radius.lg, padding: spacing.md,
+    alignItems: 'center', borderWidth: 1, borderColor: colors.border,
   },
-  moodButtonActive: {
-    borderColor: '#b8952a',
-    backgroundColor: '#1a2a3a',
-  },
+  moodButtonActive: { borderColor: colors.primary, backgroundColor: colors.cardActive },
   moodEmoji: { fontSize: 28, marginBottom: 6 },
-  moodLabel: { color: '#ccd6e8', fontSize: 12, fontWeight: '500' },
+  moodLabel: { color: colors.text, fontSize: fontSize.sm, fontWeight: '500' },
   tagsInput: {
-    backgroundColor: '#0d1520',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    color: '#ccd6e8',
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#141c28',
+    backgroundColor: colors.card, borderRadius: radius.lg, paddingHorizontal: spacing.md, paddingVertical: 10,
+    color: colors.text, fontSize: fontSize.body, borderWidth: 1, borderColor: colors.border,
   },
-  saveButton: {
-    backgroundColor: '#b8952a',
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
+  saveButton: { backgroundColor: colors.primary, borderRadius: radius.lg, paddingVertical: spacing.md, alignItems: 'center', marginBottom: 10 },
   saveButtonDisabled: { opacity: 0.6 },
-  saveButtonText: { color: '#090c14', fontSize: 16, fontWeight: '700' },
+  saveButtonText: { color: colors.bg, fontSize: fontSize.xl, fontWeight: '700' },
   cancelButton: {
-    backgroundColor: 'transparent',
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#141c28',
+    backgroundColor: 'transparent', borderRadius: radius.lg, paddingVertical: spacing.md,
+    alignItems: 'center', borderWidth: 1, borderColor: colors.border,
   },
-  cancelButtonText: { color: '#3a4a5a', fontSize: 16, fontWeight: '600' },
+  cancelButtonText: { color: colors.textMuted, fontSize: fontSize.xl, fontWeight: '600' },
 });

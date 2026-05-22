@@ -12,6 +12,9 @@ import { useState, useCallback, useEffect } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { EmptyState } from '../../components/EmptyState';
+import { FadeInView } from '../../components/FadeInView';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 interface WonderEvent {
   id: string;
@@ -49,11 +52,11 @@ function useCountdown(targetDate: string) {
 function CountdownDisplay({ targetDate }: { targetDate: string }) {
   const { days, hours, minutes, seconds } = useCountdown(targetDate);
   return (
-    <View style={styles.countdown}>
+    <View style={s.countdown}>
       {[{ v: days, l: 'dias' }, { v: hours, l: 'hrs' }, { v: minutes, l: 'min' }, { v: seconds, l: 'seg' }].map(({ v, l }) => (
-        <View key={l} style={styles.countdownUnit}>
-          <Text style={styles.countdownNumber}>{String(v).padStart(2, '0')}</Text>
-          <Text style={styles.countdownLabel}>{l}</Text>
+        <View key={l} style={s.countdownUnit}>
+          <Text style={s.countdownNumber}>{String(v).padStart(2, '0')}</Text>
+          <Text style={s.countdownLabel}>{l}</Text>
         </View>
       ))}
     </View>
@@ -69,31 +72,16 @@ export default function WonderNightScreen() {
     if (!user?.id) return;
     setLoading(true);
 
-    const { data: eventsData } = await supabase
-      .from('wonder_night_events')
-      .select('*')
-      .eq('is_active', true)
-      .order('event_date', { ascending: true });
-
-    const { data: purchasesData } = await supabase
-      .from('wonder_night_purchases')
-      .select('event_id, ticket_code')
-      .eq('user_id', user.id);
+    const { data: eventsData } = await supabase.from('wonder_night_events').select('*').eq('is_active', true).order('event_date', { ascending: true });
+    const { data: purchasesData } = await supabase.from('wonder_night_purchases').select('event_id, ticket_code').eq('user_id', user.id);
 
     const purchaseMap: Record<string, string> = {};
     (purchasesData || []).forEach((p: any) => { purchaseMap[p.event_id] = p.ticket_code; });
 
     setEvents((eventsData || []).map((e: any) => ({
-      id: e.id,
-      title: e.title,
-      description: e.description,
-      event_date: e.event_date,
-      join_url: e.join_url,
-      price: e.price,
-      ticket_code: purchaseMap[e.id],
-      purchased: !!purchaseMap[e.id],
+      id: e.id, title: e.title, description: e.description, event_date: e.event_date,
+      join_url: e.join_url, price: e.price, ticket_code: purchaseMap[e.id], purchased: !!purchaseMap[e.id],
     })));
-
     setLoading(false);
   };
 
@@ -109,104 +97,96 @@ export default function WonderNightScreen() {
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('pt-BR', {
-      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
-      hour: '2-digit', minute: '2-digit',
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
     });
   };
 
   const isPast = (dateStr: string) => new Date(dateStr).getTime() < Date.now();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>✦ Wonder Night</Text>
-        <Text style={styles.subtitle}>Experiências de conexão e bem-estar</Text>
-      </View>
+    <View style={s.container}>
+      <FadeInView>
+        <View style={s.header}>
+          <Text style={s.title}>✦ Wonder Night</Text>
+          <Text style={s.subtitle}>Experiências de conexão e bem-estar</Text>
+        </View>
+      </FadeInView>
 
       {loading ? (
-        <ActivityIndicator color="#b8952a" style={{ marginTop: 20 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginTop: 20 }} />
       ) : (
         <FlatList
           data={events}
           keyExtractor={item => item.id}
-          contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => (
-            <View style={[styles.eventCard, item.purchased && styles.eventCardOwned]}>
-              <View style={styles.eventHeader}>
-                <Text style={styles.eventTitle}>{item.title}</Text>
-                {item.purchased && <View style={styles.ownedBadge}><Text style={styles.ownedBadgeText}>✓ Comprado</Text></View>}
+          contentContainerStyle={s.listContent}
+          renderItem={({ item, index }) => (
+            <FadeInView delay={100 + index * 100}>
+              <View style={[s.eventCard, item.purchased && s.eventCardOwned]}>
+                <View style={s.eventHeader}>
+                  <Text style={s.eventTitle}>{item.title}</Text>
+                  {item.purchased && <View style={s.ownedBadge}><Text style={s.ownedBadgeText}>✓ Comprado</Text></View>}
+                </View>
+
+                <Text style={s.eventDate}>{formatDate(item.event_date)}</Text>
+                <Text style={s.eventDescription}>{item.description}</Text>
+
+                {!isPast(item.event_date) && (
+                  <View style={s.countdownSection}>
+                    <Text style={s.countdownTitle}>Começa em</Text>
+                    <CountdownDisplay targetDate={item.event_date} />
+                  </View>
+                )}
+
+                {item.purchased ? (
+                  <View style={s.ticketSection}>
+                    <Text style={s.ticketLabel}>Seu ingresso</Text>
+                    <Text style={s.ticketCode}>{item.ticket_code?.substring(0, 8).toUpperCase()}</Text>
+                    <TouchableOpacity style={s.joinBtn} onPress={() => handleJoin(item.join_url)}>
+                      <Text style={s.joinBtnText}>Entrar no Evento →</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={s.priceSection}>
+                    <Text style={s.price}>R$ {item.price.toFixed(2)}</Text>
+                    <Text style={s.priceNote}>Ingresso disponível no app em breve</Text>
+                  </View>
+                )}
               </View>
-
-              <Text style={styles.eventDate}>{formatDate(item.event_date)}</Text>
-              <Text style={styles.eventDescription}>{item.description}</Text>
-
-              {!isPast(item.event_date) && (
-                <View style={styles.countdownSection}>
-                  <Text style={styles.countdownTitle}>Começa em</Text>
-                  <CountdownDisplay targetDate={item.event_date} />
-                </View>
-              )}
-
-              {item.purchased ? (
-                <View style={styles.ticketSection}>
-                  <Text style={styles.ticketLabel}>Seu ingresso</Text>
-                  <Text style={styles.ticketCode}>{item.ticket_code?.substring(0, 8).toUpperCase()}</Text>
-                  <TouchableOpacity style={styles.joinBtn} onPress={() => handleJoin(item.join_url)}>
-                    <Text style={styles.joinBtnText}>Entrar no Evento →</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.priceSection}>
-                  <Text style={styles.price}>R$ {item.price.toFixed(2)}</Text>
-                  <Text style={styles.priceNote}>Ingresso disponível no app em breve</Text>
-                </View>
-              )}
-            </View>
+            </FadeInView>
           )}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>Nenhum evento disponível</Text>
-              <Text style={styles.emptySubtext}>Fique atento às novidades!</Text>
-            </View>
-          }
+          ListEmptyComponent={<EmptyState icon="✦" title="Nenhum evento disponível" subtitle="Fique atento às novidades!" />}
         />
       )}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#090c14' },
-  header: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#141c28' },
-  title: { fontSize: 26, fontWeight: '700', color: '#b8952a' },
-  subtitle: { color: '#3a4a5a', fontSize: 13, marginTop: 4 },
-  listContent: { padding: 16 },
-  eventCard: {
-    backgroundColor: '#0d1520', borderRadius: 16, padding: 16,
-    marginBottom: 16, borderWidth: 1, borderColor: '#141c28',
-  },
-  eventCardOwned: { borderColor: '#b8952a44' },
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.bg },
+  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border },
+  title: { fontSize: 26, fontWeight: '700', color: colors.primary },
+  subtitle: { color: colors.textMuted, fontSize: fontSize.md, marginTop: spacing.xs },
+  listContent: { padding: spacing.lg },
+  eventCard: { backgroundColor: colors.card, borderRadius: radius.xl, padding: spacing.lg, marginBottom: spacing.lg, borderWidth: 1, borderColor: colors.border },
+  eventCardOwned: { borderColor: colors.primaryFaded },
   eventHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
-  eventTitle: { fontSize: 18, fontWeight: '700', color: '#ccd6e8', flex: 1 },
-  ownedBadge: { backgroundColor: '#b8952a22', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3, marginLeft: 8 },
-  ownedBadgeText: { color: '#b8952a', fontSize: 11, fontWeight: '700' },
-  eventDate: { color: '#b8952a', fontSize: 12, marginBottom: 8 },
-  eventDescription: { color: '#3a4a5a', fontSize: 13, lineHeight: 18, marginBottom: 16 },
-  countdownSection: { marginBottom: 16 },
-  countdownTitle: { color: '#3a4a5a', fontSize: 11, fontWeight: '600', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 },
-  countdown: { flexDirection: 'row', gap: 8 },
-  countdownUnit: { flex: 1, backgroundColor: '#141c28', borderRadius: 10, padding: 10, alignItems: 'center' },
-  countdownNumber: { color: '#b8952a', fontSize: 22, fontWeight: '700' },
-  countdownLabel: { color: '#3a4a5a', fontSize: 10, marginTop: 2 },
-  ticketSection: { borderTopWidth: 1, borderTopColor: '#141c28', paddingTop: 14 },
-  ticketLabel: { color: '#3a4a5a', fontSize: 11, fontWeight: '600', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 },
-  ticketCode: { color: '#ccd6e8', fontSize: 20, fontWeight: '700', letterSpacing: 3, marginBottom: 12, fontVariant: ['tabular-nums'] },
-  joinBtn: { backgroundColor: '#b8952a', borderRadius: 12, paddingVertical: 12, alignItems: 'center' },
-  joinBtnText: { color: '#090c14', fontSize: 15, fontWeight: '700' },
-  priceSection: { borderTopWidth: 1, borderTopColor: '#141c28', paddingTop: 14, alignItems: 'center' },
-  price: { color: '#b8952a', fontSize: 24, fontWeight: '700', marginBottom: 4 },
-  priceNote: { color: '#3a4a5a', fontSize: 12 },
-  emptyContainer: { paddingTop: 60, alignItems: 'center' },
-  emptyText: { color: '#3a4a5a', fontSize: 16, marginBottom: 4 },
-  emptySubtext: { color: '#3a4a5a', fontSize: 13 },
+  eventTitle: { fontSize: fontSize.xxl, fontWeight: '700', color: colors.text, flex: 1 },
+  ownedBadge: { backgroundColor: colors.primarySubtle, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: 3, marginLeft: spacing.sm },
+  ownedBadgeText: { color: colors.primary, fontSize: fontSize.xs, fontWeight: '700' },
+  eventDate: { color: colors.primary, fontSize: fontSize.sm, marginBottom: spacing.sm },
+  eventDescription: { color: colors.textMuted, fontSize: fontSize.md, lineHeight: 18, marginBottom: spacing.lg },
+  countdownSection: { marginBottom: spacing.lg },
+  countdownTitle: { color: colors.textMuted, fontSize: fontSize.xs, fontWeight: '600', marginBottom: spacing.sm, textTransform: 'uppercase', letterSpacing: 1 },
+  countdown: { flexDirection: 'row', gap: spacing.sm },
+  countdownUnit: { flex: 1, backgroundColor: colors.border, borderRadius: radius.md, padding: 10, alignItems: 'center' },
+  countdownNumber: { color: colors.primary, fontSize: fontSize.title, fontWeight: '700' },
+  countdownLabel: { color: colors.textMuted, fontSize: 10, marginTop: 2 },
+  ticketSection: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 14 },
+  ticketLabel: { color: colors.textMuted, fontSize: fontSize.xs, fontWeight: '600', marginBottom: spacing.xs, textTransform: 'uppercase', letterSpacing: 1 },
+  ticketCode: { color: colors.text, fontSize: 20, fontWeight: '700', letterSpacing: 3, marginBottom: spacing.md, fontVariant: ['tabular-nums'] },
+  joinBtn: { backgroundColor: colors.primary, borderRadius: radius.lg, paddingVertical: spacing.md, alignItems: 'center' },
+  joinBtnText: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
+  priceSection: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 14, alignItems: 'center' },
+  price: { color: colors.primary, fontSize: fontSize.hero, fontWeight: '700', marginBottom: spacing.xs },
+  priceNote: { color: colors.textMuted, fontSize: fontSize.sm },
 });

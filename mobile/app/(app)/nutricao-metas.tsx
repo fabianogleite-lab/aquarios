@@ -12,6 +12,9 @@ import { useState, useCallback } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { LoadingState } from '../../components/LoadingState';
+import { FadeInView } from '../../components/FadeInView';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 export default function NutricaoMetasScreen() {
   const [calories, setCalories] = useState('2000');
@@ -26,11 +29,7 @@ export default function NutricaoMetasScreen() {
   useFocusEffect(useCallback(() => {
     const load = async () => {
       if (!user?.id) return;
-      const { data } = await supabase
-        .from('nutrition_goals')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      const { data } = await supabase.from('nutrition_goals').select('*').eq('user_id', user.id).single();
       if (data) {
         setCalories(String(data.daily_calories));
         setProtein(String(data.daily_protein));
@@ -51,57 +50,47 @@ export default function NutricaoMetasScreen() {
     }
 
     setSaving(true);
-    const payload = {
+    const { error } = await supabase.from('nutrition_goals').upsert({
       user_id: user.id,
-      daily_calories: Number(calories),
-      daily_protein: Number(protein),
-      daily_carbs: Number(carbs),
-      daily_fat: Number(fat),
+      daily_calories: Number(calories), daily_protein: Number(protein),
+      daily_carbs: Number(carbs), daily_fat: Number(fat),
       updated_at: new Date().toISOString(),
-    };
-
-    const { error } = await supabase
-      .from('nutrition_goals')
-      .upsert(payload, { onConflict: 'user_id' });
+    }, { onConflict: 'user_id' });
 
     setSaving(false);
     if (error) { Alert.alert('Erro', 'Não foi possível salvar as metas'); return; }
     Alert.alert('Sucesso', 'Metas atualizadas!', [{ text: 'OK', onPress: () => router.back() }]);
   };
 
-  if (loading) return (
-    <View style={s.center}>
-      <ActivityIndicator color="#b8952a" size="large" />
-    </View>
-  );
+  if (loading) return <LoadingState />;
+
+  const fields = [
+    { label: '🔥 Calorias (kcal)', value: calories, set: setCalories, color: colors.primary },
+    { label: '💪 Proteína (g)', value: protein, set: setProtein, color: colors.macro.protein },
+    { label: '🌾 Carboidratos (g)', value: carbs, set: setCarbs, color: colors.macro.carbs },
+    { label: '🧈 Gorduras (g)', value: fat, set: setFat, color: colors.macro.fat },
+  ];
 
   return (
     <View style={s.container}>
       <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
-        <Text style={s.title}>Metas Diárias</Text>
-        <Text style={s.sub}>Configure suas metas de nutrição para acompanhar o progresso</Text>
+        <FadeInView>
+          <Text style={s.title}>Metas Diárias</Text>
+          <Text style={s.sub}>Configure suas metas de nutrição para acompanhar o progresso</Text>
+        </FadeInView>
 
-        {[
-          { label: '🔥 Calorias (kcal)', value: calories, set: setCalories, color: '#b8952a' },
-          { label: '💪 Proteína (g)', value: protein, set: setProtein, color: '#ff6b6b' },
-          { label: '🌾 Carboidratos (g)', value: carbs, set: setCarbs, color: '#4ecdc4' },
-          { label: '🧈 Gorduras (g)', value: fat, set: setFat, color: '#ffd93d' },
-        ].map(({ label, value, set, color }) => (
-          <View key={label} style={s.field}>
-            <Text style={s.label}>{label}</Text>
-            <View style={[s.inputWrap, { borderColor: color + '44' }]}>
-              <TextInput
-                style={[s.input, { color }]}
-                value={value}
-                onChangeText={set}
-                keyboardType="numeric"
-                selectTextOnFocus
-              />
+        {fields.map(({ label, value, set, color }, i) => (
+          <FadeInView key={label} delay={100 + i * 80}>
+            <View style={s.field}>
+              <Text style={s.label}>{label}</Text>
+              <View style={[s.inputWrap, { borderColor: color + '44' }]}>
+                <TextInput style={[s.input, { color }]} value={value} onChangeText={set} keyboardType="numeric" selectTextOnFocus />
+              </View>
             </View>
-          </View>
+          </FadeInView>
         ))}
 
-        <View style={{ height: 20 }} />
+        <View style={{ height: spacing.xl }} />
       </ScrollView>
 
       <View style={s.footer}>
@@ -109,7 +98,7 @@ export default function NutricaoMetasScreen() {
           <Text style={s.cancelText}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={s.saveBtn} onPress={save} disabled={saving}>
-          {saving ? <ActivityIndicator color="#090c14" /> : <Text style={s.saveText}>Salvar Metas</Text>}
+          {saving ? <ActivityIndicator color={colors.bg} /> : <Text style={s.saveText}>Salvar Metas</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -117,18 +106,17 @@ export default function NutricaoMetasScreen() {
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#090c14' },
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#090c14' },
-  scroll: { padding: 16 },
-  title: { fontSize: 22, fontWeight: '700', color: '#b8952a', marginBottom: 6 },
-  sub: { color: '#3a4a5a', fontSize: 13, marginBottom: 24, lineHeight: 18 },
-  field: { marginBottom: 16 },
-  label: { color: '#ccd6e8', fontSize: 14, fontWeight: '600', marginBottom: 8 },
-  inputWrap: { borderRadius: 12, borderWidth: 1.5, backgroundColor: '#0d1520', paddingHorizontal: 16, paddingVertical: 4 },
-  input: { fontSize: 24, fontWeight: '700', paddingVertical: 10, textAlign: 'center' },
-  footer: { flexDirection: 'row', padding: 16, gap: 12, borderTopWidth: 1, borderTopColor: '#141c28' },
-  cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: 12, borderWidth: 1, borderColor: '#141c28', alignItems: 'center' },
-  cancelText: { color: '#3a4a5a', fontSize: 15, fontWeight: '600' },
-  saveBtn: { flex: 2, paddingVertical: 14, borderRadius: 12, backgroundColor: '#b8952a', alignItems: 'center' },
-  saveText: { color: '#090c14', fontSize: 15, fontWeight: '700' },
+  container: { flex: 1, backgroundColor: colors.bg },
+  scroll: { padding: spacing.lg },
+  title: { fontSize: fontSize.title, fontWeight: '700', color: colors.primary, marginBottom: 6 },
+  sub: { color: colors.textMuted, fontSize: fontSize.md, marginBottom: spacing.xxl, lineHeight: 18 },
+  field: { marginBottom: spacing.lg },
+  label: { color: colors.text, fontSize: fontSize.body, fontWeight: '600', marginBottom: spacing.sm },
+  inputWrap: { borderRadius: radius.lg, borderWidth: 1.5, backgroundColor: colors.card, paddingHorizontal: spacing.lg, paddingVertical: spacing.xs },
+  input: { fontSize: fontSize.hero, fontWeight: '700', paddingVertical: 10, textAlign: 'center' },
+  footer: { flexDirection: 'row', padding: spacing.lg, gap: spacing.md, borderTopWidth: 1, borderTopColor: colors.border },
+  cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, alignItems: 'center' },
+  cancelText: { color: colors.textMuted, fontSize: fontSize.lg, fontWeight: '600' },
+  saveBtn: { flex: 2, paddingVertical: 14, borderRadius: radius.lg, backgroundColor: colors.primary, alignItems: 'center' },
+  saveText: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
 });

@@ -3,6 +3,8 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, Animated, Dimensions, ActivityIndicator } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/auth';
+import { OfflineNotice } from '../components/OfflineNotice';
+import { colors, fontSize } from '../lib/theme';
 
 const { width } = Dimensions.get('window');
 
@@ -29,10 +31,7 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
       <StatusBar style="light" />
       <Animated.Image
         source={require('../assets/splash-optimized.jpg')}
-        style={[
-          splash.photo,
-          { opacity: fadePhoto, transform: [{ scale }] },
-        ]}
+        style={[splash.photo, { opacity: fadePhoto, transform: [{ scale }] }]}
         resizeMode="contain"
       />
       <Animated.Text style={[splash.title, { opacity: fadeTitle }]}>
@@ -49,52 +48,11 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
 }
 
 const splash = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#090c14',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  photo: {
-    width: width * 0.7,
-    height: width * 0.75,
-    borderRadius: 20,
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#b8952a',
-    letterSpacing: 3,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#6a7a8a',
-    marginTop: 6,
-  },
-  version: {
-    fontSize: 11,
-    color: '#3a4a5a',
-    marginTop: 16,
-  },
-});
-
-function LoadingScreen() {
-  return (
-    <View style={loading.container}>
-      <StatusBar style="light" />
-      <ActivityIndicator size="large" color="#b8952a" />
-    </View>
-  );
-}
-
-const loading = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#090c14',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  container: { flex: 1, backgroundColor: colors.bg, justifyContent: 'center', alignItems: 'center' },
+  photo: { width: width * 0.7, height: width * 0.75, borderRadius: 20, marginBottom: 24 },
+  title: { fontSize: fontSize.splash, fontWeight: '700', color: colors.primary, letterSpacing: 3 },
+  subtitle: { fontSize: fontSize.body, color: colors.textSecondary, marginTop: 6 },
+  version: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 16 },
 });
 
 export default function RootLayout() {
@@ -124,12 +82,18 @@ export default function RootLayout() {
   }
 
   if (authLoading) {
-    return <LoadingScreen />;
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center', alignItems: 'center' }}>
+        <StatusBar style="light" />
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
   }
 
   return (
     <>
       <StatusBar style="light" />
+      <OfflineNotice />
       <Slot />
     </>
   );

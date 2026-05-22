@@ -10,6 +10,8 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { FadeInView } from '../../components/FadeInView';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 interface Message {
   id: string;
@@ -37,7 +39,6 @@ export default function ProteosScreen() {
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
 
-  // Load conversation history on mount
   useEffect(() => {
     loadConversationHistory();
   }, []);
@@ -66,7 +67,6 @@ export default function ProteosScreen() {
           created_at: msg.created_at,
         }))
       );
-      // Get conversation ID from first message
       setConversationId(data[0].conversation_id);
     }
   };
@@ -79,66 +79,30 @@ export default function ProteosScreen() {
     setMessage('');
 
     try {
-      // Generate conversation ID if needed
       const newConvId = conversationId || `conv_${Date.now()}`;
-      if (!conversationId) {
-        setConversationId(newConvId);
-      }
+      if (!conversationId) setConversationId(newConvId);
 
-      // Get a random response from ProteOS
       const assistantResponse = PROTEOS_RESPONSES[
         Math.floor(Math.random() * PROTEOS_RESPONSES.length)
       ];
 
-      // Save both messages to Supabase
       const now = new Date().toISOString();
       const futureTime = new Date(Date.now() + 1000).toISOString();
 
       const { error: saveError } = await supabase.from('chat_messages').insert([
-        {
-          conversation_id: newConvId,
-          user_id: user.id,
-          role: 'user',
-          content: userInput,
-          created_at: now,
-        },
-        {
-          conversation_id: newConvId,
-          user_id: user.id,
-          role: 'assistant',
-          content: assistantResponse,
-          created_at: futureTime,
-        },
+        { conversation_id: newConvId, user_id: user.id, role: 'user', content: userInput, created_at: now },
+        { conversation_id: newConvId, user_id: user.id, role: 'assistant', content: assistantResponse, created_at: futureTime },
       ]);
 
-      if (saveError) {
-        console.error('Save error:', saveError);
-      }
+      if (saveError) console.error('Save error:', saveError);
 
-      // Add to local state
-      const userMsg: Message = {
-        id: `user-${Date.now()}`,
-        role: 'user',
-        content: userInput,
-        created_at: now,
-      };
-
-      const assistantMsg: Message = {
-        id: `assistant-${Date.now()}`,
-        role: 'assistant',
-        content: assistantResponse,
-        created_at: futureTime,
-      };
+      const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', content: userInput, created_at: now };
+      const assistantMsg: Message = { id: `assistant-${Date.now()}`, role: 'assistant', content: assistantResponse, created_at: futureTime };
 
       setMessages((prev) => [...prev, userMsg, assistantMsg]);
-
-      // Scroll to bottom
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-      }, 100);
+      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     } catch (error) {
       console.error('Chat error:', error);
-      // Restore message if error
       setMessage(userInput);
     } finally {
       setLoading(false);
@@ -146,122 +110,83 @@ export default function ProteosScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={s.container}>
       <FlatList
         ref={flatListRef}
         data={messages}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.messageList}
+        contentContainerStyle={s.messageList}
         renderItem={({ item }) => (
-          <View
-            style={[
-              styles.bubble,
-              item.role === 'user' ? styles.userBubble : styles.botBubble,
-            ]}
-          >
-            <Text
-              style={[
-                styles.bubbleText,
-                item.role === 'user' && styles.userText,
-              ]}
-            >
-              {item.content}
-            </Text>
-            <Text style={styles.timestamp}>
-              {new Date(item.created_at).toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Text>
-          </View>
+          <FadeInView>
+            <View style={[s.bubble, item.role === 'user' ? s.userBubble : s.botBubble]}>
+              <Text style={[s.bubbleText, item.role === 'user' && s.userText]}>
+                {item.content}
+              </Text>
+              <Text style={s.timestamp}>
+                {new Date(item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+            </View>
+          </FadeInView>
         )}
         onEndReachedThreshold={0.1}
         onEndReached={() => flatListRef.current?.scrollToEnd()}
       />
 
       {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#b8952a" />
-          <Text style={styles.loadingText}>ProteOS está pensando...</Text>
+        <View style={s.loadingContainer}>
+          <ActivityIndicator size="small" color={colors.primary} />
+          <Text style={s.loadingText}>ProteOS está pensando...</Text>
         </View>
       )}
 
-      <View style={styles.inputRow}>
+      <View style={s.inputRow}>
         <TextInput
-          style={styles.input}
+          style={s.input}
           value={message}
           onChangeText={setMessage}
           placeholder="Converse com ProteOS..."
-          placeholderTextColor="#3a4a5a"
+          placeholderTextColor={colors.textMuted}
           multiline
           maxLength={500}
           editable={!loading}
         />
         <TouchableOpacity
-          style={[styles.sendBtn, loading && styles.sendBtnDisabled]}
+          style={[s.sendBtn, loading && s.sendBtnDisabled]}
           onPress={sendMessage}
           disabled={loading || !message.trim()}
         >
-          <Text style={styles.sendText}>→</Text>
+          <Text style={s.sendText}>→</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#090c14' },
-  messageList: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 8 },
-  bubble: { padding: 12, borderRadius: 12, marginBottom: 10, maxWidth: '85%' },
-  botBubble: {
-    backgroundColor: '#0d1520',
-    borderWidth: 1,
-    borderColor: '#141c28',
-    alignSelf: 'flex-start',
-  },
-  userBubble: { backgroundColor: '#1a3a4a', alignSelf: 'flex-end' },
-  bubbleText: { color: '#ccd6e8', fontSize: 15, lineHeight: 22 },
-  userText: { color: '#e0e8f0' },
-  timestamp: {
-    color: '#3a4a5a',
-    fontSize: 11,
-    marginTop: 6,
-  },
-  loadingContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  loadingText: { color: '#3a4a5a', marginLeft: 8, fontSize: 13 },
-  inputRow: {
-    flexDirection: 'row',
-    padding: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#141c28',
-    alignItems: 'flex-end',
-  },
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.bg },
+  messageList: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm },
+  bubble: { padding: spacing.md, borderRadius: radius.lg, marginBottom: 10, maxWidth: '85%' },
+  botBubble: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignSelf: 'flex-start' },
+  userBubble: { backgroundColor: colors.userBubble, alignSelf: 'flex-end' },
+  bubbleText: { color: colors.text, fontSize: fontSize.lg, lineHeight: 22 },
+  userText: { color: colors.textLight },
+  timestamp: { color: colors.textMuted, fontSize: fontSize.xs, marginTop: 6 },
+  loadingContainer: { flexDirection: 'row', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, alignItems: 'center' },
+  loadingText: { color: colors.textMuted, marginLeft: spacing.sm, fontSize: fontSize.md },
+  inputRow: { flexDirection: 'row', padding: spacing.md, borderTopWidth: 1, borderTopColor: colors.border, alignItems: 'flex-end' },
   input: {
     flex: 1,
-    backgroundColor: '#0d1520',
-    borderRadius: 12,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
     paddingHorizontal: 14,
     paddingVertical: 10,
-    color: '#ccd6e8',
-    fontSize: 15,
+    color: colors.text,
+    fontSize: fontSize.lg,
     borderWidth: 1,
-    borderColor: '#141c28',
+    borderColor: colors.border,
     maxHeight: 100,
   },
-  sendBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#b8952a',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-  },
+  sendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
   sendBtnDisabled: { opacity: 0.5 },
-  sendText: { color: '#090c14', fontSize: 20, fontWeight: '700' },
+  sendText: { color: colors.bg, fontSize: 20, fontWeight: '700' },
 });

@@ -1,23 +1,24 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
+import { colors } from '../../lib/theme';
 
 export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: { backgroundColor: '#090c14' },
-        headerTintColor: '#ccd6e8',
+        headerStyle: { backgroundColor: colors.bg },
+        headerTintColor: colors.text,
         headerTitleStyle: { fontWeight: '600' },
         tabBarStyle: {
-          backgroundColor: '#090c14',
-          borderTopColor: '#141c28',
+          backgroundColor: colors.bg,
+          borderTopColor: colors.border,
           borderTopWidth: 1,
           paddingBottom: 8,
           paddingTop: 8,
           height: 70,
         },
-        tabBarActiveTintColor: '#b8952a',
-        tabBarInactiveTintColor: '#3a4a5a',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
       }}
     >
       <Tabs.Screen
@@ -36,14 +37,8 @@ export default function AppLayout() {
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'🥗'}</Text>,
         }}
       />
-      <Tabs.Screen
-        name="nutricao-novo"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="nutricao-metas"
-        options={{ href: null }}
-      />
+      <Tabs.Screen name="nutricao-novo" options={{ href: null }} />
+      <Tabs.Screen name="nutricao-metas" options={{ href: null }} />
       <Tabs.Screen
         name="proteos"
         options={{
@@ -60,14 +55,8 @@ export default function AppLayout() {
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'👥'}</Text>,
         }}
       />
-      <Tabs.Screen
-        name="comunidades-timeline"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="comunidades-notificacoes"
-        options={{ href: null }}
-      />
+      <Tabs.Screen name="comunidades-timeline" options={{ href: null }} />
+      <Tabs.Screen name="comunidades-notificacoes" options={{ href: null }} />
       <Tabs.Screen
         name="diario"
         options={{
