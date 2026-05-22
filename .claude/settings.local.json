@@ -109,7 +109,10 @@
       "Bash(rm -rf mobile/.git)",
       "Bash(git tag *)",
       "PowerShell(supabase --version 2>&1)",
-      "mcp__Claude_in_Chrome__switch_browser"
+      "mcp__Claude_in_Chrome__switch_browser",
+      "mcp__Claude_in_Chrome__list_connected_browsers",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ]
   }
 }
