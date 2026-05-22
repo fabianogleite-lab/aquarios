@@ -11,6 +11,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import Anthropic from '@anthropic-ai/sdk';
 
 interface Message {
   id: string;
@@ -19,6 +20,19 @@ interface Message {
   created_at: string;
 }
 
+const PROTEOS_SYSTEM_PROMPT = `Você é ProteOS, o assistente IA pessoal do AquariOS — Sistema Operacional Pessoal.
+
+Características:
+- Caloroso, profundo e prático
+- Fala português brasileiro coloquial
+- Criador: Fabiano Gomes Leite, fundador da Arkhe Labs
+- Ajuda com autoconhecimento, produtividade e bem-estar
+- Conciso mas profundo; usa metáforas quando apropriado
+- Nunca inventa dados sobre o usuário — pergunta se não sabe
+- Respeita a privacidade e segurança
+
+Seu objetivo é ser um companheiro genuíno na jornada pessoal do usuário.`;
+
 export default function ProteosScreen() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -26,6 +40,9 @@ export default function ProteosScreen() {
   const [conversationId, setConversationId] = useState<string>('');
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
+
+  // Initialize Anthropic client
+  const anthropicApiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
 
   // Load conversation history on mount
   useEffect(() => {
@@ -56,63 +73,96 @@ export default function ProteosScreen() {
           created_at: msg.created_at,
         }))
       );
-      // Get conversation ID from last message
+      // Get conversation ID from first message
       setConversationId(data[0].conversation_id);
     }
   };
 
   const sendMessage = async () => {
     if (!message.trim() || !user?.id) return;
+    if (!anthropicApiKey) {
+      Alert.alert('Erro', 'Chave da API não configurada');
+      return;
+    }
 
     setLoading(true);
+    const userInput = message;
+    setMessage('');
 
     try {
-      // Prepare history for Claude context
-      const history = messages.map((msg) => ({
-        role: msg.role,
+      // Prepare messages for Claude
+      const conversationHistory = messages.map((msg) => ({
+        role: msg.role as 'user' | 'assistant',
         content: msg.content,
       }));
 
-      // Call Edge Function
-      const response = await supabase.functions.invoke('chat', {
-        body: {
-          message: message.trim(),
-          user_id: user.id,
-          conversation_id: conversationId,
-          history,
-        },
+      // Create Anthropic client
+      const client = new Anthropic({
+        apiKey: anthropicApiKey,
       });
 
-      if (response.error) {
-        Alert.alert('Erro', response.error.message || 'Erro ao enviar mensagem');
-        setLoading(false);
-        return;
-      }
+      // Call Claude
+      const response = await client.messages.create({
+        model: 'claude-3-5-haiku-20241022',
+        max_tokens: 1024,
+        system: PROTEOS_SYSTEM_PROMPT,
+        messages: [
+          ...conversationHistory,
+          {
+            role: 'user',
+            content: userInput,
+          },
+        ],
+      });
 
-      const { response: assistantResponse, conversation_id: newConvId } = response.data;
+      const assistantResponse =
+        response.content[0].type === 'text' ? response.content[0].text : 'Desculpe, não consegui processar sua mensagem.';
 
-      // Update conversation ID if new
-      if (newConvId && !conversationId) {
+      // Generate new conversation ID if needed
+      const newConvId = conversationId || `conv_${Date.now()}`;
+      if (!conversationId) {
         setConversationId(newConvId);
       }
 
-      // Add both messages locally
+      // Save both messages to Supabase
+      const now = new Date().toISOString();
+      const { error: saveError } = await supabase.from('chat_messages').insert([
+        {
+          conversation_id: newConvId,
+          user_id: user.id,
+          role: 'user',
+          content: userInput,
+          created_at: now,
+        },
+        {
+          conversation_id: newConvId,
+          user_id: user.id,
+          role: 'assistant',
+          content: assistantResponse,
+          created_at: new Date(Date.now() + 1000).toISOString(),
+        },
+      ]);
+
+      if (saveError) {
+        console.error('Save error:', saveError);
+      }
+
+      // Add to local state
       const userMsg: Message = {
         id: `user-${Date.now()}`,
         role: 'user',
-        content: message,
-        created_at: new Date().toISOString(),
+        content: userInput,
+        created_at: now,
       };
 
       const assistantMsg: Message = {
         id: `assistant-${Date.now()}`,
         role: 'assistant',
         content: assistantResponse,
-        created_at: new Date().toISOString(),
+        created_at: new Date(Date.now() + 1000).toISOString(),
       };
 
       setMessages((prev) => [...prev, userMsg, assistantMsg]);
-      setMessage('');
 
       // Scroll to bottom
       setTimeout(() => {
@@ -120,7 +170,10 @@ export default function ProteosScreen() {
       }, 100);
     } catch (error) {
       console.error('Chat error:', error);
-      Alert.alert('Erro', 'Falha ao conectar com ProteOS');
+      const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
+      Alert.alert('Erro', `Falha ao conectar com ProteOS: ${errorMsg}`);
+      // Restore message if error
+      setMessage(userInput);
     } finally {
       setLoading(false);
     }
@@ -163,7 +216,7 @@ export default function ProteosScreen() {
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color="#b8952a" />
-          <Text style={styles.loadingText}>ProteOS está digitando...</Text>
+          <Text style={styles.loadingText}>ProteOS está pensando...</Text>
         </View>
       )}
 
