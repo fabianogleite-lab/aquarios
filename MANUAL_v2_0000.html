@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚗ AquariOS — Manual Completo V2.0000 | ARKHE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            font-family: 'Georgia', serif;
+            color: #1a1a2e;
+            background: #f5f3f0;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #090c14 0%, #1a1a2e 100%);
+            color: #b8952a;
+            padding: 80px 60px;
+            text-align: center;
+            border-bottom: 3px solid #b8952a;
+        }
+        .header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .header .subtitle {
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: #ccd6e8;
+        }
+        .header .metadata {
+            font-size: 12px;
+            color: #7fb8f0;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 60px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #090c14;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #b8952a;
+            letter-spacing: 1px;
+        }
+        .subsection-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: #fafaf9;
+        }
+        th {
+            background: #090c14;
+            color: #b8952a;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 12px;
+            border-bottom: 2px solid #b8952a;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e8e4e0;
+            font-size: 13px;
+        }
+        .highlight {
+            background: #fffbf0;
+            border-left: 3px solid #b8952a;
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #3a3a4a;
+        }
+        .code-block {
+            background: #090c14;
+            color: #7fb8f0;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        .badge {
+            display: inline-block;
+            background: #b8952a;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .badge.new { background: #52e09a; }
+        .badge.revised { background: #ffaa44; }
+        ul, ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+        .footer {
+            background: #090c14;
+            color: #b8952a;
+            padding: 40px 60px;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 1px;
+            border-top: 2px solid #b8952a;
+        }
+        .warning {
+            background: #fff5f0;
+            border-left: 4px solid #ffaa44;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+    <h1>⚗ AquariOS</h1>
+    <div class="subtitle">Sistema Operacional de Integração Humana</div>
+    <div class="metadata">
+        <div><strong>Manual Completo · V2.0000</strong></div>
+        <div>Alinhado com Memorando Técnico Estratégico (AquariOS / ARKHE)</div>
+        <div style="margin-top: 15px;">
+            Autor: <strong>Fabiano Gomes Leite</strong><br>
+            Data: 14 de Maio de 2026<br>
+            <em style="font-size: 11px; color: #7fb8f0;">Contato: suporte@aquarios.app</em>
+        </div>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- CHANGELOG -->
+<div class="section">
+    <div class="section-title">📋 Change Log V2.0000 — Alinhamento com Memorando Técnico</div>
+    
+    <p><span class="badge revised">REVISÃO</span> <strong>Arquitetura Filosófica (§2):</strong> Encapsulada no HygeiOS como estrutura interna semântica — não apresentada como doutrina pública. Opera como organizador de arquétipos, gamificação e progressão sistêmica.</p>
+    
+    <p><span class="badge revised">REVISÃO</span> <strong>Gamificação (§11):</strong> XP passa a ser denominado XP Existencial — nomenclatura específica do sistema. Adicionado: jornadas temáticas e identidade como objetivo central.</p>
+    
+    <p><span class="badge new">NOVO</span> <strong>EteriOS (§10):</strong> Adicionado protocolo Webhooks à lista de integrações. Reposicionado como "camada universal de integração" — conecta ecossistema físico ao IVI digital.</p>
+    
+    <p><span class="badge new">NOVO</span> <strong>Estratégia de Dados (§15):</strong> Ativo principal = tempo consciente do usuário. 6 KPIs prioritários definidos pelo Memorando.</p>
+    
+    <p><span class="badge new">NOVO</span> <strong>Sistema de Tokens (§17):</strong> 4 tipos — AI Tokens · Sync Tokens · Insight Tokens · Community Tokens.</p>
+    
+    <p><span class="badge new">NOVO</span> <strong>Marketplace Interno (§18):</strong> AquariOS como plataforma econômica. 9 categorias monetizáveis com revenue share.</p>
+    
+    <p><span class="badge revised">REVISÃO</span> <strong>Monetização (§16):</strong> Expandida de 2 para 7 camadas conforme Memorando Técnico.</p>
+</div>
+
+<!-- TESE FUNDADORA -->
+<div class="section">
+    <div class="section-title">§ 01 Definição Estratégica</div>
+    
+    <div class="highlight">
+        <strong>TESE CENTRAL:</strong> Inverter o modelo das big techs. Ao invés de monetizar distração, monetizar presença significativa, autoconhecimento, integração e evolução pessoal.
+    </div>
+    
+    <p>O AquariOS deve ser tratado como uma <strong>Infraestrutura Operacional de Integração Humana</strong>, focada em quatro vetores estratégicos:</p>
+    
+    <table>
+        <tr>
+            <th>Vetor</th>
+            <th>Definição</th>
+            <th>Módulos Primários</th>
+        </tr>
+        <tr>
+            <td><strong>Hábitos</strong></td>
+            <td>Formação e manutenção de comportamentos saudáveis integrados</td>
+            <td>Diário · Nutrição · Comunidades</td>
+        </tr>
+        <tr>
+            <td><strong>Integração Bio-Mental-Digital</strong></td>
+            <td>Conexão entre estado físico, psicológico e interação com IA</td>
+            <td>HygeiOS · AsclepiOS · ProteOS</td>
+        </tr>
+        <tr>
+            <td><strong>Automação Contextual</strong></td>
+            <td>Ações automáticas moduladas pelo IVI e estado do usuário</td>
+            <td>EteriOS · HygeiOS · AsclepiOS</td>
+        </tr>
+        <tr>
+            <td><strong>Retenção Consciente</strong></td>
+            <td>Engajamento sustentável baseado em valor real, não vício</td>
+            <td>Gamificação · Comunidades · IVI</td>
+        </tr>
+    </table>
+    
+    <p style="margin-top: 25px;"><strong>Distinção Competitiva:</strong> O AquariOS não compete com apps de bem-estar. Compete com a fragmentação — o estado de um ser humano gerenciado por dezenas de apps que não se comunicam. O AquariOS é a infraestrutura que os unifica sob soberania do usuário.</p>
+</div>
+
+<!-- ARQUITETURA FILOSÓFICA -->
+<div class="section">
+    <div class="section-title">§ 02 Arquitetura Filosófica (REVISADO)</div>
+    
+    <div class="warning">
+        <strong>Revisão V2.0000:</strong> A camada filosófica permanece <strong>encapsulada no HygeiOS</strong> como estrutura interna semântica — não apresentada como doutrina pública.
+    </div>
+    
+    <p>A filosofia do AquariOS não é um manifesto — é uma <strong>gramática interna</strong>. Os 7 princípios herméticos, os arquétipos gregos (Asclépio, Hígia, Hermes, Proteu), as 22 lâminas do SandeirOS e as 13 tradições do EcumenicOS operam como estrutura semântica oculta que organiza como os módulos pensam, reagem e evoluem.</p>
+    
+    <div class="subsection-title">Os 7 Princípios Herméticos (Kybalion)</div>
+    
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Princípio</th>
+            <th>Aplicação em AquariOS</th>
+            <th>Módulo</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><strong>Mentalismo</strong></td>
+            <td>Tudo é mente — Pensamento precede ação</td>
+            <td>ProteOS</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Correspondência</strong></td>
+            <td>Como acima, assim abaixo — Micro = Macro</td>
+            <td>IVI (Bio ↔ Mental ↔ Spirit)</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Vibração</strong></td>
+            <td>Nada repousa, tudo vibra — Frequência do estado</td>
+            <td>HygeiOS (atualização 6h)</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Polaridade</strong></td>
+            <td>Tudo tem polos, opostos são idênticos em natureza</td>
+            <td>Dicotomia do Controle</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Ritmo</strong></td>
+            <td>Tudo flui e reflui — Ciclos e períodos</td>
+            <td>Comunidades (streaks, 7 níveis)</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Causalidade</strong></td>
+            <td>Toda causa tem efeito — Efeito sempre tem causa</td>
+            <td>AsclepiOS (diagnose → prescrição)</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><strong>Gênero</strong></td>
+            <td>Gênero existe em tudo — Integração de opostos</td>
+            <td>EcumenicOS (perspectivas plurais)</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ARQUITETURA DO ECOSSISTEMA -->
+<div class="section">
+    <div class="section-title">§ 03 Arquitetura do Ecossistema ARKHE</div>
+    
+    <div class="code-block">
+⚗ ARKHE (Holding Legal · Propriedade Intelectual)
+│
+├── AquariOS (B2C — Infraestrutura Operacional)
+│   ├── MÓDULOS DE USUÁRIO (9)
+│   │   ├── ProteOS (camada conversacional inteligente)
+│   │   ├── SandeirOS (engine simbólica — 22 arcanos)
+│   │   ├── EcumenicOS (13 tradições ecumênicas)
+│   │   ├── AsclepiOS (módulo clínico)
+│   │   ├── HermeOS (módulo financeiro)
+│   │   ├── EteriOS (integração universal — IoT)
+│   │   ├── Comunidades (motor social + gamificação)
+│   │   ├── Diário do Ser (entrada operacional)
+│   │   └── Nutrição (análise de refeições)
+│   │
+│   └── MÓDULOS TÉCNICOS (6 — background)
+│       ├── HygeiOS + IVI (núcleo analítico)
+│       ├── AlexandriOS (help engine)
+│       ├── KB_Foundation (base de conhecimento)
+│       ├── MetadataStore (versionamento)
+│       ├── LGPDCompliance (segurança)
+│       └── AdminFunctions (suprausuário)
+│
+├── Beck Office (B2B — Plataforma de profissionais)
+└── Rapidoc (Telemedicina CFM 2.314/2022)
+    </div>
+    
+    <div class="subsection-title">Métricas Consolidadas V2.0000</div>
+    
+    <table>
+        <tr>
+            <th>Métrica</th>
+            <th>Valor</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Módulos de usuário</td>
+            <td>9 implementados</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>Módulos técnicos</td>
+            <td>6 (background)</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>Linhas backend (server)</td>
+            <td>800+ (server_v2_0000.js)</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>FAQs críticas</td>
+            <td>42 estruturadas</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>Endpoints API</td>
+            <td>35+</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>Tradições EcumenicOS</td>
+            <td>13 × 3 livros = 39 livros</td>
+            <td>ATIVO</td>
+        </tr>
+        <tr>
+            <td>Camadas de monetização</td>
+            <td>7</td>
+            <td>V2.0000</td>
+        </tr>
+        <tr>
+            <td>Tipos de token</td>
+            <td>4 (AI, Sync, Insight, Community)</td>
+            <td>NOVO</td>
+        </tr>
+        <tr>
+            <td>Categorias marketplace</td>
+            <td>9</td>
+            <td>NOVO</td>
+        </tr>
+        <tr>
+            <td>LGPD compliance</td>
+            <td>100%</td>
+            <td>ATIVO</td>
+        </tr>
+    </table>
+</div>
+
+<!-- HYGEIOS + IVI -->
+<div class="section">
+    <div class="section-title">§ 04 HygeiOS + IVI — Núcleo Analítico</div>
+    
+    <p><strong>Posição arquitetural:</strong> HygeiOS é o núcleo analítico do ecossistema. O IVI é seu output central. A filosofia do sistema está encapsulada aqui — nunca exposta como doutrina.</p>
+    
+    <div class="subsection-title">Pipeline ETL (Executa a cada 6h)</div>
+    
+    <div class="code-block">
+EXTRACT
+  ├─ medical_exams (histórico)
+  ├─ messages (ProteOS logs)
+  ├─ journal_entries (Diário)
+  ├─ readings (VFC, pressão, glicose)
+  ├─ ecumenic_consultations (EcumenicOS)
+  ├─ meals (Nutrição)
+  ├─ community_posts (Comunidades)
+  └─ EteriOS inbound (wearables, IoT)
+
+TRANSFORM
+  ├─ Normaliza Bio (0–100)
+  ├─ Normaliza Mental (0–100)
+  └─ Normaliza Spirit (0–100)
+
+IVI_CALC
+  └─ IVI_Total = (Bio × 0.40) + (Mental × 0.35) + (Spirit × 0.25)
+
+ANOMALY
+  ├─ CRITICAL_MARKER (IVI < 20)
+  ├─ USER_SILENCE (sem atividade > 3 dias)
+  └─ SPIRIT_STAGNATION (XP zerado 30 dias)
+
+LOAD
+  └─ Snapshot → CerbelOS (persistência)
+    </div>
+    
+    <div class="subsection-title">IVI — Faixas e Ações</div>
+    
+    <table>
+        <tr>
+            <th>Faixa</th>
+            <th>Status</th>
+            <th>Ação AsclepiOS</th>
+            <th>Descrição</th>
+        </tr>
+        <tr>
+            <td>0–20</td>
+            <td><strong>CRÍTICO</strong></td>
+            <td>MEDICAL_INTERVENTION</td>
+            <td>Intervenção profissional urgente → Beck Office</td>
+        </tr>
+        <tr>
+            <td>21–40</td>
+            <td><strong>ALERTA</strong></td>
+            <td>BEHAVIOR_ADJUSTMENT</td>
+            <td>Mudança comportamental recomendada</td>
+        </tr>
+        <tr>
+            <td>41–60</td>
+            <td><strong>ATENÇÃO</strong></td>
+            <td>MONITORING</td>
+            <td>Silêncio observador</td>
+        </tr>
+        <tr>
+            <td>61–80</td>
+            <td><strong>BOM</strong></td>
+            <td>PREVENTIVE</td>
+            <td>Reforço positivo</td>
+        </tr>
+        <tr>
+            <td>81–100</td>
+            <td><strong>EXCELENTE</strong></td>
+            <td>Comunidades Excellence</td>
+            <td>Badges desbloqueados</td>
+        </tr>
+    </table>
+</div>
+
+<!-- PROTEOS -->
+<div class="section">
+    <div class="section-title">§ 05 ProteOS — Camada Conversacional Inteligente</div>
+    
+    <p>Hub central de todas as interações. Detecta intenção, roteia para o módulo correto, adapta tom por persona e retorna resposta integrada.</p>
+    
+    <div class="subsection-title">Roteamento por Intenção</div>
+    
+    <table>
+        <tr>
+            <th>Intenção</th>
+            <th>Módulo Destino</th>
+            <th>Resultado</th>
+        </tr>
+        <tr>
+            <td><strong>OPERACIONAL</strong></td>
+            <td>Dados diretos</td>
+            <td>Agenda, refeições, tarefas, IVI atual</td>
+        </tr>
+        <tr>
+            <td><strong>INTROSPECTIVO</strong></td>
+            <td>SandeirOS (oculto)</td>
+            <td>Resposta temperada por arcano</td>
+        </tr>
+        <tr>
+            <td><strong>MÉDICO/SAÚDE</strong></td>
+            <td>HygeiOS + AsclepiOS</td>
+            <td>Análise + prescrições + relatório</td>
+        </tr>
+        <tr>
+            <td><strong>CONTEMPLATIVO</strong></td>
+            <td>EcumenicOS</td>
+            <td>Consulta inter-religiosa em 3 modos</td>
+        </tr>
+        <tr>
+            <td><strong>FINANCEIRO</strong></td>
+            <td>HermeOS</td>
+            <td>Educação + conta + investimentos</td>
+        </tr>
+        <tr>
+            <td><strong>FÍSICO/IOT</strong></td>
+            <td>EteriOS</td>
+            <td>Wearable → IVI Bio atualizado</td>
+        </tr>
+        <tr>
+            <td><strong>GERAL</strong></td>
+            <td>Anthropic API</td>
+            <td>Resposta conversacional livre</td>
+        </tr>
+    </table>
+    
+    <div class="highlight">
+        <strong>Proteção IP:</strong> arcano_temperado e oracle_modern nunca expostos em nenhum payload. Mecanismo de sorteio interno permanece proprietário oculto.
+    </div>
+</div>
+
+<!-- PERSONAS -->
+<div class="section">
+    <div class="section-title">§ 21 Personas + FAQ + Jornada</div>
+    
+    <div class="subsection-title">Personas Ativas (3)</div>
+    
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Código</th>
+            <th>Tom</th>
+            <th>Ticket Ideal</th>
+            <th>FAQs</th>
+        </tr>
+        <tr>
+            <td><strong>Roberto Santos</strong></td>
+            <td>ZE_DO_APERTO</td>
+            <td>PRAGMATIC_DIRECT</td>
+            <td>R$24,90–49,90</td>
+            <td>8 FAQs</td>
+        </tr>
+        <tr>
+            <td><strong>Maria da Silva</strong></td>
+            <td>DONA_MARIA</td>
+            <td>SUPPORTIVE_CLINICAL</td>
+            <td>R$39,90–149,90</td>
+            <td>9 FAQs</td>
+        </tr>
+        <tr>
+            <td><strong>Carlos Mendes</strong></td>
+            <td>CARLOS_CLINICAL_URGENT</td>
+            <td>CLINICAL_URGENT</td>
+            <td>R$89,90–399,90</td>
+            <td>8 FAQs</td>
+        </tr>
+    </table>
+    
+    <div class="subsection-title">Personas Futuras (Roadmap)</div>
+    
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Código</th>
+            <th>Tom</th>
+            <th>Ticket Ideal</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Lucas Oliveira</td>
+            <td>LUCAS_APP</td>
+            <td>DATA_DRIVEN</td>
+            <td>R$89,90–249,90</td>
+            <td>FASE 2</td>
+        </tr>
+        <tr>
+            <td>Fernanda Rocha</td>
+            <td>FERNANDA</td>
+            <td>CLINICAL_EVIDENCE_BASED</td>
+            <td>R$149,90–899</td>
+            <td>FASE 2</td>
+        </tr>
+        <tr>
+            <td>José Cardoso</td>
+            <td>ZE_DAS_BETS</td>
+            <td>HARM_REDUCTION</td>
+            <td>R$24,90–49,90</td>
+            <td>FASE 3</td>
+        </tr>
+    </table>
+</div>
+
+<!-- ROADMAP -->
+<div class="section">
+    <div class="section-title">§ 22 Roadmap — 4 Fases Estratégicas (REVISADO)</div>
+    
+    <p>V2.0000: Roadmap substituído de modelo T4/T5/T6 para 4 Fases Estratégicas conforme Memorando Técnico — orientado por valor entregue ao usuário e capacidade do ecossistema.</p>
+    
+    <table>
+        <tr>
+            <th>Fase</th>
+            <th>Foco</th>
+            <th>Entregáveis</th>
+            <th>Timeline</th>
+        </tr>
+        <tr>
+            <td><strong>FASE 1<br>Fundação Social</strong></td>
+            <td>Infraestrutura base + comunidades</td>
+            <td>Diário · Comunidades · Free tier · Personas 1-3</td>
+            <td>Maio-Junho 2026</td>
+        </tr>
+        <tr>
+            <td><strong>FASE 2<br>Núcleo Analítico</strong></td>
+            <td>IVI + automação inteligente</td>
+            <td>HygeiOS full · AsclepiOS · Marketplace · Tokens</td>
+            <td>Julho-Agosto 2026</td>
+        </tr>
+        <tr>
+            <td><strong>FASE 3<br>Integração Física</strong></td>
+            <td>Wearables + IoT residencial</td>
+            <td>EteriOS wearables · IoT (Matter/Zigbee) · Beck Office</td>
+            <td>Setembro-Outubro 2026</td>
+        </tr>
+        <tr>
+            <td><strong>FASE 4<br>Autonomia Preditiva</strong></td>
+            <td>Multiagentes IA + autonomia</td>
+            <td>Automação preditiva · Computação espacial · Enterprise</td>
+            <td>Q4 2026+</td>
+        </tr>
+    </table>
+</div>
+
+<!-- AUTORIA ORIGINAL -->
+<div class="section">
+    <div class="section-title">§ 23 Autoria Original — 22 Itens Declarados</div>
+    
+    <p>Declaração legal: Fabiano Gomes Leite, CPF 521.363.886-49, declara ser o criador original de todos os itens abaixo, sob proteção da Lei 9.610/1998, Convenção de Berna e Acordo TRIPS.</p>
+    
+    <ol>
+        <li>Conceito e arquitetura do ecossistema ARKHE</li>
+        <li>Nome e design funcional do AquariOS como "sistema operacional do ser humano"</li>
+        <li>ProteOS — nome, arquitetura e lógica de roteamento por intenção</li>
+        <li>SandeirOS — nome, engine simbólica e modo oculto/explícito</li>
+        <li>Correspondência: 7 princípios herméticos e 22 arcanos maiores</li>
+        <li>HygeiOS — nome, arquitetura e pipeline ETL</li>
+        <li>AsclepiOS — nome, engine de decisão e algoritmo de risk_score</li>
+        <li>EcumenicOS — nome, arquitetura e 13 tradições</li>
+        <li>IVI tridimensional (Bio × 0.40 + Mental × 0.35 + Spirit × 0.25)</li>
+        <li>Beck Office — arquitetura e matching por IVI</li>
+        <li>4 Tiragens Originais do SandeirOS (Espelho, Tríade, Cruz, Jornada de Hermes)</li>
+        <li>Política de soberania do usuário em 7 princípios</li>
+        <li>Detecção de padrões longitudinais tridimensionais</li>
+        <li>Integração dos 3 textos canônicos com SandeirOS</li>
+        <li>Programa de Acessibilidade Social por vulnerabilidade</li>
+        <li>EcumenicOS como oráculo moderno (13 tradições + 39 livros)</li>
+        <li>Conceito do Oráculo Oculto invisível ao usuário</li>
+        <li>Sincretismo como elo entre tradições religiosas</li>
+        <li><span class="badge new">V2.0000</span> EteriOS — integração IoT/Wearable/Matter/Zigbee</li>
+        <li><span class="badge new">V2.0000</span> HermeOS como módulo de usuário — IVI ↔ Finanças</li>
+        <li><span class="badge new">V2.0000</span> Free Anônimo + Free Comunidade com trial 30 dias</li>
+        <li><span class="badge new">V2.0000</span> XP Existencial — sistema de gamificação integrado ao IVI</li>
+    </ol>
+</div>
+
+<!-- ERA DE AQUÁRIO -->
+<div class="section">
+    <div class="section-title">§ 24 Eixo Filosófico — A Era de Aquário como Fundamento</div>
+    
+    <p>A transição da Era de Peixes para a Era de Aquário representa o deslocamento do centro de gravidade humano: do <strong>ter</strong> para o <strong>ser</strong>, das hierarquias externas para a soberania interior, do dogma para o discernimento. O AquariOS é a infraestrutura digital à altura desse deslocamento.</p>
+    
+    <table>
+        <tr>
+            <th>Dimensão</th>
+            <th>Era de Peixes</th>
+            <th>Era de Aquário</th>
+            <th>Módulo AquariOS</th>
+        </tr>
+        <tr>
+            <td>Autoridade</td>
+            <td>Externa, hierarquia</td>
+            <td>Soberania interior</td>
+            <td>ProteOS + LGPD</td>
+        </tr>
+        <tr>
+            <td>Revelação</td>
+            <td>Dogma (único)</td>
+            <td>Espiritualidade plural</td>
+            <td>EcumenicOS (13 tradições)</td>
+        </tr>
+        <tr>
+            <td>Magia</td>
+            <td>Mistério inacessível</td>
+            <td>Simbologia integrada</td>
+            <td>SandeirOS (modo oculto)</td>
+        </tr>
+        <tr>
+            <td>Saúde</td>
+            <td>Intervalo reativo</td>
+            <td>Prevenção como modo</td>
+            <td>HygeiOS (silêncio)</td>
+        </tr>
+        <tr>
+            <td>Finanças</td>
+            <td>Acúmulo (fim em si)</td>
+            <td>Liberdade (instrumento)</td>
+            <td>HermeOS</td>
+        </tr>
+        <tr>
+            <td>Comunidade</td>
+            <td>Geográfica</td>
+            <td>Paixão compartilhada</td>
+            <td>Comunidades Aficionados</td>
+        </tr>
+    </table>
+    
+    <div class="highlight">
+        <strong>SÍNTESE FUNDADORA:</strong> O AquariOS não é um app de bem-estar. É a primeira <strong>Infraestrutura Operacional de Integração Humana</strong> — que conhece o ser inteiro (corpo, mente, espírito, finanças, ambiente físico) e usa esse conhecimento integral <strong>exclusivamente a favor do próprio usuário</strong>. Monetiza presença significativa, não distração. Transforma tempo consciente em ativo econômico e existencial.
+    </div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div><strong>⚗ ARKHE · AquariOS · Manual Completo V2.0000</strong></div>
+    <div>Documento consolidado — Propriedade Intelectual Protegida</div>
+    <div style="margin-top: 15px;">Proprietário: <strong>Fabiano Gomes Leite</strong></div>
+    <div>Contato: suporte@aquarios.app</div>
+    <div style="margin-top: 15px;">Consolidação: 14 de Maio de 2026</div>
+    <div style="margin-top: 15px; font-size: 11px;">© 2026 — Todos os direitos reservados.<br>Proteção: Lei 9.610/1998 · Convenção de Berna · Acordo TRIPS · LGPD 13.709/2018<br><strong>PII removido para conformidade LGPD em 14/05/2026</strong></div>
+</div>
+
+</div>
+
+</body>
+</html>

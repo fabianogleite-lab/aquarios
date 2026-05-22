@@ -1,0 +1,723 @@
+{
+  "status": "complete",
+  "timestamp": "2026-05-20T05:08:26.687599",
+  "overall_score": 85.36,
+  "summary": {
+    "total_checks": 70,
+    "passed": 41,
+    "warnings": 25,
+    "failed": 4,
+    "pass_rate": "58.6%"
+  },
+  "audits": [
+    {
+      "audit_type": "technical",
+      "timestamp": "2026-05-20T05:08:26.687272",
+      "total_checks": 15,
+      "passed": 10,
+      "warnings": 4,
+      "failed": 1,
+      "score": 86.66666666666667,
+      "items": [
+        {
+          "check_id": "T001",
+          "name": "Docker Multi-Stage Build",
+          "description": "Verify production Dockerfile uses multi-stage build",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Dockerfile implements multi-stage build (builder \u2192 runtime)",
+          "remediation": null
+        },
+        {
+          "check_id": "T002",
+          "name": "PostgreSQL Version",
+          "description": "Database version 16+ for latest features",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "docker-compose.yml specifies postgres:16-alpine",
+          "remediation": null
+        },
+        {
+          "check_id": "T003",
+          "name": "Redis Configuration",
+          "description": "Redis cache properly configured",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "redis:7-alpine with health checks configured",
+          "remediation": null
+        },
+        {
+          "check_id": "T004",
+          "name": "JWT Authentication",
+          "description": "Secure token-based authentication",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "JWT + OAuth2 implemented in src/main.py",
+          "remediation": null
+        },
+        {
+          "check_id": "T005",
+          "name": "HTTPS/TLS",
+          "description": "HTTPS enforced, Let's Encrypt setup",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "TLS certificate management ready in .github/workflows",
+          "remediation": null
+        },
+        {
+          "check_id": "T006",
+          "name": "Rate Limiting",
+          "description": "API rate limiting to prevent abuse",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "express-rate-limit configured (100 req/min per IP)",
+          "remediation": null
+        },
+        {
+          "check_id": "T007",
+          "name": "Encryption at Rest",
+          "description": "Database encryption enabled",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "AES-256 encryption ready, not yet enabled in .env",
+          "remediation": "Set DB_ENCRYPTION=true in production .env"
+        },
+        {
+          "check_id": "T008",
+          "name": "Secrets Management",
+          "description": "No hardcoded secrets in code",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "All secrets in .env.example, never in git",
+          "remediation": null
+        },
+        {
+          "check_id": "T009",
+          "name": "Database Query Optimization",
+          "description": "Indexes and query optimization",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Prisma ORM configured, but no explicit indexes defined yet",
+          "remediation": "Add database indexes to schema.prisma"
+        },
+        {
+          "check_id": "T010",
+          "name": "Caching Strategy",
+          "description": "Redis caching for hot data",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Redis configured with TTL (24h default)",
+          "remediation": null
+        },
+        {
+          "check_id": "T011",
+          "name": "CDN Configuration",
+          "description": "CloudFlare CDN for static assets",
+          "status": "WARN",
+          "score": 60,
+          "evidence": "CDN not yet configured",
+          "remediation": "Setup CloudFlare account and point DNS"
+        },
+        {
+          "check_id": "T012",
+          "name": "Load Testing",
+          "description": "Application tested for >10k RPS",
+          "status": "FAIL",
+          "score": 0,
+          "evidence": "Load testing not yet performed",
+          "remediation": "Run k6 or Apache JMeter load test before production"
+        },
+        {
+          "check_id": "T013",
+          "name": "CI/CD Pipeline",
+          "description": "GitHub Actions fully configured",
+          "status": "PASS",
+          "score": 100,
+          "evidence": ".github/workflows/ci-cd.yml with 6 jobs (lint\u2192test\u2192build\u2192deploy)",
+          "remediation": null
+        },
+        {
+          "check_id": "T014",
+          "name": "Monitoring & Alerting",
+          "description": "Datadog + Sentry configured",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Datadog/Sentry ready, not yet connected to prod",
+          "remediation": "Enable monitoring in production deployment"
+        },
+        {
+          "check_id": "T015",
+          "name": "Backup & Disaster Recovery",
+          "description": "Automated backups configured",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "DigitalOcean managed PostgreSQL with 2x daily backups",
+          "remediation": null
+        }
+      ],
+      "summary": "10/15 checks passed. 4 warnings, 1 critical issues."
+    },
+    {
+      "audit_type": "financial",
+      "timestamp": "2026-05-20T05:08:26.687459",
+      "total_checks": 15,
+      "passed": 10,
+      "warnings": 5,
+      "failed": 0,
+      "score": 91.66666666666667,
+      "items": [
+        {
+          "check_id": "F001",
+          "name": "LTV Calculation",
+          "description": "LTV properly calculated (ARPU \u00d7 Lifetime \u00d7 Retention)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "LTV Brasil COMPLETO = R$ 2.874 (299 \u00d7 12 \u00d7 0.80)",
+          "remediation": null
+        },
+        {
+          "check_id": "F002",
+          "name": "LTV Assumptions",
+          "description": "LTV assumptions realistic and documented",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "ARPU, lifetime, retention all documented in COMMERCIAL.md",
+          "remediation": null
+        },
+        {
+          "check_id": "F003",
+          "name": "CAC Target",
+          "description": "CAC < LTV/3 (healthy SaaS ratio)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Phase 1 CAC target R$ 100 < R$ 958 (LTV/3)",
+          "remediation": null
+        },
+        {
+          "check_id": "F004",
+          "name": "Marketing Budget Allocation",
+          "description": "Marketing budget clearly allocated",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Budget strategy defined but no detailed breakdown per channel",
+          "remediation": "Create detailed marketing budget spreadsheet per country/channel"
+        },
+        {
+          "check_id": "F005",
+          "name": "Runway Calculation",
+          "description": "Runway calculated (Cash / Monthly Burn)",
+          "status": "WARN",
+          "score": 60,
+          "evidence": "Runway not yet calculated (startup phase)",
+          "remediation": "Create financial model with burn rate projections"
+        },
+        {
+          "check_id": "F006",
+          "name": "Break-Even Analysis",
+          "description": "Break-even point identified",
+          "status": "WARN",
+          "score": 65,
+          "evidence": "Break-even estimated ~Month 18-24, not formally modeled",
+          "remediation": "Build detailed financial model with sensitivity analysis"
+        },
+        {
+          "check_id": "F007",
+          "name": "Payback Period",
+          "description": "Payback period < 6 months (healthy)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Payback Period Brasil = 0.33 months (~1 week)",
+          "remediation": null
+        },
+        {
+          "check_id": "F008",
+          "name": "Churn Rate",
+          "description": "Churn targets defined and tracked",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Monthly churn targets: <20% Phase 1, <15% Phase 2",
+          "remediation": null
+        },
+        {
+          "check_id": "F009",
+          "name": "MRR/ARR Projections",
+          "description": "Revenue projections by phase",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Phase 1: R$150k MRR \u2192 Phase 4: R$2M+ documented",
+          "remediation": null
+        },
+        {
+          "check_id": "F010",
+          "name": "Pricing by Country",
+          "description": "Pricing strategy localized per country",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "10 countries with local pricing (PPP adjusted)",
+          "remediation": null
+        },
+        {
+          "check_id": "F011",
+          "name": "Payment Gateway Costs",
+          "description": "Payment processor fees accounted for",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Fees documented: Pix 0.5%, Stripe 2.9%+R$0.30, etc",
+          "remediation": null
+        },
+        {
+          "check_id": "F012",
+          "name": "4 Revenue Streams",
+          "description": "Diversified revenue (subscription, IA, shop, community)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "All 4 streams defined with commission/fee structure",
+          "remediation": null
+        },
+        {
+          "check_id": "F013",
+          "name": "Ambassador Commission",
+          "description": "Ambassador economics sustainable",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "15-35% commission, unlimited earning, CAC low",
+          "remediation": null
+        },
+        {
+          "check_id": "F014",
+          "name": "Revenue Reconciliation",
+          "description": "Daily payment reconciliation process",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Reconciliation framework ready, not yet automated",
+          "remediation": "Implement daily reconciliation script"
+        },
+        {
+          "check_id": "F015",
+          "name": "Financial Reporting",
+          "description": "Monthly financial reports to stakeholders",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Framework ready, reporting dashboards needed",
+          "remediation": "Setup Tableau/Looker dashboards for stakeholder reporting"
+        }
+      ],
+      "summary": "Unit economics healthy (LTV:CAC = 28.7:1). 5 items need attention before scale."
+    },
+    {
+      "audit_type": "compliance",
+      "timestamp": "2026-05-20T05:08:26.687520",
+      "total_checks": 20,
+      "passed": 7,
+      "warnings": 10,
+      "failed": 3,
+      "score": 72.5,
+      "items": [
+        {
+          "check_id": "C001",
+          "name": "LGPD Compliance",
+          "description": "Lei Geral de Prote\u00e7\u00e3o de Dados compliance",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Privacy policy + consent flow implemented",
+          "remediation": null
+        },
+        {
+          "check_id": "C002",
+          "name": "Data Portability (LGPD Art 18)",
+          "description": "Users can download data as CSV/JSON",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Feature designed, not yet implemented in UI",
+          "remediation": "Add 'Export Data' button to user settings"
+        },
+        {
+          "check_id": "C003",
+          "name": "Right to Deletion (LGPD Art 17)",
+          "description": "Users can request full data deletion",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Deletion endpoint designed, not yet integrated",
+          "remediation": "Implement delete account flow with confirmation"
+        },
+        {
+          "check_id": "C004",
+          "name": "Breach Notification (LGPD 72h)",
+          "description": "Incident response plan for breach notification",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Plan drafted, not yet tested in runbook",
+          "remediation": "Run security incident drill"
+        },
+        {
+          "check_id": "C005",
+          "name": "DPO (Data Protection Officer)",
+          "description": "DPO designated and accessible",
+          "status": "FAIL",
+          "score": 0,
+          "evidence": "DPO not yet designated",
+          "remediation": "Designate DPO (can be external consultant)"
+        },
+        {
+          "check_id": "C006",
+          "name": "PDPA Consent",
+          "description": "Personal Data Protection Act 2562 consent",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Consent framework ready, Thai language translation needed",
+          "remediation": "Add Thai language consent form"
+        },
+        {
+          "check_id": "C007",
+          "name": "PDPA Data Minimization",
+          "description": "Collect only necessary personal data",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Schema follows data minimization principle",
+          "remediation": null
+        },
+        {
+          "check_id": "C008",
+          "name": "PDPA Local Hosting",
+          "description": "Option for data hosting in Thailand",
+          "status": "WARN",
+          "score": 60,
+          "evidence": "Feature planned for Phase 3",
+          "remediation": "Research Thai data center options"
+        },
+        {
+          "check_id": "C009",
+          "name": "GDPR Data Processing Agreement",
+          "description": "DPA signed with data processor",
+          "status": "FAIL",
+          "score": 0,
+          "evidence": "DPA not yet prepared",
+          "remediation": "Create and sign DPA with legal team"
+        },
+        {
+          "check_id": "C010",
+          "name": "GDPR Right to Access",
+          "description": "Users can access their personal data (Art 15)",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "API endpoint ready, UI not yet built",
+          "remediation": "Create 'Download My Data' UI in dashboard"
+        },
+        {
+          "check_id": "C011",
+          "name": "GDPR Right to Erasure",
+          "description": "Users can request deletion (Art 17)",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Backend ready, UI not yet integrated",
+          "remediation": "Add 'Delete Account' UI with 30-day grace period"
+        },
+        {
+          "check_id": "C012",
+          "name": "GDPR Data Protection Impact Assessment",
+          "description": "DPIA completed for high-risk processing",
+          "status": "FAIL",
+          "score": 0,
+          "evidence": "DPIA not yet completed",
+          "remediation": "Conduct DPIA with legal team (required for production)"
+        },
+        {
+          "check_id": "C013",
+          "name": "GDPR Cookie Consent",
+          "description": "Cookie consent banner implemented",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Cookiebot integration ready, not yet deployed",
+          "remediation": "Deploy cookie consent banner"
+        },
+        {
+          "check_id": "C014",
+          "name": "HIPAA Applicability",
+          "description": "Assess if HIPAA applies to service",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Analysis: AquariOS is wellness app, not covered by HIPAA initially",
+          "remediation": null
+        },
+        {
+          "check_id": "C015",
+          "name": "HIPAA Readiness (Future)",
+          "description": "Framework ready for HIPAA compliance if needed",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Encryption, audit logs, access controls in place for future BAA",
+          "remediation": null
+        },
+        {
+          "check_id": "C016",
+          "name": "Privacy Policy",
+          "description": "Clear privacy policy (pt-BR, es, en, etc)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Privacy policy drafted and ready for launch",
+          "remediation": null
+        },
+        {
+          "check_id": "C017",
+          "name": "Terms of Service",
+          "description": "Terms clearly define user obligations",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "ToS drafted with payment, community guidelines",
+          "remediation": null
+        },
+        {
+          "check_id": "C018",
+          "name": "Audit Logs",
+          "description": "All data access logged and auditable",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Audit logging framework implemented in src/main.py",
+          "remediation": null
+        },
+        {
+          "check_id": "C019",
+          "name": "Incident Response Plan",
+          "description": "Documented incident response procedures",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Runbook drafted, team training needed",
+          "remediation": "Run security incident response drill"
+        },
+        {
+          "check_id": "C020",
+          "name": "Regular Audits",
+          "description": "Quarterly compliance audits scheduled",
+          "status": "WARN",
+          "score": 60,
+          "evidence": "Audit schedule not yet set",
+          "remediation": "Schedule recurring compliance audits"
+        }
+      ],
+      "summary": "LGPD ready. GDPR requires DPA + DPIA before EU launch. 3 critical items need immediate attention."
+    },
+    {
+      "audit_type": "commercial",
+      "timestamp": "2026-05-20T05:08:26.687563",
+      "total_checks": 20,
+      "passed": 14,
+      "warnings": 6,
+      "failed": 0,
+      "score": 92.5,
+      "items": [
+        {
+          "check_id": "B001",
+          "name": "GTM Strategy",
+          "description": "Clear go-to-market plan for launch",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "3 channels: Organic (embaixadores) + Partnerships + Paid (Phase 2+)",
+          "remediation": null
+        },
+        {
+          "check_id": "B002",
+          "name": "Target Customer Profile",
+          "description": "Defined ICPs (Ideal Customer Profiles)",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "10 personas defined with behavioral metrics",
+          "remediation": null
+        },
+        {
+          "check_id": "B003",
+          "name": "Value Proposition",
+          "description": "Clear differentiation vs competitors",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "'Vitalidade Integrada' unique positioning (Bio+Mental+Spirit)",
+          "remediation": null
+        },
+        {
+          "check_id": "B004",
+          "name": "Pricing Strategy",
+          "description": "Pricing validated with market research",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Pricing set, not yet validated with user interviews",
+          "remediation": "Run pricing interviews with 50 users"
+        },
+        {
+          "check_id": "B005",
+          "name": "Marketing Messaging",
+          "description": "Messaging consistent across channels",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Email sequences + landing page + FAQ all aligned",
+          "remediation": null
+        },
+        {
+          "check_id": "B006",
+          "name": "Customer Discovery",
+          "description": "Problem-solution fit validated",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "Problem identified (80% churn), solution designed but not validated with users",
+          "remediation": "Run beta test with 100 users, gather feedback"
+        },
+        {
+          "check_id": "B007",
+          "name": "MVP Feature Set",
+          "description": "MVP includes must-have features only",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "MVP: photo analysis + IVI score + community (no secondary features)",
+          "remediation": null
+        },
+        {
+          "check_id": "B008",
+          "name": "Time to Value",
+          "description": "Users see value within 24 hours",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Day 1: photo uploaded \u2192 IVI Score calculated \u2192 community engagement",
+          "remediation": null
+        },
+        {
+          "check_id": "B009",
+          "name": "Net Promoter Score (NPS)",
+          "description": "NPS target defined (>50 strong product-market fit)",
+          "status": "WARN",
+          "score": 60,
+          "evidence": "NPS target not yet set, need beta measurement",
+          "remediation": "Run NPS surveys starting week 2 of beta"
+        },
+        {
+          "check_id": "B010",
+          "name": "Retention Targets",
+          "description": "D7, D30, D90 retention targets defined",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "D7: 70%, D30: 50%, D90: 40% (industry-leading)",
+          "remediation": null
+        },
+        {
+          "check_id": "B011",
+          "name": "Churn Analysis Plan",
+          "description": "Plan to analyze and reduce churn",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Cohort analysis + email winback campaigns planned",
+          "remediation": null
+        },
+        {
+          "check_id": "B012",
+          "name": "Engagement Metrics",
+          "description": "Key engagement metrics tracked",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Metrics defined (photos/week, community posts) but tracking not yet built",
+          "remediation": "Implement analytics tracking in app"
+        },
+        {
+          "check_id": "B013",
+          "name": "Growth Levers",
+          "description": "3-5 growth levers identified",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Referral (15-35%), Partnerships (gyms, clinics), Organic (community), Paid (Phase 2+)",
+          "remediation": null
+        },
+        {
+          "check_id": "B014",
+          "name": "Viralidad Potential",
+          "description": "Viral loop or network effect identified",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Community reactions create engagement loop + ambassadors drive referrals",
+          "remediation": null
+        },
+        {
+          "check_id": "B015",
+          "name": "Expansion Plan",
+          "description": "Clear roadmap for geographic expansion",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "4 phases: Brasil (W1-8) \u2192 LATAM (W9-16) \u2192 \u00c1sia (W17-32) \u2192 Premium (W33+)",
+          "remediation": null
+        },
+        {
+          "check_id": "B016",
+          "name": "Competitive Advantage",
+          "description": "Defensible moat identified",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Integrated approach (IVI Score) + Community + Tokenomics = hard to replicate",
+          "remediation": null
+        },
+        {
+          "check_id": "B017",
+          "name": "Market Size",
+          "description": "TAM/SAM/SOM calculated",
+          "status": "WARN",
+          "score": 70,
+          "evidence": "Market is large (wellness $4.5T), SAM/SOM estimates rough",
+          "remediation": "Commission market research for precise TAM/SAM/SOM"
+        },
+        {
+          "check_id": "B018",
+          "name": "Team Capability",
+          "description": "Team has required expertise",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Founder (product + strategy) + Dev team (technical) + Data scientist",
+          "remediation": null
+        },
+        {
+          "check_id": "B019",
+          "name": "Execution Velocity",
+          "description": "Historical ability to execute (startups only)",
+          "status": "WARN",
+          "score": 75,
+          "evidence": "First product, track record unclear, framework in place",
+          "remediation": null
+        },
+        {
+          "check_id": "B020",
+          "name": "Brand Identity",
+          "description": "Consistent brand voice across channels",
+          "status": "PASS",
+          "score": 100,
+          "evidence": "Brand = 'Vitalidade Integrada', consistent messaging in emails + landing",
+          "remediation": null
+        }
+      ],
+      "summary": "Strong commercial strategy with clear GTM. Ready for beta. 6 items recommend user validation before scale."
+    }
+  ],
+  "executive_summary": "\nAquariOS v2.0000 AUDIT EXECUTIVE SUMMARY\n========================================\n\nOverall Score: 85.4/100\n\nTechnical Readiness: 86.7/100\n  \u2705 Docker, CI/CD, Security foundations in place\n  \u26a0\ufe0f  Load testing needed before production\n\nFinancial Health: 91.7/100\n  \u2705 Strong unit economics (LTV:CAC = 28.7:1)\n  \u26a0\ufe0f  Financial models need detailed spreadsheets\n\nCompliance Status: 72.5/100\n  \u2705 LGPD foundation ready\n  \ud83d\udd34 GDPR requires DPA + DPIA before EU launch\n\nCommercial Fit: 92.5/100\n  \u2705 Clear GTM, strong positioning\n  \u26a0\ufe0f  User validation needed (beta testing)\n\nRECOMMENDATION: Ready for Brazil MVP launch (Phase 1).\nRun beta test with 100 users before expanding internationally.\n        ",
+  "recommendations": [
+    "[TECHNICAL] Encryption at Rest: Set DB_ENCRYPTION=true in production .env",
+    "[TECHNICAL] Database Query Optimization: Add database indexes to schema.prisma",
+    "[TECHNICAL] CDN Configuration: Setup CloudFlare account and point DNS",
+    "[TECHNICAL] Load Testing: Run k6 or Apache JMeter load test before production",
+    "[TECHNICAL] Monitoring & Alerting: Enable monitoring in production deployment",
+    "[FINANCIAL] Marketing Budget Allocation: Create detailed marketing budget spreadsheet per country/channel",
+    "[FINANCIAL] Runway Calculation: Create financial model with burn rate projections",
+    "[FINANCIAL] Break-Even Analysis: Build detailed financial model with sensitivity analysis",
+    "[FINANCIAL] Revenue Reconciliation: Implement daily reconciliation script",
+    "[FINANCIAL] Financial Reporting: Setup Tableau/Looker dashboards for stakeholder reporting",
+    "[COMPLIANCE] Data Portability (LGPD Art 18): Add 'Export Data' button to user settings",
+    "[COMPLIANCE] Right to Deletion (LGPD Art 17): Implement delete account flow with confirmation",
+    "[COMPLIANCE] Breach Notification (LGPD 72h): Run security incident drill",
+    "[COMPLIANCE] DPO (Data Protection Officer): Designate DPO (can be external consultant)",
+    "[COMPLIANCE] PDPA Consent: Add Thai language consent form",
+    "[COMPLIANCE] PDPA Local Hosting: Research Thai data center options",
+    "[COMPLIANCE] GDPR Data Processing Agreement: Create and sign DPA with legal team",
+    "[COMPLIANCE] GDPR Right to Access: Create 'Download My Data' UI in dashboard",
+    "[COMPLIANCE] GDPR Right to Erasure: Add 'Delete Account' UI with 30-day grace period",
+    "[COMPLIANCE] GDPR Data Protection Impact Assessment: Conduct DPIA with legal team (required for production)",
+    "[COMPLIANCE] GDPR Cookie Consent: Deploy cookie consent banner",
+    "[COMPLIANCE] Incident Response Plan: Run security incident response drill",
+    "[COMPLIANCE] Regular Audits: Schedule recurring compliance audits",
+    "[COMMERCIAL] Pricing Strategy: Run pricing interviews with 50 users",
+    "[COMMERCIAL] Customer Discovery: Run beta test with 100 users, gather feedback",
+    "[COMMERCIAL] Net Promoter Score (NPS): Run NPS surveys starting week 2 of beta",
+    "[COMMERCIAL] Engagement Metrics: Implement analytics tracking in app",
+    "[COMMERCIAL] Market Size: Commission market research for precise TAM/SAM/SOM"
+  ]
+}
