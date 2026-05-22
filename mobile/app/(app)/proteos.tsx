@@ -11,7 +11,6 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
-import Anthropic from '@anthropic-ai/sdk';
 
 interface Message {
   id: string;
@@ -40,9 +39,6 @@ export default function ProteosScreen() {
   const [conversationId, setConversationId] = useState<string>('');
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
-
-  // Initialize Anthropic client
-  const anthropicApiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY;
 
   // Load conversation history on mount
   useEffect(() => {
@@ -80,10 +76,6 @@ export default function ProteosScreen() {
 
   const sendMessage = async () => {
     if (!message.trim() || !user?.id) return;
-    if (!anthropicApiKey) {
-      Alert.alert('Erro', 'Chave da API não configurada');
-      return;
-    }
 
     setLoading(true);
     const userInput = message;
@@ -96,27 +88,46 @@ export default function ProteosScreen() {
         content: msg.content,
       }));
 
-      // Create Anthropic client
-      const client = new Anthropic({
-        apiKey: anthropicApiKey,
+      // Call Anthropic API directly via fetch
+      const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY;
+      if (!apiKey) {
+        Alert.alert('Erro', 'API Key do Anthropic não configurada');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-haiku-20241022',
+          max_tokens: 1024,
+          system: PROTEOS_SYSTEM_PROMPT,
+          messages: [
+            ...conversationHistory,
+            {
+              role: 'user',
+              content: userInput,
+            },
+          ],
+        }),
       });
 
-      // Call Claude
-      const response = await client.messages.create({
-        model: 'claude-3-5-haiku-20241022',
-        max_tokens: 1024,
-        system: PROTEOS_SYSTEM_PROMPT,
-        messages: [
-          ...conversationHistory,
-          {
-            role: 'user',
-            content: userInput,
-          },
-        ],
-      });
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('API Error:', errorData);
+        throw new Error(`API returned ${response.status}: ${errorData}`);
+      }
 
+      const data = await response.json();
       const assistantResponse =
-        response.content[0].type === 'text' ? response.content[0].text : 'Desculpe, não consegui processar sua mensagem.';
+        data.content?.[0]?.type === 'text'
+          ? data.content[0].text
+          : 'Desculpe, não consegui processar sua mensagem.';
 
       // Generate new conversation ID if needed
       const newConvId = conversationId || `conv_${Date.now()}`;
