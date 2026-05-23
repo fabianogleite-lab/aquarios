@@ -71,8 +71,26 @@ export default function HomeScreen() {
         ))}
       </View>
 
+      {/* Free tier info */}
+      <FadeInView delay={600}>
+        <View style={s.freeCard}>
+          <View style={s.freeTierRow}>
+            <View style={s.freeTier}>
+              <Text style={s.freeTierLabel}>Free Anônimo</Text>
+              <Text style={s.freeTierDesc}>ProteOS básico · Nutrição · Diário Google Agenda · 30 dias trial completo</Text>
+            </View>
+            <View style={[s.freeTier, s.freeTierActive]}>
+              <Text style={[s.freeTierLabel, { color: colors.primary }]}>Free Comunidade</Text>
+              <Text style={s.freeTierDesc}>+ Comunidades · XP Existencial · IVI Spirit · histórico 30 dias</Text>
+              <View style={s.freeBadge}><Text style={s.freeBadgeText}>ATUAL</Text></View>
+            </View>
+          </View>
+          <Text style={s.freeUpgradeHint}>Upgrade para Starter R$19,90/mês → IVI completo + wearable</Text>
+        </View>
+      </FadeInView>
+
       <View style={s.footer}>
-        <Text style={s.footerText}>Arkhe Labs · 2024-2026</Text>
+        <Text style={s.footerText}>Arkhe Labs · V1.0512 · 2026</Text>
         <Text style={s.footerSub}>Consciência como tecnologia</Text>
       </View>
     </ScrollView>
@@ -109,6 +127,40 @@ const s = StyleSheet.create({
     borderRadius: radius.sm,
   },
   badgeText: { color: colors.primary, fontSize: fontSize.xs, fontWeight: '700', letterSpacing: 0.5 },
+  freeCard: {
+    marginHorizontal: spacing.xl,
+    marginBottom: spacing.xl,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  freeTierRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
+  freeTier: {
+    flex: 1,
+    backgroundColor: colors.bg,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  freeTierActive: {
+    borderColor: colors.primaryFaded,
+    backgroundColor: colors.primarySubtle,
+  },
+  freeTierLabel: { fontSize: fontSize.sm, fontWeight: '700', color: colors.text, marginBottom: 4 },
+  freeTierDesc: { fontSize: fontSize.xs, color: colors.textMuted, lineHeight: 16 },
+  freeBadge: {
+    marginTop: spacing.xs,
+    backgroundColor: colors.primary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.sm,
+    alignSelf: 'flex-start',
+  },
+  freeBadgeText: { fontSize: 9, fontWeight: '700', color: '#fff', letterSpacing: 0.5 },
+  freeUpgradeHint: { fontSize: fontSize.xs, color: colors.textSecondary, textAlign: 'center' },
   footer: { alignItems: 'center', paddingVertical: 30, borderTopWidth: 1, borderTopColor: colors.border },
   footerText: { color: colors.textMuted, fontSize: fontSize.sm },
   footerSub: { color: colors.textDimmed, fontSize: fontSize.xs, marginTop: spacing.xs, fontStyle: 'italic' },
