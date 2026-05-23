@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -13,10 +13,19 @@ interface DbStats {
   wonder: number;
 }
 
+interface SeedResult {
+  created: number;
+  skipped: number;
+  total: number;
+  errors: string[];
+}
+
 export default function AdminScreen() {
   const { user } = useAuthStore();
   const [stats, setStats] = useState<DbStats>({ meals: 0, diary: 0, chat: 0, wonder: 0 });
   const [loading, setLoading] = useState(false);
+  const [seedLoading, setSeedLoading] = useState(false);
+  const [seedResult, setSeedResult] = useState<SeedResult | null>(null);
 
   const loadStats = async () => {
     if (!user?.id) return;
@@ -37,6 +46,31 @@ export default function AdminScreen() {
   };
 
   useFocusEffect(useCallback(() => { loadStats(); }, [user]));
+
+  const handleSeedBots = async () => {
+    Alert.alert(
+      'Seed Demo Comunidades',
+      'Criar 10 bot personas + 40 posts no feed? A operação é idempotente — bots já existentes serão ignorados.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Executar',
+          style: 'destructive',
+          onPress: async () => {
+            setSeedLoading(true);
+            setSeedResult(null);
+            const { data, error } = await supabase.functions.invoke('seed-bots');
+            setSeedLoading(false);
+            if (error) {
+              Alert.alert('Erro', error.message ?? 'Falha ao executar seed');
+              return;
+            }
+            setSeedResult(data as SeedResult);
+          },
+        },
+      ]
+    );
+  };
 
   const Row = ({ label, value }: { label: string; value: string }) => (
     <View style={s.row}>
@@ -103,6 +137,43 @@ export default function AdminScreen() {
       </FadeInView>
 
       <FadeInView delay={240}>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>Seed Demo</Text>
+          <Text style={s.seedDesc}>
+            Popula o feed com 10 personas bot + 40 posts espalhados nos últimos ~30 dias.
+            Idempotente: bots já existentes são ignorados.
+          </Text>
+
+          <TouchableOpacity
+            style={[s.seedBtn, seedLoading && s.seedBtnDisabled]}
+            onPress={handleSeedBots}
+            disabled={seedLoading}
+          >
+            {seedLoading ? (
+              <ActivityIndicator color={colors.bg} size="small" />
+            ) : (
+              <Text style={s.seedBtnText}>🤖 Seed Demo Comunidades</Text>
+            )}
+          </TouchableOpacity>
+
+          {seedResult && (
+            <View style={s.seedResultCard}>
+              <Text style={s.seedResultLine}>
+                ✅ Criados: <Text style={s.seedResultVal}>{seedResult.created}</Text>
+                {'   '}⏭ Ignorados: <Text style={s.seedResultVal}>{seedResult.skipped}</Text>
+                {'   '}Total: <Text style={s.seedResultVal}>{seedResult.total}</Text>
+              </Text>
+              {seedResult.errors.length > 0 && (
+                <Text style={s.seedErrors}>
+                  ⚠ {seedResult.errors.join(' | ')}
+                </Text>
+              )}
+            </View>
+          )}
+        </View>
+      </FadeInView>
+
+      <FadeInView delay={280}>
         <View style={s.warnCard}>
           <Text style={s.warnText}>⚠ Tela restrita ao desenvolvedor. Acesso via 5 toques em "Arkhe Labs" nas Configurações.</Text>
         </View>
@@ -132,6 +203,51 @@ const s = StyleSheet.create({
   personaRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.border },
   personaLabel: { color: colors.text, fontSize: fontSize.body, fontWeight: '600' },
   personaDesc: { color: colors.textMuted, fontSize: fontSize.sm, marginTop: 2 },
+  seedDesc: {
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
+    lineHeight: 18,
+    marginBottom: spacing.md,
+  },
+  seedBtn: {
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+  },
+  seedBtnDisabled: {
+    opacity: 0.5,
+  },
+  seedBtnText: {
+    color: colors.bg,
+    fontSize: fontSize.body,
+    fontWeight: '700',
+  },
+  seedResultCard: {
+    marginTop: spacing.md,
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  seedResultLine: {
+    color: colors.text,
+    fontSize: fontSize.body,
+    lineHeight: 22,
+  },
+  seedResultVal: {
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  seedErrors: {
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
+    marginTop: spacing.xs,
+    lineHeight: 16,
+  },
   warnCard: {
     marginHorizontal: spacing.xl,
     marginTop: spacing.xl,
