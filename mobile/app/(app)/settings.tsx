@@ -5,11 +5,13 @@ import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
+// Planos V1.0512 com valores reais
 const PLANS = [
-  { key: 'free', label: 'Free', color: colors.textSecondary },
-  { key: 'starter', label: 'Starter Bronze', color: '#cd7f32' },
-  { key: 'premium', label: 'Premium Silver', color: '#c0c0c0' },
-  { key: 'professional', label: 'Professional Gold', color: colors.primary },
+  { key: 'free_anonimo',    label: 'Free Anônimo',    price: 'R$ 0',          color: colors.textSecondary, desc: 'ProteOS básico · Nutrição · Diário via Google Agenda' },
+  { key: 'free_comunidade', label: 'Free Comunidade', price: 'R$ 0',          color: '#7f8c8d',            desc: 'Free + Comunidades · XP Existencial · IVI Spirit' },
+  { key: 'starter',         label: 'Starter',         price: 'R$ 19,90/mês',  color: '#27ae60',            desc: 'ProteOS completo · Diário nativo · IVI completo · 1 wearable' },
+  { key: 'premium',         label: 'Premium',         price: 'R$ 79,90/mês',  color: '#2980b9',            desc: 'Módulos à escolha · Comunidades plenas · IA contextual' },
+  { key: 'professional',    label: 'Professional',    price: 'R$ 149,90/mês', color: colors.primary,       desc: 'Integração total · EteriOS completo · automação preditiva' },
 ];
 
 export default function SettingsScreen() {
@@ -21,7 +23,7 @@ export default function SettingsScreen() {
 
   const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Usuário';
   const email = user?.email || '';
-  const currentPlan = PLANS[0];
+  const currentPlan = PLANS[0]; // Free Anônimo por padrão
 
   const handleExportData = async () => {
     if (!user?.id) return;
@@ -142,15 +144,20 @@ export default function SettingsScreen() {
 
       <FadeInView delay={50}>
         <View style={s.upgradeCard}>
-          <Text style={s.upgradeTitle}>Planos em breve</Text>
-          <View style={s.planRow}>
-            {PLANS.slice(1).map((plan) => (
-              <View key={plan.key} style={s.planChip}>
-                <Text style={[s.planChipText, { color: plan.color }]}>{plan.label.split(' ')[1]}</Text>
+          <Text style={s.upgradeTitle}>Evolua seu plano</Text>
+          {PLANS.slice(1).map((plan) => (
+            <View key={plan.key} style={s.planOption}>
+              <View style={s.planOptionLeft}>
+                <View style={[s.planDot, { backgroundColor: plan.color }]} />
+                <View>
+                  <Text style={[s.planOptionName, { color: plan.color }]}>{plan.label}</Text>
+                  <Text style={s.planOptionDesc}>{plan.desc}</Text>
+                </View>
               </View>
-            ))}
-          </View>
-          <Text style={s.upgradeDesc}>Acesso a Data Lake, analytics avançado e mais recursos</Text>
+              <Text style={[s.planOptionPrice, { color: plan.color }]}>{plan.price}</Text>
+            </View>
+          ))}
+          <Text style={s.upgradeFooter}>Planos anuais com desconto de 20–30%</Text>
         </View>
       </FadeInView>
 
@@ -193,11 +200,11 @@ export default function SettingsScreen() {
           <Text style={s.sectionTitle}>Sobre</Text>
           <View style={s.row}>
             <Text style={s.label}>Versão</Text>
-            <Text style={s.value}>4.3.0</Text>
+            <Text style={s.value}>4.4.0</Text>
           </View>
           <View style={s.row}>
             <Text style={s.label}>Build</Text>
-            <Text style={s.value}>SDK 56 · Production</Text>
+            <Text style={s.value}>SDK 56 · V1.0512</Text>
           </View>
           <View style={s.row}>
             <Text style={s.label}>Desenvolvedor</Text>
@@ -248,16 +255,21 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
   },
-  upgradeTitle: { color: colors.textSecondary, fontSize: fontSize.sm, textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.sm },
-  planRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm },
-  planChip: {
-    backgroundColor: colors.primarySubtle,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: radius.sm,
+  upgradeTitle: { color: colors.textSecondary, fontSize: fontSize.sm, textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.md },
+  planOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
-  planChipText: { fontSize: fontSize.xs, fontWeight: '600' },
-  upgradeDesc: { color: colors.textMuted, fontSize: fontSize.sm },
+  planOptionLeft: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, flex: 1 },
+  planDot: { width: 8, height: 8, borderRadius: 4, marginTop: 5 },
+  planOptionName: { fontSize: fontSize.md, fontWeight: '700' },
+  planOptionDesc: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 1, maxWidth: 200 },
+  planOptionPrice: { fontSize: fontSize.sm, fontWeight: '600', marginTop: 2 },
+  upgradeFooter: { color: colors.textMuted, fontSize: fontSize.xs, marginTop: spacing.md, textAlign: 'center' },
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

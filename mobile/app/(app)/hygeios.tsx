@@ -29,12 +29,39 @@ function calcIVI(data: IVIData): IVIScores {
   return { bio, mental, spirit, overall };
 }
 
-function getIVILevel(score: number): { label: string; color: string } {
-  if (score >= 80) return { label: 'Excelente', color: '#2ecc71' };
-  if (score >= 60) return { label: 'Bom', color: colors.primary };
-  if (score >= 40) return { label: 'Regular', color: '#f39c12' };
-  if (score >= 20) return { label: 'Atenção', color: '#e67e22' };
-  return { label: 'Crítico', color: colors.error };
+// Faixas V1.0512: 0-20 CRÍTICO · 21-40 ALERTA · 41-60 ATENÇÃO · 61-80 BOM · 81-100 EXCELENTE
+function getIVILevel(score: number): { label: string; status: string; color: string; action: string } {
+  if (score >= 81) return { label: 'Excelente', status: 'EXCELENTE', color: '#2ecc71', action: 'Comunidades Excellence + badges desbloqueados' };
+  if (score >= 61) return { label: 'Bom', status: 'BOM', color: colors.primary, action: 'Reforço positivo — mantenha o ritmo' };
+  if (score >= 41) return { label: 'Atenção', status: 'ATENÇÃO', color: '#f39c12', action: 'Monitoramento silencioso ativo' };
+  if (score >= 21) return { label: 'Alerta', status: 'ALERTA', color: '#e67e22', action: 'ProteOS: ajuste comportamental recomendado' };
+  return { label: 'Crítico', status: 'CRÍTICO', color: colors.error, action: 'Intervenção — consulte um profissional' };
+}
+
+// Níveis Evolutivos V1.0512: Semente → Raiz → Tronco → Galho → Flor → Fruto → Semente Mestre
+function getEvolutionLevel(streak: number): { name: string; icon: string; next: number } {
+  if (streak >= 90) return { name: 'Semente Mestre', icon: '🌟', next: 0 };
+  if (streak >= 60) return { name: 'Fruto', icon: '🍎', next: 90 };
+  if (streak >= 30) return { name: 'Flor', icon: '🌸', next: 60 };
+  if (streak >= 14) return { name: 'Galho', icon: '🌿', next: 30 };
+  if (streak >= 7)  return { name: 'Tronco', icon: '🪵', next: 14 };
+  if (streak >= 3)  return { name: 'Raiz', icon: '🌱', next: 7 };
+  return { name: 'Semente', icon: '🌰', next: 3 };
+}
+
+function calcStreak(dates: string[]): number {
+  if (!dates.length) return 0;
+  const unique = [...new Set(dates.map(d => new Date(d).toDateString()))].sort().reverse();
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (unique[0] !== today && unique[0] !== yesterday) return 0;
+  let streak = 0;
+  for (let i = 0; i < unique.length; i++) {
+    const expected = new Date(Date.now() - i * 86400000).toDateString();
+    if (unique[i] === expected) streak++;
+    else break;
+  }
+  return streak;
 }
 
 function RingScore({ score, label, icon, delay }: { score: number; label: string; icon: string; delay: number }) {
@@ -74,6 +101,7 @@ function RingScore({ score, label, icon, delay }: { score: number; label: string
 
 export default function HygeiOSScreen() {
   const [scores, setScores] = useState<IVIScores>({ bio: 0, mental: 0, spirit: 0, overall: 0 });
+  const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
   const { user } = useAuthStore();
 
@@ -86,13 +114,16 @@ export default function HygeiOSScreen() {
     todayStart.setHours(0, 0, 0, 0);
     const weekAgo = new Date(now.getTime() - 7 * 86400000);
     const monthAgo = new Date(now.getTime() - 30 * 86400000);
+    const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
 
-    const [mealsToday, mealsWeek, diaryWeek, diaryMonth, wonderMonth] = await Promise.all([
+    const [mealsToday, mealsWeek, diaryWeek, diaryMonth, wonderMonth, diaryDates, mealDates] = await Promise.all([
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', todayStart.toISOString()),
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
       supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
       supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
       supabase.from('wonder_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
+      supabase.from('diary_entries').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
+      supabase.from('meals').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
     ]);
 
     const data: IVIData = {
@@ -103,6 +134,11 @@ export default function HygeiOSScreen() {
       wonderMonth: wonderMonth.count ?? 0,
     };
 
+    const allDates = [
+      ...((diaryDates.data || []).map((r: any) => r.created_at)),
+      ...((mealDates.data || []).map((r: any) => r.created_at)),
+    ];
+    setStreak(calcStreak(allDates));
     setScores(calcIVI(data));
     setLoading(false);
   };
@@ -110,6 +146,7 @@ export default function HygeiOSScreen() {
   useFocusEffect(useCallback(() => { loadIVI(); }, [user]));
 
   const overallLevel = getIVILevel(scores.overall);
+  const evolution = getEvolutionLevel(streak);
 
   return (
     <ScrollView style={s.container}>
@@ -121,47 +158,103 @@ export default function HygeiOSScreen() {
         </View>
       </FadeInView>
 
+      {/* IVI Geral */}
       <FadeInView delay={100}>
         <View style={s.overallCard}>
           <Text style={s.overallLabel}>IVI Geral</Text>
           <Text style={[s.overallScore, { color: overallLevel.color }]}>{loading ? '—' : scores.overall}</Text>
-          <Text style={[s.overallLevel, { color: overallLevel.color }]}>{loading ? 'Calculando...' : overallLevel.label}</Text>
+          <View style={s.statusRow}>
+            <View style={[s.statusBadge, { backgroundColor: overallLevel.color + '22', borderColor: overallLevel.color + '55' }]}>
+              <Text style={[s.statusText, { color: overallLevel.color }]}>{loading ? '···' : overallLevel.status}</Text>
+            </View>
+          </View>
           <View style={s.overallBar}>
             <View style={[s.overallFill, { width: `${scores.overall}%`, backgroundColor: overallLevel.color }]} />
           </View>
         </View>
       </FadeInView>
 
+      {/* Card AsclepiOS — ação por faixa */}
+      <FadeInView delay={150}>
+        <View style={[s.actionCard, { borderColor: overallLevel.color + '55' }]}>
+          <Text style={s.actionHeader}>◆ AsclepiOS</Text>
+          <Text style={[s.actionText, { color: overallLevel.color }]}>{loading ? 'Calculando ação...' : overallLevel.action}</Text>
+        </View>
+      </FadeInView>
+
+      {/* Rings Bio / Mental / Spirit */}
       <View style={s.rings}>
         <RingScore score={scores.bio} label="Bio" icon="🫀" delay={200} />
         <RingScore score={scores.mental} label="Mental" icon="🧠" delay={300} />
         <RingScore score={scores.spirit} label="Spirit" icon="✦" delay={400} />
       </View>
 
-      <FadeInView delay={500}>
-        <View style={s.infoCard}>
-          <Text style={s.infoTitle}>Como o IVI é calculado</Text>
-          <View style={s.infoRow}>
-            <Text style={s.infoBullet}>🫀</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Bio</Text> — Refeições registradas na semana e hoje (meta: 3/dia)</Text>
+      {/* Streak + Nível Evolutivo */}
+      <FadeInView delay={450}>
+        <View style={s.evolutionCard}>
+          <View style={s.evolutionLeft}>
+            <Text style={s.evolutionIcon}>{evolution.icon}</Text>
+            <View>
+              <Text style={s.evolutionName}>{evolution.name}</Text>
+              <Text style={s.evolutionSub}>Nível Evolutivo</Text>
+            </View>
           </View>
-          <View style={s.infoRow}>
-            <Text style={s.infoBullet}>🧠</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Mental</Text> — Entradas no Diário do Ser na semana e no mês</Text>
-          </View>
-          <View style={s.infoRow}>
-            <Text style={s.infoBullet}>✦</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Spirit</Text> — Participação em Wonder Night e prática reflexiva</Text>
+          <View style={s.evolutionRight}>
+            <Text style={[s.streakNum, streak >= 7 ? { color: '#f39c12' } : {}]}>{streak}</Text>
+            <Text style={s.streakLabel}>dias seguidos</Text>
+            {evolution.next > 0 && (
+              <Text style={s.streakNext}>{evolution.next - streak}d para {getEvolutionLevel(evolution.next).name}</Text>
+            )}
           </View>
         </View>
       </FadeInView>
 
-      <FadeInView delay={600}>
+      {/* Streaks badges */}
+      <FadeInView delay={500}>
+        <View style={s.streakRow}>
+          {[
+            { days: 7, label: '7 dias', icon: '🔥' },
+            { days: 30, label: '30 dias', icon: '⚡' },
+            { days: 90, label: '90 dias', icon: '👑' },
+          ].map((s2) => (
+            <View key={s2.days} style={[s.streakBadge, streak >= s2.days && s.streakBadgeActive]}>
+              <Text style={s.streakBadgeIcon}>{s2.icon}</Text>
+              <Text style={[s.streakBadgeLabel, streak >= s2.days && s.streakBadgeLabelActive]}>{s2.label}</Text>
+            </View>
+          ))}
+        </View>
+      </FadeInView>
+
+      {/* Como é calculado */}
+      <FadeInView delay={550}>
+        <View style={s.infoCard}>
+          <Text style={s.infoTitle}>Como o IVI é calculado</Text>
+          <View style={s.infoRow}>
+            <Text style={s.infoBullet}>🫀</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Bio (40%)</Text> — Refeições registradas na semana e hoje</Text>
+          </View>
+          <View style={s.infoRow}>
+            <Text style={s.infoBullet}>🧠</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Mental (35%)</Text> — Entradas no Diário do Ser</Text>
+          </View>
+          <View style={s.infoRow}>
+            <Text style={s.infoBullet}>✦</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Spirit (25%)</Text> — Wonder Night e prática reflexiva</Text>
+          </View>
+          <View style={[s.infoRow, { marginTop: spacing.sm, paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: colors.border }]}>
+            <Text style={s.infoBullet}>📊</Text>
+            <Text style={s.infoText}>Streak calculado de Diário + Nutrição nos últimos 90 dias</Text>
+          </View>
+        </View>
+      </FadeInView>
+
+      {/* Em breve */}
+      <FadeInView delay={620}>
         <View style={s.futureCard}>
           <Text style={s.futureTitle}>Em breve no HygeiOS</Text>
-          <Text style={s.futureItem}>◆ Integração com AsclepiOS (exames médicos)</Text>
-          <Text style={s.futureItem}>◆ Métricas biométricas via EteriOS (wearables)</Text>
-          <Text style={s.futureItem}>◆ Analytics avançado com Data Lake</Text>
+          <Text style={s.futureItem}>◆ Integração AsclepiOS (exames médicos)</Text>
+          <Text style={s.futureItem}>◆ Métricas biométricas EteriOS (wearables)</Text>
+          <Text style={s.futureItem}>◆ Pipeline ETL automático a cada 6h</Text>
           <Text style={s.futureItem}>◆ Histórico longitudinal do IVI</Text>
         </View>
       </FadeInView>
@@ -188,6 +281,7 @@ const s = StyleSheet.create({
   icon: { fontSize: 56, marginBottom: spacing.sm },
   title: { fontSize: fontSize.hero, fontWeight: '700', color: colors.primary, letterSpacing: 1 },
   subtitle: { fontSize: fontSize.body, color: colors.textSecondary, marginTop: spacing.xs },
+
   overallCard: {
     marginHorizontal: spacing.xl,
     backgroundColor: colors.card,
@@ -199,20 +293,75 @@ const s = StyleSheet.create({
   },
   overallLabel: { fontSize: fontSize.md, color: colors.textSecondary, textTransform: 'uppercase', letterSpacing: 2 },
   overallScore: { fontSize: 56, fontWeight: '700', marginVertical: spacing.xs },
-  overallLevel: { fontSize: fontSize.xl, fontWeight: '600', marginBottom: spacing.md },
-  overallBar: {
-    width: '100%',
-    height: 6,
-    backgroundColor: colors.border,
-    borderRadius: 3,
-    overflow: 'hidden',
+  statusRow: { marginBottom: spacing.md },
+  statusBadge: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: 3,
+    borderRadius: radius.sm,
+    borderWidth: 1,
   },
+  statusText: { fontSize: fontSize.sm, fontWeight: '700', letterSpacing: 1.5 },
+  overallBar: { width: '100%', height: 6, backgroundColor: colors.border, borderRadius: 3, overflow: 'hidden' },
   overallFill: { height: '100%', borderRadius: 3 },
-  rings: {
+
+  actionCard: {
+    marginHorizontal: spacing.xl,
+    marginTop: spacing.md,
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  actionHeader: { color: colors.textMuted, fontSize: fontSize.xs, fontWeight: '700', letterSpacing: 1 },
+  actionText: { fontSize: fontSize.body, fontWeight: '500', flex: 1 },
+
+  rings: { flexDirection: 'row', justifyContent: 'space-evenly', paddingVertical: spacing.xxl },
+
+  evolutionCard: {
+    marginHorizontal: spacing.xl,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  evolutionLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  evolutionIcon: { fontSize: 36 },
+  evolutionName: { fontSize: fontSize.xl, fontWeight: '700', color: colors.text },
+  evolutionSub: { fontSize: fontSize.sm, color: colors.textSecondary, marginTop: 2 },
+  evolutionRight: { alignItems: 'flex-end' },
+  streakNum: { fontSize: 32, fontWeight: '700', color: colors.text },
+  streakLabel: { fontSize: fontSize.sm, color: colors.textSecondary },
+  streakNext: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
+
+  streakRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    paddingVertical: spacing.xxl,
+    marginHorizontal: spacing.xl,
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
   },
+  streakBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    minWidth: 80,
+    opacity: 0.5,
+  },
+  streakBadgeActive: { opacity: 1, borderColor: '#f39c12' },
+  streakBadgeIcon: { fontSize: 22 },
+  streakBadgeLabel: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 4 },
+  streakBadgeLabelActive: { color: '#f39c12', fontWeight: '600' },
+
   infoCard: {
     marginHorizontal: spacing.xl,
     backgroundColor: colors.card,
@@ -227,6 +376,7 @@ const s = StyleSheet.create({
   infoBullet: { fontSize: 18, marginRight: spacing.sm },
   infoText: { flex: 1, fontSize: fontSize.body, color: colors.textSecondary, lineHeight: 20 },
   infoBold: { color: colors.text, fontWeight: '600' },
+
   futureCard: {
     marginHorizontal: spacing.xl,
     backgroundColor: colors.primarySubtle,
