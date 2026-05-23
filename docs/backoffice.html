@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquariOS BackOffice V1.0512</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0044CC;
+            --accent: #00D9FF;
+            --bg: #0a0e1a;
+            --surface: #141a2e;
+            --surface2: #1c2440;
+            --text: #e8eaf6;
+            --text-muted: #8892b0;
+            --success: #00e676;
+            --warning: #ffab00;
+            --danger: #ff5252;
+            --border: #2a3355;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .header-logo { font-size: 1.8rem; }
+        .header-title { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .header-version { font-size: 0.75rem; color: var(--text-muted); background: var(--surface); padding: 2px 8px; border-radius: 4px; }
+        .header-right { display: flex; align-items: center; gap: 1rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .status-text { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Auth Screen */
+        .auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .auth-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .auth-box h2 { color: var(--accent); margin-bottom: 0.5rem; }
+        .auth-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        .auth-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .auth-input:focus { border-color: var(--accent); }
+        .auth-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .auth-btn:hover { opacity: 0.9; }
+        .auth-error { color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+
+        /* Dashboard */
+        .dashboard { display: none; }
+        .main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+        .card-title { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-icon { font-size: 1.5rem; }
+        .card-value { font-size: 2.2rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+        .card-sub { font-size: 0.85rem; color: var(--text-muted); }
+        .card-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
+        .trend-up { background: rgba(0, 230, 118, 0.1); color: var(--success); }
+        .trend-neutral { background: rgba(255, 171, 0, 0.1); color: var(--warning); }
+
+        /* Table */
+        .table-card { grid-column: 1 / -1; }
+        .table-card .card-header { margin-bottom: 1.5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 0.8rem 1rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(42, 51, 85, 0.5); font-size: 0.9rem; }
+        .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .badge-active { background: rgba(0, 230, 118, 0.15); color: var(--success); }
+        .badge-bot { background: rgba(0, 217, 255, 0.15); color: var(--accent); }
+        .badge-premium { background: rgba(255, 171, 0, 0.15); color: var(--warning); }
+
+        /* Personas Section */
+        .personas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .persona-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .persona-avatar { font-size: 2rem; }
+        .persona-name { font-weight: 600; font-size: 0.95rem; }
+        .persona-type { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Admin Console (Konami) */
+        .admin-console {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        .admin-console.active { display: block; }
+        .console-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+        .console-title { color: var(--danger); font-size: 1.4rem; font-weight: 700; font-family: 'Courier New', monospace; }
+        .console-close { background: var(--danger); border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .console-section { background: #111; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; }
+        .console-section h3 { color: var(--success); margin-bottom: 1rem; }
+        .console-line { color: #aaa; margin-bottom: 0.3rem; }
+        .console-line span { color: var(--accent); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header { padding: 1rem; flex-direction: column; gap: 0.5rem; }
+            .main { padding: 1rem; }
+            .grid { grid-template-columns: 1fr; }
+            .card-value { font-size: 1.8rem; }
+        }
+
+        /* Loading */
+        .loading { text-align: center; padding: 3rem; color: var(--text-muted); }
+        .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Footer */
+        .footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+<!-- Auth Screen -->
+<div class="auth-screen" id="authScreen">
+    <div class="auth-box">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">&#x2652;</div>
+        <h2>AquariOS BackOffice</h2>
+        <p>Acesso restrito. Insira o email de administrador.</p>
+        <input type="email" class="auth-input" id="authEmail" placeholder="Email admin" autocomplete="email">
+        <input type="password" class="auth-input" id="authPassword" placeholder="Senha" autocomplete="current-password">
+        <button class="auth-btn" onclick="handleLogin()">Entrar</button>
+        <p class="auth-error" id="authError">Credenciais invalidas ou sem permissao admin.</p>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+    <div class="header">
+        <div class="header-left">
+            <span class="header-logo">&#x2652;</span>
+            <span class="header-title">AquariOS BackOffice</span>
+            <span class="header-version">V1.0512</span>
+        </div>
+        <div class="header-right">
+            <span class="status-dot"></span>
+            <span class="status-text">Supabase conectado</span>
+            <button onclick="handleLogout()" style="background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Sair</button>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="loading" id="loadingState">
+            <div class="spinner"></div>
+            <p>Carregando dados...</p>
+        </div>
+
+        <div id="dashContent" style="display:none;">
+            <!-- Stats Cards -->
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Usuarios</span>
+                        <span class="card-icon">&#x1F465;</span>
+                    </div>
+                    <div class="card-value" id="statUsers">-</div>
+                    <div class="card-sub">Perfis registrados</div>
+                    <div class="card-trend trend-up" id="trendUsers"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">IVI Medio</span>
+                        <span class="card-icon">&#x1F4CA;</span>
+                    </div>
+                    <div class="card-value" id="statIVI">-</div>
+                    <div class="card-sub">Indice de Vitalidade Integral</div>
+                    <div class="card-trend trend-neutral">Formula: Bio*0.40 + Mental*0.35 + Spirit*0.25</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Posts Comunidade</span>
+                        <span class="card-icon">&#x1F4DD;</span>
+                    </div>
+                    <div class="card-value" id="statPosts">-</div>
+                    <div class="card-sub">Shares publicados</div>
+                    <div class="card-trend trend-up" id="trendPosts"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Modulos Ativos</span>
+                        <span class="card-icon">&#x1F9E9;</span>
+                    </div>
+                    <div class="card-value">6</div>
+                    <div class="card-sub">ProteOS, HygeiOS, NutriOS, WonderNight, Comunidades, Diario</div>
+                    <div class="card-trend trend-neutral">+ 4 em desenvolvimento</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Reflexoes (Diario)</span>
+                        <span class="card-icon">&#x1F4D6;</span>
+                    </div>
+                    <div class="card-value" id="statDiary">-</div>
+                    <div class="card-sub">Entradas no diario</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">LGPD</span>
+                        <span class="card-icon">&#x1F512;</span>
+                    </div>
+                    <div class="card-value" style="font-size:1.4rem; color: var(--success);">Conforme</div>
+                    <div class="card-sub">Politica publicada via GitHub Pages</div>
+                    <div class="card-trend trend-up">Lei 13.709/2018</div>
+                </div>
+            </div>
+
+            <!-- Personas -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <span class="card-title">Personas ProteOS</span>
+                    <span class="card-icon">&#x1F916;</span>
+                </div>
+                <div class="personas-grid">
+                    <div class="persona-card">
+                        <span class="persona-avatar">&#x1F4AC;</span>
+                        <div><div class="persona-name">ProteOS (Default)</div><div class="persona-type">Assistente IA equilibrado</div></div>
+                    </div>
+                    <div class="persona-card">
+                        <span class="persona-avatar">&#x26A1;</span>
+                        <div><div class="persona-name">Ze do Aperto</div><div class="persona-type">Pragmatico Direto</div></div>
+                    </div>
+                    <div class="persona-card">
+                        <span class="persona-avatar">&#x1F917;</span>
+                        <div><div class="persona-name">Dona Maria</div><div class="persona-type">Suporte Clinico</div></div>
+                    </div>
+                    <div class="persona-card">
+                        <span class="persona-avatar">&#x2695;</span>
+                        <div><div class="persona-name">Carlos</div><div class="persona-type">Clinico Urgente</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Users Table -->
+            <div class="card table-card">
+                <div class="card-header">
+                    <span class="card-title">Usuarios Recentes</span>
+                    <span class="card-icon">&#x1F4CB;</span>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Display Name</th>
+                                <th>Tipo</th>
+                                <th>Criado em</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        AquariOS BackOffice V1.0512 &mdash; Arkhe Labs &mdash; Konami Code para AdminConsole
+    </div>
+</div>
+
+<!-- Admin Console (Konami Code) -->
+<div class="admin-console" id="adminConsole">
+    <div class="console-header">
+        <span class="console-title">[ADMIN CONSOLE] CerberOS Level 3</span>
+        <button class="console-close" onclick="closeConsole()">FECHAR [ESC]</button>
+    </div>
+    <div class="console-section">
+        <h3>> SISTEMA</h3>
+        <div class="console-line">Projeto: <span>agebsmjsjrmazbozphnh</span></div>
+        <div class="console-line">Region: <span>South America (sa-east-1)</span></div>
+        <div class="console-line">SDK: <span>Expo 56 + React Native 0.85.3</span></div>
+        <div class="console-line">Build: <span>APK local (assembleRelease)</span></div>
+        <div class="console-line">Distribution: <span>GitHub Releases (v4.5.0)</span></div>
+    </div>
+    <div class="console-section">
+        <h3>> EDGE FUNCTIONS</h3>
+        <div class="console-line">chat/index.ts: <span>ACTIVE</span> (4 personas)</div>
+        <div class="console-line">seed-bots/index.ts: <span>PENDING</span> (S11)</div>
+    </div>
+    <div class="console-section">
+        <h3>> MODULOS</h3>
+        <div class="console-line">[ATIVO] ProteOS - IA Assistente Pessoal</div>
+        <div class="console-line">[ATIVO] HygeiOS - IVI Score + Niveis Evolutivos</div>
+        <div class="console-line">[ATIVO] NutriOS - Registro Alimentar</div>
+        <div class="console-line">[ATIVO] Wonder Night - Diario Noturno</div>
+        <div class="console-line">[ATIVO] Comunidades - Timeline Social</div>
+        <div class="console-line">[ATIVO] Diario - Reflexoes</div>
+        <div class="console-line">[BREVE] AeropagOS - Gamificacao 4 lotes</div>
+        <div class="console-line">[BREVE] PanaceIA - Loja Dropship</div>
+        <div class="console-line">[BREVE] Token Economy - Comprado/Doado/Diario</div>
+        <div class="console-line">[BREVE] CerberOS - Defesa 7 Camadas</div>
+    </div>
+    <div class="console-section">
+        <h3>> SEGURANCA (CerberOS)</h3>
+        <div class="console-line">Camada 1: <span>Auth Supabase (RLS)</span></div>
+        <div class="console-line">Camada 2: <span>Edge Function validation</span></div>
+        <div class="console-line">Camada 3: <span>Konami Code (BackOffice)</span></div>
+        <div class="console-line">Camada 4: <span>5-tap admin (mobile)</span></div>
+        <div class="console-line">ETERNAL MAZE: <span>Standby</span></div>
+    </div>
+    <div class="console-section">
+        <h3>> DATABASE STATS</h3>
+        <div class="console-line" id="consoleStats">Carregando...</div>
+    </div>
+</div>
+
+<script>
+// Supabase config
+const SUPABASE_URL = 'https://agebsmjsjrmazbozphnh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ZGPfiFo6dBXgnyi4Xq_UYw_7o8R4Kob';
+
+let supabaseToken = null;
+
+// Simple Supabase REST helper
+async function sbQuery(table, params = '') {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {
+        headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${supabaseToken || SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'count=exact'
+        }
+    });
+    const count = res.headers.get('content-range');
+    const data = await res.json();
+    return { data, count: count ? parseInt(count.split('/')[1]) : data.length };
+}
+
+// Auth
+async function handleLogin() {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const errorEl = document.getElementById('authError');
+    errorEl.style.display = 'none';
+
+    try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.access_token) {
+            supabaseToken = data.access_token;
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadDashboard();
+        } else {
+            errorEl.style.display = 'block';
+        }
+    } catch (e) {
+        errorEl.style.display = 'block';
+    }
+}
+
+function handleLogout() {
+    supabaseToken = null;
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+}
+
+// Load dashboard data
+async function loadDashboard() {
+    try {
+        const [profiles, shares, diary] = await Promise.all([
+            sbQuery('profiles', '?select=id,username,display_name,created_at&order=created_at.desc&limit=20'),
+            sbQuery('shares', '?select=id&limit=1'),
+            sbQuery('diary', '?select=id&limit=1')
+        ]);
+
+        // Stats
+        document.getElementById('statUsers').textContent = profiles.count || profiles.data.length;
+        document.getElementById('statPosts').textContent = shares.count || 0;
+        document.getElementById('statDiary').textContent = diary.count || 0;
+        document.getElementById('statIVI').textContent = '--';
+
+        // Trends
+        document.getElementById('trendUsers').textContent = profiles.count + ' registrados';
+        document.getElementById('trendPosts').textContent = (shares.count || 0) + ' compartilhamentos';
+
+        // Users table
+        const tbody = document.getElementById('usersTable');
+        if (profiles.data && profiles.data.length > 0) {
+            tbody.innerHTML = profiles.data.slice(0, 10).map(p => {
+                const isBot = p.username && (p.username.includes('.') && !p.username.includes('@'));
+                const date = p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR') : '-';
+                return `<tr>
+                    <td>${p.username || '-'}</td>
+                    <td>${p.display_name || '-'}</td>
+                    <td><span class="badge ${isBot ? 'badge-bot' : 'badge-active'}">${isBot ? 'Bot' : 'User'}</span></td>
+                    <td>${date}</td>
+                </tr>`;
+            }).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhum usuario encontrado</td></tr>';
+        }
+
+        // Console stats
+        document.getElementById('consoleStats').innerHTML = `
+            <div class="console-line">profiles: <span>${profiles.count || profiles.data.length} registros</span></div>
+            <div class="console-line">shares: <span>${shares.count || 0} registros</span></div>
+            <div class="console-line">diary: <span>${diary.count || 0} registros</span></div>
+        `;
+
+        // Show content
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('dashContent').style.display = 'block';
+    } catch (e) {
+        document.getElementById('loadingState').innerHTML = '<p style="color: var(--danger);">Erro ao carregar dados: ' + e.message + '</p>';
+    }
+}
+
+// Konami Code: Up Up Down Down Left Right Left Right B A
+const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
+let konamiIndex = 0;
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === konamiCode[konamiIndex]) {
+        konamiIndex++;
+        if (konamiIndex === konamiCode.length) {
+            document.getElementById('adminConsole').classList.add('active');
+            konamiIndex = 0;
+        }
+    } else {
+        konamiIndex = 0;
+    }
+
+    // ESC to close console
+    if (e.key === 'Escape') {
+        closeConsole();
+    }
+});
+
+function closeConsole() {
+    document.getElementById('adminConsole').classList.remove('active');
+}
+
+// Enter key on auth
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('authPassword').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+    document.getElementById('authEmail').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('authPassword').focus();
+    });
+});
+</script>
+</body>
+</html>
