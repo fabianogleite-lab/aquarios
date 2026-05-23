@@ -17,14 +17,15 @@ interface IVIData {
   mealsToday: number;
   mealsWeek: number;
   diaryWeek: number;
-  diaryMonth: number;
+  diaryUniqueDays: number; // FIX-4: unique days with diary activity, caps at 1/day
   wonderMonth: number;
 }
 
 function calcIVI(data: IVIData): IVIScores {
   const bio = Math.min(100, Math.round((data.mealsWeek / 21) * 70 + (data.mealsToday / 3) * 30));
-  const mental = Math.min(100, Math.round((data.diaryWeek / 5) * 60 + (data.diaryMonth / 15) * 40));
-  const spirit = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryMonth / 10) * 50));
+  const mental = Math.min(100, Math.round((data.diaryWeek / 5) * 60 + (data.diaryUniqueDays / 15) * 40));
+  // FIX-4: spirit uses unique diary days — max +5 spirit pts/day, prevents gaming
+  const spirit = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryUniqueDays / 10) * 50));
   const overall = Math.round(bio * 0.4 + mental * 0.35 + spirit * 0.25);
   return { bio, mental, spirit, overall };
 }
@@ -102,6 +103,7 @@ function RingScore({ score, label, icon, delay }: { score: number; label: string
 export default function HygeiOSScreen() {
   const [scores, setScores] = useState<IVIScores>({ bio: 0, mental: 0, spirit: 0, overall: 0 });
   const [streak, setStreak] = useState(0);
+  const [hasEnoughData, setHasEnoughData] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuthStore();
 
@@ -116,30 +118,38 @@ export default function HygeiOSScreen() {
     const monthAgo = new Date(now.getTime() - 30 * 86400000);
     const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
 
-    const [mealsToday, mealsWeek, diaryWeek, diaryMonth, wonderMonth, diaryDates, mealDates] = await Promise.all([
+    const [mealsToday, mealsWeek, diaryWeek, wonderMonth, diaryDates, mealDates] = await Promise.all([
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', todayStart.toISOString()),
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
       supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
-      supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
       supabase.from('wonder_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
       supabase.from('diary_entries').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
       supabase.from('meals').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
     ]);
 
-    const data: IVIData = {
-      mealsToday: mealsToday.count ?? 0,
-      mealsWeek: mealsWeek.count ?? 0,
-      diaryWeek: diaryWeek.count ?? 0,
-      diaryMonth: diaryMonth.count ?? 0,
-      wonderMonth: wonderMonth.count ?? 0,
-    };
+    // FIX-4: unique diary days in last 30d (one entry max per day)
+    const diaryUniqueDays = new Set(
+      (diaryDates.data || [])
+        .filter((r: any) => new Date(r.created_at) >= monthAgo)
+        .map((r: any) => new Date(r.created_at).toDateString())
+    ).size;
 
     const allDates = [
       ...((diaryDates.data || []).map((r: any) => r.created_at)),
       ...((mealDates.data || []).map((r: any) => r.created_at)),
     ];
+
+    // FIX-1: IVI only meaningful after 7 unique active days
+    const uniqueActiveDays = new Set(allDates.map(d => new Date(d).toDateString())).size;
+    setHasEnoughData(uniqueActiveDays >= 7);
     setStreak(calcStreak(allDates));
-    setScores(calcIVI(data));
+    setScores(calcIVI({
+      mealsToday: mealsToday.count ?? 0,
+      mealsWeek: mealsWeek.count ?? 0,
+      diaryWeek: diaryWeek.count ?? 0,
+      diaryUniqueDays,
+      wonderMonth: wonderMonth.count ?? 0,
+    }));
     setLoading(false);
   };
 
@@ -157,6 +167,15 @@ export default function HygeiOSScreen() {
           <Text style={s.subtitle}>Índice de Vitalidade Integral</Text>
         </View>
       </FadeInView>
+
+      {/* FIX-1: calibrating notice when < 7 active days */}
+      {!hasEnoughData && !loading && (
+        <FadeInView delay={80}>
+          <View style={s.calibratingBanner}>
+            <Text style={s.calibratingText}>⏳ Calibrando — use o app por 7+ dias para IVI preciso</Text>
+          </View>
+        </FadeInView>
+      )}
 
       {/* IVI Geral */}
       <FadeInView delay={100}>
@@ -243,7 +262,7 @@ export default function HygeiOSScreen() {
           </View>
           <View style={[s.infoRow, { marginTop: spacing.sm, paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: colors.border }]}>
             <Text style={s.infoBullet}>📊</Text>
-            <Text style={s.infoText}>Streak calculado de Diário + Nutrição nos últimos 90 dias</Text>
+            <Text style={s.infoText}>Spirit conta <Text style={s.infoBold}>dias únicos</Text> de prática (cap: 1×/dia). Streak dos últimos 90 dias.</Text>
           </View>
         </View>
       </FadeInView>
@@ -376,6 +395,17 @@ const s = StyleSheet.create({
   infoBullet: { fontSize: 18, marginRight: spacing.sm },
   infoText: { flex: 1, fontSize: fontSize.body, color: colors.textSecondary, lineHeight: 20 },
   infoBold: { color: colors.text, fontWeight: '600' },
+
+  calibratingBanner: {
+    marginHorizontal: spacing.xl,
+    marginBottom: spacing.sm,
+    backgroundColor: colors.primarySubtle,
+    borderRadius: radius.md,
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.primaryFaded,
+  },
+  calibratingText: { color: colors.primary, fontSize: fontSize.sm, textAlign: 'center' },
 
   futureCard: {
     marginHorizontal: spacing.xl,

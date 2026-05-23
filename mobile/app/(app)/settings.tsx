@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Switch, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Share } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
@@ -16,10 +17,23 @@ const PLANS = [
 
 export default function SettingsScreen() {
   const { user, signOut } = useAuthStore();
+  const router = useRouter();
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const devTapCount = useRef(0);
+  const devTapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleDevTap = () => {
+    devTapCount.current += 1;
+    if (devTapTimer.current) clearTimeout(devTapTimer.current);
+    devTapTimer.current = setTimeout(() => { devTapCount.current = 0; }, 2000);
+    if (devTapCount.current >= 5) {
+      devTapCount.current = 0;
+      router.push('/(app)/admin');
+    }
+  };
 
   const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Usuário';
   const email = user?.email || '';
@@ -208,7 +222,9 @@ export default function SettingsScreen() {
           </View>
           <View style={s.row}>
             <Text style={s.label}>Desenvolvedor</Text>
-            <Text style={s.value}>Arkhe Labs</Text>
+            <TouchableOpacity onPress={handleDevTap} activeOpacity={1}>
+              <Text style={s.value}>Arkhe Labs</Text>
+            </TouchableOpacity>
           </View>
           <View style={s.row}>
             <Text style={s.label}>Contato</Text>

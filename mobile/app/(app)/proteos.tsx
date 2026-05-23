@@ -6,12 +6,22 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+
+type PersonaKey = 'default' | 'pragmatico' | 'suporte' | 'urgencia';
+
+const PERSONA_OPTIONS: { key: PersonaKey; label: string; icon: string }[] = [
+  { key: 'default',    label: 'ProteOS',    icon: '💬' },
+  { key: 'pragmatico', label: 'Direto',     icon: '⚡' },
+  { key: 'suporte',    label: 'Suporte',    icon: '🤗' },
+  { key: 'urgencia',   label: 'Clínico',    icon: '⚕' },
+];
 
 interface Message {
   id: string;
@@ -32,6 +42,7 @@ export default function ProteosScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
+  const [persona, setPersona] = useState<PersonaKey>('default');
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
 
@@ -93,7 +104,7 @@ export default function ProteosScreen() {
 
       try {
         const { data, error: fnError } = await supabase.functions.invoke('chat', {
-          body: { messages: apiMessages },
+          body: { messages: apiMessages, persona },
         });
 
         if (fnError) {
@@ -158,6 +169,19 @@ export default function ProteosScreen() {
         </View>
       )}
 
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.personaRow} contentContainerStyle={s.personaRowContent}>
+        {PERSONA_OPTIONS.map((p) => (
+          <TouchableOpacity
+            key={p.key}
+            style={[s.personaBtn, persona === p.key && s.personaBtnActive]}
+            onPress={() => setPersona(p.key)}
+          >
+            <Text style={s.personaIcon}>{p.icon}</Text>
+            <Text style={[s.personaLabel, persona === p.key && s.personaLabelActive]}>{p.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
       <View style={s.inputRow}>
         <TextInput
           style={s.input}
@@ -208,4 +232,16 @@ const s = StyleSheet.create({
   sendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
   sendBtnDisabled: { opacity: 0.5 },
   sendText: { color: colors.bg, fontSize: 20, fontWeight: '700' },
+  personaRow: { borderTopWidth: 1, borderTopColor: colors.border, maxHeight: 54 },
+  personaRowContent: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm },
+  personaBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: spacing.md, paddingVertical: 6,
+    borderRadius: radius.pill, backgroundColor: colors.card,
+    borderWidth: 1, borderColor: colors.border,
+  },
+  personaBtnActive: { borderColor: colors.primary, backgroundColor: colors.primarySubtle },
+  personaIcon: { fontSize: 14 },
+  personaLabel: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '500' },
+  personaLabelActive: { color: colors.primary, fontWeight: '700' },
 });
