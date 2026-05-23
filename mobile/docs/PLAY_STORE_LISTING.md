@@ -5,7 +5,7 @@
 - **Default language**: pt-BR
 - **Category**: Health & Fitness
 - **Content rating**: Everyone
-- **Contact email**: contato@arkhe.com.br
+- **Contact email**: contato@podiumtec.com.br
 - **Privacy policy URL**: https://fabianogleite-lab.github.io/aquarios/privacy-policy.html
 
 ---
