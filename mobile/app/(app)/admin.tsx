@@ -101,7 +101,7 @@ export default function AdminScreen() {
       <FadeInView delay={120}>
         <View style={s.section}>
           <Text style={s.sectionTitle}>Sistema</Text>
-          <Row label="Versão" value="4.4.0" />
+          <Row label="Versão" value="4.6.0" />
           <Row label="Build" value="SDK 56 · V1.0512" />
           <Row label="Modelo IA" value="claude-haiku-4-5" />
           <Row label="Backend" value="Supabase Edge Functions" />

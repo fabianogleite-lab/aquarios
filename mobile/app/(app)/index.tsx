@@ -20,6 +20,10 @@ const COMING_SOON = [
   { icon: '💰', title: 'HermeOS', desc: 'Inteligência financeira pessoal', module: 'hermeos' },
   { icon: '📡', title: 'EteriOS', desc: 'Conexão com wearables e IoT', module: 'eterios' },
   { icon: '☯', title: 'EcumenicOS', desc: 'Sabedoria inter-religiosa', module: 'ecumenicos' },
+  { icon: '🛍', title: 'PanaceIA', desc: 'Marketplace de saúde e bem-estar', module: 'panaceia' },
+  { icon: '🏢', title: 'Beck Office', desc: 'Plataforma B2B para clínicas e empresas', module: 'beck-office' },
+  { icon: '🪙', title: 'Token Economy', desc: 'Tokens AquariOS · recompensas e acesso', module: 'token-economy' },
+  { icon: '🛡', title: 'CerberOS', desc: 'Segurança ativa · 7 camadas de proteção', module: 'cerberos' },
 ];
 
 export default function HomeScreen() {
