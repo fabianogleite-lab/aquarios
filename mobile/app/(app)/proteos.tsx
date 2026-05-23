@@ -84,8 +84,6 @@ export default function ProteosScreen() {
       if (!conversationId) setConversationId(newConvId);
 
       const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
-
-      const apiKey = process.env.EXPO_PUBLIC_ANTHROPIC_API_KEY;
       const apiMessages = [
         ...history,
         { role: 'user', content: userInput },
@@ -94,29 +92,19 @@ export default function ProteosScreen() {
       let assistantContent = 'Desculpe, não consegui processar. Tente novamente.';
 
       try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey || '',
-            'anthropic-version': '2023-06-01',
-          },
-          body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 1024,
-            system: 'Voce e ProteOS, o assistente IA pessoal do AquariOS - Sistema Operacional Pessoal. Caloroso, profundo e pratico. Fala portugues brasileiro coloquial. Criador: Fabiano Gomes Leite, fundador da Arkhe Labs. Ajuda com autoconhecimento, produtividade e bem-estar. Conciso mas profundo; usa metaforas quando apropriado. Nunca inventa dados sobre o usuario. Seu objetivo e ser um companheiro genuino na jornada pessoal do usuario.',
-            messages: apiMessages,
-          }),
+        const { data, error: fnError } = await supabase.functions.invoke('chat', {
+          body: { messages: apiMessages },
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          assistantContent = data.content?.[0]?.text || assistantContent;
-        } else {
-          console.error('API error:', res.status, await res.text());
+        if (fnError) {
+          console.error('Edge Function error:', fnError);
+        } else if (data?.error === 'rate_limit') {
+          assistantContent = data.message;
+        } else if (data?.text) {
+          assistantContent = data.text;
         }
       } catch (apiErr) {
-        console.error('Anthropic API error:', apiErr);
+        console.error('ProteOS API error:', apiErr);
       }
 
       const futureTime = new Date().toISOString();
