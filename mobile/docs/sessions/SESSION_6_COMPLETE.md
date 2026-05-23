@@ -52,7 +52,10 @@
 ### 7. Build
 
 - EAS Build #1 (421fa6db): FALHOU — "Gradle build failed with unknown error"
-- EAS Build #2 (0b644164): submetido com --clear-cache, aguardando resultado
+- EAS Build #2 (0b644164): FALHOU — mesmo erro, mesmo com --clear-cache
+- Causa provavel: Expo SDK 54 incompativel com EAS Build servers atuais
+- Builds anteriores bem-sucedidos usaram SDK 56 (commit diferente)
+- Solucao para S7: upgrade SDK 54 -> 56 via `npx expo install --fix`
 - TypeScript: 0 erros
 - Bundle: compila sem erros
 - Logs Build #1: https://expo.dev/accounts/aquarios/projects/aquarios-274s3k/builds/421fa6db-ad15-4d66-b5ac-0f892cbc9896
@@ -98,7 +101,7 @@ mobile/app/(app)/proteos.tsx  — Claude Haiku API + UUID fix
 
 | Item | Prioridade | Detalhes |
 |------|-----------|----------|
-| Verificar build APK | ALTA | Build `421fa6db` em progresso — verificar se completou com sucesso |
+| Upgrade SDK 54 -> 56 | ALTA | Builds falharam 2x com Gradle error. Upgrade necessario: `npx expo install --fix` |
 | Testar APK no celular | ALTA | Instalar APK, testar todos os fluxos (Home, ProteOS, Diario, Nutricao, Comunidades, Wonder Night) |
 | Build AAB (production) | ALTA | `eas build --platform android --profile production` (para Play Store) |
 | Anexar APK no GitHub Release | MEDIA | Baixar APK do EAS e anexar na release v4.3.0 |
