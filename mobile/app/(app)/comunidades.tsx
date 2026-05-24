@@ -14,6 +14,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { usePersonaDetection } from '../../hooks/usePersonaDetection';
 import { useCommunityScoring } from '../../hooks/useCommunityScoring';
+import { CommunityPostForm } from './comunidades-post-form';
 import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
 import { FadeInView } from '../../components/FadeInView';
@@ -48,6 +49,7 @@ export default function ComunidadesScreen() {
   const [helpers, setHelpers] = useState<Helper[]>([]);
   const [loading, setLoading] = useState(false);
   const [userPersona, setUserPersona] = useState<Persona>('ZÉ_DO_APERTO');
+  const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
   const { user } = useAuthStore();
   const { detect } = usePersonaDetection();
@@ -102,6 +104,11 @@ export default function ComunidadesScreen() {
       await loadHelpers();
     }
     setLoading(false);
+  };
+
+  const handlePostSuccess = async () => {
+    // Recarrega posts após novo post publicado
+    await loadPosts();
   };
 
   useFocusEffect(useCallback(() => { loadData(); }, [user, activeTab]));
@@ -192,6 +199,22 @@ export default function ComunidadesScreen() {
           )}
         </>
       )}
+
+      {/* FAB Button */}
+      <TouchableOpacity
+        style={s.fab}
+        onPress={() => setModalVisible(true)}
+        activeOpacity={0.7}
+      >
+        <Text style={s.fabText}>+</Text>
+      </TouchableOpacity>
+
+      {/* Post Form Modal */}
+      <CommunityPostForm
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSuccess={handlePostSuccess}
+      />
     </View>
   );
 }
@@ -227,4 +250,26 @@ const s = StyleSheet.create({
   helperName: { color: colors.text, fontSize: fontSize.lg, fontWeight: '600', marginBottom: spacing.xs },
   helperStats: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
   statText: { color: colors.textMuted, fontSize: fontSize.sm },
+  fab: {
+    position: 'absolute',
+    bottom: spacing.xl + 20,
+    right: spacing.lg,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  fabText: {
+    color: colors.bg,
+    fontSize: fontSize.xxl,
+    fontWeight: '700',
+    lineHeight: 40,
+  },
 });
