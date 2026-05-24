@@ -189,7 +189,8 @@
       "PowerShell(cd \"C:\\\\Users\\\\DWOS\\\\Desktop\\\\AquariOS\\\\aquarios-v2-complete\"; $env:SUPABASE_ACCESS_TOKEN=\"sbp_bfdbbc81d3eb79eb765e4cc802a6286a89bb1ce8\"; supabase db push --project-ref agebsmjsjrmazbozphnh)",
       "Bash(xargs ls -lh)",
       "Bash(npm start *)",
-      "Bash(tail -30 /c/temp/prebuild.log 2>/dev/null | head -20)"
+      "Bash(tail -30 /c/temp/prebuild.log 2>/dev/null | head -20)",
+      "Bash(./gradlew.bat assembleRelease --no-daemon)"
     ]
   }
 }

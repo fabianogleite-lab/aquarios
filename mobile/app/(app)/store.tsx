@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useAuth } from '@clerk/clerk-react';
+import { supabase } from '../../lib/supabase';
+import { useAuthStore } from '../../store/auth';
 import XPBar from '../../components/XPBar';
 import StoreCard from '../../components/StoreCard';
 import { useEconomyEngine } from '../../hooks/useEconomyEngine';
@@ -31,8 +31,7 @@ interface UserStats {
 }
 
 export default function StoreScreen() {
-  const supabase = useSupabaseClient();
-  const { session } = useAuth();
+  const { user } = useAuthStore();
   const { purchase, loading: engineLoading } = useEconomyEngine();
 
   const [stats, setStats] = useState<UserStats>({
@@ -52,10 +51,10 @@ export default function StoreScreen() {
 
   useEffect(() => {
     loadUserStats();
-  }, [session?.user?.id]);
+  }, [user?.id]);
 
   const loadUserStats = async () => {
-    if (!session?.user?.id) {
+    if (!user?.id) {
       setIsLoading(false);
       return;
     }
@@ -64,7 +63,7 @@ export default function StoreScreen() {
       const { data } = await supabase
         .from('user_xp')
         .select('total_xp, level')
-        .eq('user_id', session.user.id)
+        .eq('user_id', user?.id)
         .single();
 
       if (data) {
