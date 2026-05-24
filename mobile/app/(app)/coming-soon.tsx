@@ -60,6 +60,50 @@ const MODULE_INFO: Record<string, { icon: string; name: string; tagline: string;
       'Respeito à soberania de cada tradição',
     ],
   },
+  panaceia: {
+    icon: '🛍',
+    name: 'PanaceIA',
+    tagline: 'Marketplace de saúde, bem-estar e autoconhecimento',
+    features: [
+      'Produtos curados: suplementos, livros, wearables',
+      'Modelo dropship afiliado — sem estoque próprio',
+      '9 categorias temáticas alinhadas aos módulos',
+      'Compras desbloqueáveis por nível e tokens',
+    ],
+  },
+  'beck-office': {
+    icon: '🏢',
+    name: 'Beck Office',
+    tagline: 'Plataforma B2B para clínicas, empresas e profissionais',
+    features: [
+      'Painel multi-paciente para clínicas e terapeutas',
+      'Acesso corporativo com dados anonimizados',
+      'Relatórios de bem-estar organizacional',
+      'White-label configurável por plano empresarial',
+    ],
+  },
+  'token-economy': {
+    icon: '🪙',
+    name: 'Token Economy',
+    tagline: 'Tokens AquariOS · recompensas, acesso e pertencimento',
+    features: [
+      '4 tipos: AI, Sync, Insight e Community tokens',
+      'Ganho por engajamento, streak e contribuição',
+      'Acesso temporário (24h/30d) ou permanente',
+      'Mercado interno: troque tokens por módulos e conteúdo',
+    ],
+  },
+  cerberos: {
+    icon: '🛡',
+    name: 'CerberOS',
+    tagline: 'Segurança ativa com 7 camadas de proteção',
+    features: [
+      'Aprisionamento por detecção de comportamento malicioso',
+      'ETERNAL MAZE: bloqueio progressivo e inescapável',
+      'HygeiOS Data Gate: acesso exclusivo ao dono dos dados',
+      'Auditoria transparente sem vigilância oculta',
+    ],
+  },
 };
 
 export default function ComingSoonScreen() {
