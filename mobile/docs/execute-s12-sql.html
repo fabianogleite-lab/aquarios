@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S12 SQL Executor</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-width: 800px; width: 100%; padding: 40px; }
+        h1 { color: #333; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+        .step { background: #f8f9fa; border-left: 4px solid #667eea; padding: 20px; margin-bottom: 20px; border-radius: 4px; }
+        .step-title { font-weight: 600; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .step-num { background: #667eea; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; }
+        .sql-block { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 4px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 12px; margin: 10px 0; max-height: 200px; overflow-y: auto; }
+        .copy-btn { background: #667eea; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: background 0.3s; margin-top: 10px; }
+        .copy-btn:hover { background: #5568d3; }
+        .url-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; font-size: 12px; margin-bottom: 10px; }
+        .info-box { background: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        .info-box p { color: #1565c0; font-size: 13px; line-height: 1.6; }
+        a { color: #667eea; text-decoration: none; font-weight: 600; }
+        a:hover { text-decoration: underline; }
+        .success { color: #4caf50; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #999; font-size: 12px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚗️ S12 SQL Executor</h1>
+        <p class="subtitle">AquariOS Base Engine — Execute os 3 SQLs de S12</p>
+
+        <div class="info-box">
+            <p>🔒 <strong>Instruções:</strong> Abra cada link no Supabase Dashboard, cole o SQL correspondente no editor e clique "Run".</p>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="step">
+            <div class="step-title">
+                <div class="step-num">1</div>
+                Engine Tables (xp_log, badges, tokens, purchases)
+            </div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Cria as 4 tabelas principais + RLS + indexes</p>
+            <button class="copy-btn" onclick="copiar('sql1')">📋 Copiar SQL</button>
+            <div class="sql-block" id="sql1">CREATE TABLE IF NOT EXISTS xp_log (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL, action text NOT NULL, xp_earned int NOT NULL, module text, created_at timestamptz DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_xp_log_user_id ON xp_log(user_id);
+CREATE TABLE IF NOT EXISTS badges (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL, badge_key text NOT NULL, unlocked_at timestamptz DEFAULT now(), UNIQUE(user_id, badge_key));
+CREATE INDEX IF NOT EXISTS idx_badges_user_id ON badges(user_id);
+CREATE TABLE IF NOT EXISTS user_tokens (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL, token_type text NOT NULL, amount int DEFAULT 0, expires_at timestamptz, created_at timestamptz DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_user_tokens_user_id ON user_tokens(user_id);
+CREATE TABLE IF NOT EXISTS purchases (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL, product_id text NOT NULL, amount_cents int, status text DEFAULT 'pending', payment_method text, created_at timestamptz DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_purchases_user_id ON purchases(user_id);
+ALTER TABLE xp_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE badges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_tokens ENABLE ROW LEVEL SECURITY;
+ALTER TABLE purchases ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "xp_log_own_data" ON xp_log FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "badges_own_data" ON badges FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "user_tokens_own_data" ON user_tokens FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "purchases_own_data" ON purchases FOR ALL USING (auth.uid() = user_id);</div>
+            <a href="https://app.supabase.com/projects/agebsmjsjrmazbozphnh/sql/new" target="_blank">→ Abrir Supabase Dashboard</a>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="step">
+            <div class="step-title">
+                <div class="step-num">2</div>
+                Community Tables (shares + likes)
+            </div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Cria tabelas para posts e interações na comunidade</p>
+            <button class="copy-btn" onclick="copiar('sql2')">📋 Copiar SQL</button>
+            <div class="sql-block" id="sql2">CREATE TABLE IF NOT EXISTS shares (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL, content text NOT NULL, is_public boolean DEFAULT true, created_at timestamptz DEFAULT now());
+CREATE INDEX IF NOT EXISTS idx_shares_user_id ON shares(user_id);
+CREATE TABLE IF NOT EXISTS likes (share_id uuid REFERENCES shares(id) ON DELETE CASCADE NOT NULL, user_id uuid REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL, created_at timestamptz DEFAULT now(), PRIMARY KEY (share_id, user_id));
+CREATE INDEX IF NOT EXISTS idx_likes_user_id ON likes(user_id);
+ALTER TABLE shares ENABLE ROW LEVEL SECURITY;
+ALTER TABLE likes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "shares_select_public" ON shares FOR SELECT USING (is_public = true);
+CREATE POLICY "shares_own_crud" ON shares FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "likes_select_all" ON likes FOR SELECT USING (true);
+CREATE POLICY "likes_own_crud" ON likes FOR ALL USING (auth.uid() = user_id);</div>
+            <a href="https://app.supabase.com/projects/agebsmjsjrmazbozphnh/sql/new" target="_blank">→ Abrir Supabase Dashboard</a>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="step">
+            <div class="step-title">
+                <div class="step-num">3</div>
+                Populate Personas (20 posts + 50 likes)
+            </div>
+            <p style="color: #666; font-size: 13px; margin-bottom: 10px;">Cria conversas realistas entre as 10 personas</p>
+            <button class="copy-btn" onclick="copiar('sql3')">📋 Copiar SQL</button>
+            <div class="sql-block" id="sql3">INSERT INTO shares (user_id, content, is_public, created_at) SELECT p.id, content, true, now() - (INTERVAL '1 day' * (random() * 7)::int) FROM (SELECT username, ARRAY['Comecei meu dia com uma reflexão: qual é meu propósito real? HygeiOS me mostrou que Bio + Mental + Spirit precisam estar em harmonia. Vocês já fizeram esse checklist hoje? 🌱','Gratidão pelas pessoas que encontro aqui na comunidade. Cada conversa me aproxima mais de mim mesma. Era de Aquário, somos conectados mesmo 💙','Realizei uma refeição com atenção plena hoje. 3 refeições bem feitas, mindfulness em cada mordida. Nutrição não é só números, é ritual.','Wonder Night de ontem foi transformador. 20 minutos de meditação e consegui ver a padrão nas minhas ações. Que viagem!','Pergunta: como vocês lidam com a pressa do dia a dia? Estou testando um método: para a cada 2 horas e respiro fundo 3x.','Meu diário hoje é só uma pergunta: "Quem sou quando ninguém está vendo?" Estou investigando isso.','Compartilhando uma descoberta: meu IVI subiu quando passei a fazer diário todos os dias. A consistência é mágica mesmo.','Não tinha dado conta: Pro-teOS não é só um chat bot. É um espelho. Conversas profundas com ele me mostraram padrões antigos.','Era um ciclo: pressa → má nutrição → sem energia → mais pressa. Quebrei o ciclo com pequenas ações no dia a dia. Cada um de vocês consegue também 💪','Comunidades são o melhor! Não estou sozinho nessa jornada. Aquários se reconhecem!'][floor(random() * 10) + 1] FROM (VALUES ('carlos.mendes'),('maria.silva'),('roberto.santos'),('lucas.oliveira'),('fernanda.rocha'),('jose.cardoso'),('ana.lima'),('ricardo.ferreira'),('sandra.moraes'),('bruno.alves')) AS personas(username)) AS persona_posts(username, content) JOIN profiles p ON p.username = persona_posts.username WHERE p.id IS NOT NULL ON CONFLICT DO NOTHING;
+
+INSERT INTO likes (share_id, user_id) SELECT s.id, p.id FROM shares s JOIN profiles p ON p.username IN ('carlos.mendes', 'maria.silva', 'roberto.santos', 'lucas.oliveira', 'fernanda.rocha', 'jose.cardoso', 'ana.lima', 'ricardo.ferreira', 'sandra.moraes', 'bruno.alves') WHERE s.is_public = true AND s.user_id != p.id AND random() < 0.3 ON CONFLICT DO NOTHING;</div>
+            <a href="https://app.supabase.com/projects/agebsmjsjrmazbozphnh/sql/new" target="_blank">→ Abrir Supabase Dashboard</a>
+        </div>
+
+        <div class="footer">
+            <p>✅ S12 Base Engine — Execute os 3 SQLs acima para completar a sessão</p>
+            <p style="margin-top: 10px;">Documentação: mobile/docs/EXECUTE_S12_SQL.md</p>
+        </div>
+    </div>
+
+    <script>
+        function copiar(id) {
+            const elemento = document.getElementById(id);
+            const texto = elemento.innerText;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('✅ SQL copiado para a área de transferência!');
+            }).catch(() => {
+                alert('❌ Erro ao copiar. Tente manualmente.');
+            });
+        }
+    </script>
+</body>
+</html>

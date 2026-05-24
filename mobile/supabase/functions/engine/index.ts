@@ -8,7 +8,7 @@ const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 interface EngineRequest {
-  action: 'earn_xp' | 'spend_tokens' | 'check_gate' | 'get_badges' | 'purchase';
+  action: 'earn_xp' | 'spend_tokens' | 'check_gate' | 'get_badges' | 'purchase' | 'get_community_recommendations';
   data: Record<string, any>;
   userId: string;
 }
@@ -180,6 +180,57 @@ async function getBadges(userId: string): Promise<EngineResponse> {
   return { success: true, data: badges };
 }
 
+async function getCommunityRecommendations(userId: string): Promise<EngineResponse> {
+  // S14: Integração com usePersonaDetection + faqEngine
+  // Placeholder que retorna recomendações baseadas em user level
+
+  const { data: user } = await supabase
+    .from('user_xp')
+    .select('level')
+    .eq('user_id', userId)
+    .single();
+
+  if (!user) {
+    return { success: false, error: 'User not found' };
+  }
+
+  const personaMap: Record<string, string> = {
+    '1-5': 'ZÉ_DO_APERTO',
+    '6-15': 'DONA_MARIA',
+    '16+': 'CARLOS'
+  };
+
+  let persona = 'ZÉ_DO_APERTO';
+  if (user.level > 15) {
+    persona = 'CARLOS';
+  } else if (user.level > 5) {
+    persona = 'DONA_MARIA';
+  }
+
+  const faqSubset = {
+    'ZÉ_DO_APERTO': ['faq_zé_001', 'faq_zé_002', 'faq_zé_003'],
+    'DONA_MARIA': ['faq_dona_001', 'faq_dona_002', 'faq_dona_003'],
+    'CARLOS': ['faq_carlos_001', 'faq_carlos_002', 'faq_carlos_003']
+  };
+
+  const recommendations = {
+    'ZÉ_DO_APERTO': ['Acesse SUS e confira sua cobertura', 'Preventiva é importante'],
+    'DONA_MARIA': ['Seção Família é para você', 'Compartilhe com sua família'],
+    'CARLOS': ['Exames preventivos anuais', 'Seu plano oferece especialistas']
+  };
+
+  return {
+    success: true,
+    data: {
+      userId,
+      persona,
+      faqIds: faqSubset[persona as keyof typeof faqSubset] || [],
+      recommendations: recommendations[persona as keyof typeof recommendations] || [],
+      confidence: Math.round((user.level / 20) * 100)
+    }
+  };
+}
+
 async function handleRequest(req: Request): Promise<Response> {
   // CORS headers
   if (req.method === 'OPTIONS') {
@@ -237,6 +288,9 @@ async function handleRequest(req: Request): Promise<Response> {
         break;
       case 'get_badges':
         result = await getBadges(userId);
+        break;
+      case 'get_community_recommendations':
+        result = await getCommunityRecommendations(userId);
         break;
       default:
         result = { success: false, error: 'Unknown action' };

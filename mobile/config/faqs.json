@@ -1,0 +1,323 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-05-24",
+  "personas": ["ZÉ_DO_APERTO", "DONA_MARIA", "CARLOS"],
+  "categories": ["SUS", "PREVENTIVA", "FAMÍLIA", "CRÔNICA", "EXPERTISE", "NEGAÇÃO", "ACESSO", "SUPORTE"],
+  "faqs": [
+    {
+      "id": "faq_zé_001",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "SUS",
+      "question": "Como agendar uma consulta no SUS?",
+      "answer": "Você pode agendar pelo seu postinho de saúde, ligando pro centro de saúde mais perto ou indo pessoalmente. Alguns postos agora marcam pelo app do seu estado. É de graça, leva tempo às vezes, mas funciona.",
+      "relatedFAQs": ["faq_zé_002", "faq_dona_009"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_002",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "SUS",
+      "question": "Preciso de encaminhamento pra especialista. Como funciona?",
+      "answer": "Seu médico do postinho pede encaminhamento pro especialista que você precisa. Ele manda pra central de regulação e você recebe uma carta com data. Pode demorar semanas, mas é de graça.",
+      "relatedFAQs": ["faq_zé_001", "faq_zé_003"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_003",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "PREVENTIVA",
+      "question": "Vale a pena fazer exame preventivo se tô bem?",
+      "answer": "Vale, sim. Muita doença não dá sinal no começo. Cardiologista, dentista, pressão — tudo isso pega problema cedo e fica mais fácil tratar. Seu postinho agenda grátis.",
+      "relatedFAQs": ["faq_zé_004", "faq_carlos_007"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_004",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "ACESSO",
+      "question": "Como saber que medicamento a farmácia do SUS tem?",
+      "answer": "Tem uma lista nacional — você vê no site do SUS ou pergunta pro seu médico. Se ele receitar algo que não tá na lista, você paga. Mas a maioria dos remédios comuns tá lá.",
+      "relatedFAQs": ["faq_zé_003", "faq_zé_005"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_005",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "ACESSO",
+      "question": "Qual é o meu direito como paciente do SUS?",
+      "answer": "Você tem direito a: atendimento de graça, receber informação sobre seu tratamento, escolher médico em caso de emergência, e denunciar má atenção. Se não tá bom, reclama no conselho do hospital ou faz ouvidoria.",
+      "relatedFAQs": ["faq_zé_002", "faq_dona_001"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_006",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "CRÔNICA",
+      "question": "Se tenho pressão alta, o que faço pro SUS acompanhar?",
+      "answer": "Pega receita de remédio no postinho e vai monitorizando (vai de vez em quando pra checar pressão). Medicação é de graça. O postinho encaminha pro cardiologista se ficar ruim.",
+      "relatedFAQs": ["faq_zé_003", "faq_dona_006"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_007",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "SUPORTE",
+      "question": "Meu filho tá com febre. Devo ir no SUS agora ou espera?",
+      "answer": "Febre acima de 39°C, muita dor de cabeça ou falta de ar = urgência, vai no pronto-socorro. Febre de 37-38°C e ele tá comendo = espera até amanhã e vai no postinho. Água e hidratação é sempre bom.",
+      "relatedFAQs": ["faq_dona_007", "faq_dona_008"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_zé_008",
+      "persona": "ZÉ_DO_APERTO",
+      "category": "PREVENTIVA",
+      "question": "Qual é a diferença entre um clinical check-up e ir no médico?",
+      "answer": "Check-up é básico (pressão, peso, ausculta). Médico diagnostica seu problema. Os dois são importantes — um pra ver se tá tudo ok, outro pra tratar o que tá errado.",
+      "relatedFAQs": ["faq_zé_003", "faq_carlos_001"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_dona_001",
+      "persona": "DONA_MARIA",
+      "category": "FAMÍLIA",
+      "question": "Como saber se meu filho tá saudável mesmo que não reclame?",
+      "answer": "Observa: ele come bem? Dorme bem? Brinca com disposição? Se sim, tá bom. Mas de vez em quando leva no postinho pra verificação — peso, altura, desenvolvimento. Vacinação em dia é fundamental.",
+      "relatedFAQs": ["faq_dona_002", "faq_zé_007"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_002",
+      "persona": "DONA_MARIA",
+      "category": "FAMÍLIA",
+      "question": "Meu marido não quer ir no médico. Como convencer?",
+      "answer": "Homem às vezes acha que é fraqueza. Fale que é prevenção, não é doença. Diga que você quer que ele viva bastante. Marca uma consulta e leva junto se precisar. O médico, depois, fala que é importante.",
+      "relatedFAQs": ["faq_dona_003", "faq_dona_008"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_003",
+      "persona": "DONA_MARIA",
+      "category": "CRÔNICA",
+      "question": "Minha mãe tem diabetes. Como ajudar no dia-a-dia?",
+      "answer": "Ajude com: medicação em horário, comida sem excesso de açúcar, atividade física leve (caminhada), acompanhar os exames. Se ela tiver mal-estar, leva ao médico. Não é cura, mas controle melhora a vida dela.",
+      "relatedFAQs": ["faq_dona_004", "faq_dona_006"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_004",
+      "persona": "DONA_MARIA",
+      "category": "CRÔNICA",
+      "question": "Pressão alta passa de pais pra filho? Devo me preocupar?",
+      "answer": "Pode herdar a tendência, não a doença. Seu filho tem risco maior, então desde cedo: alimentação saudável, exercício, sem sal demais. Conforme cresce, monitora pressão. Prevenção agora evita problema depois.",
+      "relatedFAQs": ["faq_dona_005", "faq_zé_006"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_005",
+      "persona": "DONA_MARIA",
+      "category": "SUPORTE",
+      "question": "Como falo pra minha família que tou com ansiedade?",
+      "answer": "Você pode falar direto: 'Tou sentindo algo diferente, vou consultar.' Sua família ama você, vai querer ajudar. Se tiver vergonha, lembra que saúde mental é saúde igual. Médico ou psicólogo ajuda a lidar.",
+      "relatedFAQs": ["faq_dona_006", "faq_dona_009"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_006",
+      "persona": "DONA_MARIA",
+      "category": "CRÔNICA",
+      "question": "Tomo remédio de pressão mas tenho efeito colateral. E agora?",
+      "answer": "Não para o remédio sozinha. Avisa seu médico — pode ser dosagem errada ou remédio errado pra você. Ele troca por outro. Existem muitas opções, vai achar uma que não prejudica.",
+      "relatedFAQs": ["faq_dona_007", "faq_zé_006"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_007",
+      "persona": "DONA_MARIA",
+      "category": "SUPORTE",
+      "question": "Meu filho tem tosse persistente. Quando é hora de ir no médico?",
+      "answer": "Se tosse por mais de 2 semanas, muda pra tosse com muco amarelado, ou ele tem dificuldade pra respirar — vai no médico. Pode ser infecção que precisa de tratamento.",
+      "relatedFAQs": ["faq_dona_008", "faq_zé_007"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_008",
+      "persona": "DONA_MARIA",
+      "category": "SUPORTE",
+      "question": "Deixar criança se exercitar é seguro ou pode lesionar?",
+      "answer": "Criança deve brincar — faz bem pro corpo e mente. Lesão grave é rara se ela não força demais. Oriente: sem pular em altura, sem carga pesada, e sempre com supervisão.",
+      "relatedFAQs": ["faq_dona_001", "faq_zé_007"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_dona_009",
+      "persona": "DONA_MARIA",
+      "category": "FAMÍLIA",
+      "question": "Como ensino meu filho a cuidar da saúde dele mesmo?",
+      "answer": "Começa pequeno: escovar dente, lavar mão, comer verdura. Explica por quê. Adolescente, fala sobre sono, exercício, amizades. Você é modelo — se você cuida, ele aprende.",
+      "relatedFAQs": ["faq_dona_001", "faq_dona_002"],
+      "tone": "SUPPORTIVE_CLINICAL"
+    },
+    {
+      "id": "faq_carlos_001",
+      "persona": "CARLOS",
+      "category": "EXPERTISE",
+      "question": "Qual é a diferença entre colesterol LDL e HDL?",
+      "answer": "LDL é colesterol 'ruim' — acumula nas artérias. HDL é 'bom' — remove o LDL. Você quer LDL baixo (<100) e HDL alto (>40). Dieta baixa em gordura saturada e exercício ajuda.",
+      "relatedFAQs": ["faq_carlos_002", "faq_carlos_006"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_002",
+      "persona": "CARLOS",
+      "category": "EXPERTISE",
+      "question": "Que exames devo fazer anualmente como homem de 45 anos?",
+      "answer": "Sangue (colesterol, glicose, função renal/hepática), pressão arterial, eletrocardiograma se tem risco cardiovascular, PSA (próstata) após 50. Consulta médica anual valida tudo isso.",
+      "relatedFAQs": ["faq_carlos_001", "faq_carlos_007"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_003",
+      "persona": "CARLOS",
+      "category": "NEGAÇÃO",
+      "question": "Tou com dor no peito mas acho que é só gases. Preciso ir no médico?",
+      "answer": "Não brinque com dor no peito — SEMPRE vai no médico, nem que seja urgência. Pode ser gases, mas pode ser coração. Médico faz um EKG e 5 minutos você sabe.",
+      "relatedFAQs": ["faq_carlos_004", "faq_carlos_008"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_004",
+      "persona": "CARLOS",
+      "category": "NEGAÇÃO",
+      "question": "Fumo a vida toda e tou bem. Não preciso parar?",
+      "answer": "Você tá bem AGORA. Fumo danifica pulmão, coração e vasos ao longo dos anos — você não sente enquanto danifica. Risco de infarto, câncer aumenta muito. Parar agora reduz o risco em semanas.",
+      "relatedFAQs": ["faq_carlos_005", "faq_carlos_006"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_005",
+      "persona": "CARLOS",
+      "category": "EXPERTISE",
+      "question": "Qual é a pressão arterial normal pra minha idade?",
+      "answer": "Normal é <120/80. Elevada é 120-139/80-89. Alta é ≥140/90. Com a idade aumenta um pouco, mas não deve passar de 130/80 em maiores de 60. Mede regularmente.",
+      "relatedFAQs": ["faq_carlos_001", "faq_zé_006"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_006",
+      "persona": "CARLOS",
+      "category": "EXPERTISE",
+      "question": "Quanto de exercício preciso fazer por semana pra saúde?",
+      "answer": "Mínimo: 150 minutos de moderado (caminhada rápida) OU 75 minutos intenso (corrida) por semana, mais 2x musculação. Menos que isso é melhor que nada, mas isso é o recomendado.",
+      "relatedFAQs": ["faq_carlos_002", "faq_carlos_004"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_007",
+      "persona": "CARLOS",
+      "category": "EXPERTISE",
+      "question": "Estatina baixa colesterol mas tem efeitos colaterais. Parar ou continuar?",
+      "answer": "Não para sem falar com médico. Efeitos colaterais menores (dor muscular leve) vs risco de infarto — geralmente continua, talvez mude a dose. Médico decide.",
+      "relatedFAQs": ["faq_carlos_001", "faq_dona_006"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_carlos_008",
+      "persona": "CARLOS",
+      "category": "NEGAÇÃO",
+      "question": "Tenho histórico de infarto familiar. Estou destinado?",
+      "answer": "Genética importa, mas não é destino. Você controla: dieta saudável, exercício, dormir bem, gerenciar estresse. Acompanhamento médico reduz risco muito. Não é certeza, é risco — e você reduz isso.",
+      "relatedFAQs": ["faq_carlos_003", "faq_carlos_005"],
+      "tone": "CLINICAL_URGENT"
+    },
+    {
+      "id": "faq_arquivos_001",
+      "persona": "COMPARTILHADA",
+      "category": "ACESSO",
+      "question": "O que é HygeiOS e como ajuda na minha saúde?",
+      "answer": "HygeiOS é um sistema que rastreia sua saúde em 8 dimensões — físico, mental, nutrição, sono, atividade, relacionamento, propósito, financeiro. Ajuda a ver onde você pode melhorar e oferece recomendações personalizadas.",
+      "relatedFAQs": ["faq_arquivos_002", "faq_zé_003"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_002",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "Como ganho XP e níveis no app?",
+      "answer": "Você ganha XP realizando ações saudáveis: fazer exercício, registrar refeição, dormir bem, interagir na comunidade. Quanto mais XP, você sobe de nível e desbloqueia badges e recursos premium.",
+      "relatedFAQs": ["faq_arquivos_001", "faq_arquivos_003"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_003",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "O app coleta dados pessoais meus? É seguro?",
+      "answer": "Sim, seu dados são encriptados e protegidos por lei (LGPD). Você pode ver e deletar qualquer dado seu a qualquer hora. Nunca compartilhamos com terceiros sem sua permissão.",
+      "relatedFAQs": ["faq_arquivos_002", "faq_arquivos_004"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_004",
+      "persona": "COMPARTILHADA",
+      "category": "ACESSO",
+      "question": "Posso baixar meus dados de saúde para outro app?",
+      "answer": "Sim. Você pode exportar um relatório em PDF com seu histórico de saúde. Alguns dados também podem ser sincronizados com Google Fit, Apple Health ou outros apps compatíveis.",
+      "relatedFAQs": ["faq_arquivos_003", "faq_arquivos_005"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_005",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "Como contato suporte se tiver problema no app?",
+      "answer": "Dentro do app, vá em Configurações > Suporte e abra um ticket. Respondemos em até 24h. Você também pode mandar email para support@hygeiros.app",
+      "relatedFAQs": ["faq_arquivos_004", "faq_arquivos_001"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_006",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "O que é a comunidade do app e como participar?",
+      "answer": "Comunidade é onde você vê dicas de outros usuários, desafios grupais e lidera (ou compete no) ranking de saúde. Participa votando em posts, respondendo perguntas e fazendo desafios.",
+      "relatedFAQs": ["faq_arquivos_007", "faq_arquivos_002"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_007",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "Como funciona a loja de produtos?",
+      "answer": "Loja oferece suplementos, livros, cursos e wearables úteis pra saúde. Você compra com XP (ganho no app) ou dinheiro real. Tudo é recomendado baseado no seu perfil de saúde.",
+      "relatedFAQs": ["faq_arquivos_006", "faq_arquivos_008"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_008",
+      "persona": "COMPARTILHADA",
+      "category": "EXPERTISE",
+      "question": "Como sou acompanhado por profissional no app?",
+      "answer": "Você pode vincular seu médico ou nutricionista ao app. Eles veem seu progresso, deixam recomendações e vocês conversam dentro do app. É integrado ao seu acompanhamento pessoal.",
+      "relatedFAQs": ["faq_arquivos_007", "faq_arquivos_009"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_009",
+      "persona": "COMPARTILHADA",
+      "category": "EXPERTISE",
+      "question": "Qual é a diferença entre plano Free, Silver, Gold e Family?",
+      "answer": "Free: básico, rastreamento limitado. Silver: rastreamento completo de dimensões. Gold: + recomendações IA. Family: Gold para você + até 4 membros da família. Upgrade quando quiser.",
+      "relatedFAQs": ["faq_arquivos_008", "faq_arquivos_010"],
+      "tone": "PRAGMATIC_DIRECT"
+    },
+    {
+      "id": "faq_arquivos_010",
+      "persona": "COMPARTILHADA",
+      "category": "SUPORTE",
+      "question": "Posso usar o app offline?",
+      "answer": "Parcialmente. Você pode ver seus dados já baixados. Mas sincronização, comunidade e recomendações IA precisam de internet. Recomendamos conectado.",
+      "relatedFAQs": ["faq_arquivos_009", "faq_arquivos_001"],
+      "tone": "PRAGMATIC_DIRECT"
+    }
+  ]
+}

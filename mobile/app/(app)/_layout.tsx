@@ -78,6 +78,22 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
+        name="achievements"
+        options={{
+          title: 'Minhas Conquistas',
+          tabBarLabel: 'Conquistas',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'🏆'}</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="leaderboard"
+        options={{
+          title: 'Ranking IVI',
+          tabBarLabel: 'Ranking',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'📊'}</Text>,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Configurações',
