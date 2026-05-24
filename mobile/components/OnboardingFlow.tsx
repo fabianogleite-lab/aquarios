@@ -8,7 +8,7 @@ import {
   Dimensions
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 interface OnboardingFlowProps {
   onComplete: () => void;

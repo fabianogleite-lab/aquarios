@@ -2,7 +2,7 @@
 // L1: Demográfico | L2: Socioeconômico | L3: Comportamental
 
 import { useHealthScore } from './useHealthScore';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 type Persona = 'ZÉ_DO_APERTO' | 'DONA_MARIA' | 'CARLOS';
 type EconomicContext = 'LOW_INCOME_VARIABLE' | 'FIXED_LOW_INCOME' | 'MIDDLE_TO_HIGH';

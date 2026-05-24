@@ -1,7 +1,7 @@
 // S14 — ARKHE FAQ Engine (Algoritmo M-02)
 // 42 FAQs estruturadas com persona + categoria + busca semântica
 
-import FAQsData from '@/config/faqs.json';
+import FAQsData from '../config/faqs.json';
 
 export interface FAQResult {
   id: string;
