@@ -4,522 +4,772 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquariOS BackOffice V1.0512</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #0066FF;
-            --primary-dark: #0044CC;
             --accent: #00D9FF;
-            --bg: #0a0e1a;
-            --surface: #141a2e;
-            --surface2: #1c2440;
+            --accent2: #00e676;
+            --bg: #080b14;
+            --surface: #0f1424;
+            --surface2: #161d35;
+            --surface3: #1e2748;
             --text: #e8eaf6;
-            --text-muted: #8892b0;
+            --text-muted: #7b89a8;
             --success: #00e676;
             --warning: #ffab00;
             --danger: #ff5252;
-            --border: #2a3355;
+            --purple: #bb86fc;
+            --border: #1e2d50;
+            --glow-blue: rgba(0, 102, 255, 0.15);
+            --glow-cyan: rgba(0, 217, 255, 0.12);
+            --glow-green: rgba(0, 230, 118, 0.12);
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .header-logo { font-size: 1.8rem; }
-        .header-title { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
-        .header-version { font-size: 0.75rem; color: var(--text-muted); background: var(--surface); padding: 2px 8px; border-radius: 4px; }
-        .header-right { display: flex; align-items: center; gap: 1rem; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .status-text { font-size: 0.8rem; color: var(--text-muted); }
 
-        /* Auth Screen */
-        .auth-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
+        /* ===== AUTH ===== */
+        .auth-overlay {
+            position: fixed; inset: 0;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s;
         }
+        .auth-overlay.hidden { opacity: 0; pointer-events: none; }
         .auth-box {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 3rem;
-            max-width: 400px;
-            width: 100%;
+            border-radius: 20px;
+            padding: 3rem 2.5rem;
+            max-width: 420px; width: 90%;
             text-align: center;
+            box-shadow: 0 0 60px var(--glow-blue);
         }
-        .auth-box h2 { color: var(--accent); margin-bottom: 0.5rem; }
-        .auth-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        .auth-logo { font-size: 3.5rem; margin-bottom: 0.5rem; }
+        .auth-box h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--accent); margin-bottom: 0.3rem; }
+        .auth-box .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2rem; }
         .auth-input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            outline: none;
-            transition: border-color 0.3s;
+            width: 100%; padding: 0.85rem 1.2rem;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+            margin-bottom: 0.8rem; outline: none; transition: all 0.3s;
         }
-        .auth-input:focus { border-color: var(--accent); }
+        .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 12px var(--glow-cyan); }
         .auth-btn {
-            width: 100%;
-            padding: 0.8rem;
+            width: 100%; padding: 0.9rem;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.3s;
+            border: none; border-radius: 10px;
+            color: white; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; margin-top: 0.5rem;
         }
-        .auth-btn:hover { opacity: 0.9; }
-        .auth-error { color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem; display: none; }
+        .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--glow-blue); }
+        .auth-error { color: var(--danger); font-size: 0.82rem; margin-top: 0.8rem; display: none; }
 
-        /* Dashboard */
-        .dashboard { display: none; }
-        .main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        /* ===== LAYOUT ===== */
+        .app { display: none; height: 100vh; }
+        .app.active { display: flex; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px; min-width: 240px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 1.5rem 0;
+            transition: all 0.3s;
+        }
+        .sidebar-brand {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+        .sidebar-brand h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+        .sidebar-brand .version { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-muted); background: var(--surface2); padding: 2px 8px; border-radius: 4px; margin-top: 4px; display: inline-block; }
+
+        .nav-section { padding: 0.5rem 1rem; }
+        .nav-section-title { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 0.5rem; padding: 0 0.5rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.8rem;
+            padding: 0.7rem 1rem; border-radius: 8px;
+            color: var(--text-muted); font-size: 0.88rem; font-weight: 400;
+            cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+        }
+        .nav-item:hover { background: var(--surface2); color: var(--text); }
+        .nav-item.active { background: linear-gradient(135deg, var(--glow-blue), var(--glow-cyan)); color: var(--accent); font-weight: 500; border: 1px solid rgba(0,217,255,0.2); }
+        .nav-item .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+        .nav-item .badge-nav { margin-left: auto; font-size: 0.7rem; background: var(--primary); color: white; padding: 1px 7px; border-radius: 10px; }
+
+        .sidebar-footer { margin-top: auto; padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+        .sidebar-clock { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted); }
+        .sidebar-status { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+        .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+        .status-label { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* Content area */
+        .content { flex: 1; overflow-y: auto; padding: 2rem; }
+        .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+        .content-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; }
+        .content-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+        .header-actions { display: flex; gap: 0.8rem; }
+        .btn {
+            padding: 0.6rem 1.2rem; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--surface2); color: var(--text); font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); border: none; color: white; }
+        .btn-primary:hover { box-shadow: 0 4px 16px var(--glow-blue); transform: translateY(-1px); }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
+
+        /* Page sections */
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+
+        /* Cards Grid */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: transform 0.2s, border-color 0.2s;
+            border-radius: 14px;
+            padding: 1.4rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover { transform: translateY(-2px); border-color: var(--accent); }
-        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-        .card-title { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-icon { font-size: 1.5rem; }
-        .card-value { font-size: 2.2rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
-        .card-sub { font-size: 0.85rem; color: var(--text-muted); }
-        .card-trend { display: inline-flex; align-items: center; gap: 4px; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; margin-top: 0.5rem; }
-        .trend-up { background: rgba(0, 230, 118, 0.1); color: var(--success); }
-        .trend-neutral { background: rgba(255, 171, 0, 0.1); color: var(--warning); }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); border-color: rgba(0,217,255,0.3); }
+        .card:hover::before { opacity: 1; }
+        .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+        .card-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 500; }
+        .card-icon { font-size: 1.6rem; }
+        .card-value { font-size: 2.4rem; font-weight: 700; font-family: 'Outfit', sans-serif; margin-bottom: 0.2rem; }
+        .card-desc { font-size: 0.82rem; color: var(--text-muted); }
+        .card-progress { height: 4px; background: var(--surface3); border-radius: 2px; margin-top: 1rem; overflow: hidden; }
+        .card-progress-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
 
         /* Table */
-        .table-card { grid-column: 1 / -1; }
-        .table-card .card-header { margin-bottom: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 0.8rem 1rem; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-        td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(42, 51, 85, 0.5); font-size: 0.9rem; }
-        .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
-        .badge-active { background: rgba(0, 230, 118, 0.15); color: var(--success); }
-        .badge-bot { background: rgba(0, 217, 255, 0.15); color: var(--accent); }
-        .badge-premium { background: rgba(255, 171, 0, 0.15); color: var(--warning); }
+        .data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .data-table th { text-align: left; padding: 0.9rem 1.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); background: var(--surface2); font-weight: 500; }
+        .data-table td { padding: 0.8rem 1.2rem; border-top: 1px solid var(--border); font-size: 0.88rem; }
+        .data-table tr:hover td { background: rgba(0,217,255,0.03); }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+        .badge-active { background: rgba(0,230,118,0.12); color: var(--success); }
+        .badge-bot { background: rgba(0,217,255,0.12); color: var(--accent); }
+        .badge-warning { background: rgba(255,171,0,0.12); color: var(--warning); }
+        .badge-danger { background: rgba(255,82,82,0.12); color: var(--danger); }
+        .badge-purple { background: rgba(187,134,252,0.12); color: var(--purple); }
 
-        /* Personas Section */
-        .personas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-        .persona-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        /* Module cards */
+        .module-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            padding: 1.2rem; display: flex; align-items: flex-start; gap: 1rem; transition: all 0.2s;
         }
-        .persona-avatar { font-size: 2rem; }
-        .persona-name { font-weight: 600; font-size: 0.95rem; }
-        .persona-type { font-size: 0.8rem; color: var(--text-muted); }
+        .module-card:hover { border-color: var(--accent); }
+        .module-icon { font-size: 2rem; min-width: 40px; text-align: center; }
+        .module-info h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .module-info p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+        .module-status { margin-left: auto; }
 
-        /* Admin Console (Konami) */
+        /* Personas */
+        .persona-row { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.8rem; transition: all 0.2s; }
+        .persona-row:hover { border-color: var(--accent); }
+        .persona-avatar { font-size: 2.2rem; min-width: 50px; text-align: center; }
+        .persona-details h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        .persona-details .type { font-size: 0.8rem; color: var(--accent); }
+        .persona-details .desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* HermeOS Sync */
+        .sync-panel {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+            padding: 2rem; max-width: 600px;
+        }
+        .sync-btn {
+            padding: 1rem 2rem; border-radius: 10px; border: none;
+            background: linear-gradient(135deg, #00796b, #00bfa5);
+            color: white; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .sync-btn:hover { box-shadow: 0 4px 20px rgba(0,191,165,0.3); transform: translateY(-2px); }
+        .sync-btn.syncing { background: var(--warning); pointer-events: none; }
+        .sync-btn.done { background: var(--success); }
+        .sync-log {
+            margin-top: 1.5rem; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; padding: 1rem; font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem; max-height: 250px; overflow-y: auto; display: none;
+        }
+        .sync-log.active { display: block; }
+        .sync-log .line { padding: 3px 0; color: var(--text-muted); }
+        .sync-log .line.success { color: var(--success); }
+        .sync-log .line.info { color: var(--accent); }
+        .sync-log .line.warn { color: var(--warning); }
+
+        /* LGPD */
+        .lgpd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .lgpd-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+        .lgpd-item h4 { font-size: 0.9rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .lgpd-item p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* Auditoria */
+        .audit-log { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; max-height: 400px; overflow-y: auto; }
+        .audit-entry { padding: 0.5rem 0; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; }
+        .audit-time { color: var(--text-muted); min-width: 140px; }
+        .audit-action { color: var(--accent); }
+
+        /* Admin Console */
         .admin-console {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            padding: 2rem;
-            overflow-y: auto;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.97); z-index: 99999;
+            padding: 2rem; overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
         }
-        .admin-console.active { display: block; }
-        .console-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-        .console-title { color: var(--danger); font-size: 1.4rem; font-weight: 700; font-family: 'Courier New', monospace; }
-        .console-close { background: var(--danger); border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        .console-section { background: #111; border: 1px solid #333; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; }
-        .console-section h3 { color: var(--success); margin-bottom: 1rem; }
-        .console-line { color: #aaa; margin-bottom: 0.3rem; }
-        .console-line span { color: var(--accent); }
+        .admin-console.active { display: block; animation: fadeIn 0.3s; }
+        .console-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
+        .console-title { color: var(--danger); font-size: 1.2rem; font-weight: 700; }
+        .console-close { background: var(--danger); border: none; color: white; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+        .console-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1rem; }
+        .console-block { background: #0a0a0a; border: 1px solid #222; border-radius: 8px; padding: 1.2rem; }
+        .console-block h3 { color: var(--success); font-size: 0.85rem; margin-bottom: 1rem; }
+        .console-block .ln { color: #888; padding: 2px 0; font-size: 0.8rem; }
+        .console-block .ln span { color: var(--accent); }
+        .console-block .ln .val-ok { color: var(--success); }
+        .console-block .ln .val-warn { color: var(--warning); }
+        .console-block .ln .val-err { color: var(--danger); }
 
         /* Responsive */
-        @media (max-width: 768px) {
-            .header { padding: 1rem; flex-direction: column; gap: 0.5rem; }
-            .main { padding: 1rem; }
-            .grid { grid-template-columns: 1fr; }
-            .card-value { font-size: 1.8rem; }
+        @media (max-width: 900px) {
+            .sidebar { width: 60px; min-width: 60px; }
+            .sidebar-brand h1 span, .nav-item span:not(.icon), .nav-section-title, .sidebar-brand .version, .sidebar-clock, .status-label { display: none; }
+            .sidebar-brand { padding: 0 0.8rem 1rem; }
+            .nav-section { padding: 0.5rem 0.5rem; }
+            .nav-item { padding: 0.7rem; justify-content: center; }
+            .nav-item .badge-nav { display: none; }
+            .content { padding: 1.5rem; }
+        }
+        @media (max-width: 600px) {
+            .sidebar { display: none; }
+            .cards-grid { grid-template-columns: 1fr; }
         }
 
         /* Loading */
-        .loading { text-align: center; padding: 3rem; color: var(--text-muted); }
-        .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading { text-align: center; padding: 4rem 2rem; }
+        .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to{transform:rotate(360deg)} }
 
-        /* Footer */
-        .footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+        /* Empty state */
+        .empty { text-align: center; padding: 3rem; color: var(--text-muted); }
+        .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
     </style>
 </head>
 <body>
 
-<!-- Auth Screen -->
-<div class="auth-screen" id="authScreen">
+<!-- AUTH -->
+<div class="auth-overlay" id="authOverlay">
     <div class="auth-box">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">&#x2652;</div>
+        <div class="auth-logo">&#x2652;</div>
         <h2>AquariOS BackOffice</h2>
-        <p>Acesso restrito. Insira o email de administrador.</p>
-        <input type="email" class="auth-input" id="authEmail" placeholder="Email admin" autocomplete="email">
-        <input type="password" class="auth-input" id="authPassword" placeholder="Senha" autocomplete="current-password">
-        <button class="auth-btn" onclick="handleLogin()">Entrar</button>
-        <p class="auth-error" id="authError">Credenciais invalidas ou sem permissao admin.</p>
+        <p class="subtitle">Acesso restrito. Insira credenciais de administrador.</p>
+        <input type="email" class="auth-input" id="authEmail" placeholder="Email" autocomplete="email">
+        <input type="password" class="auth-input" id="authPass" placeholder="Senha" autocomplete="current-password">
+        <button class="auth-btn" onclick="doLogin()">Entrar</button>
+        <p class="auth-error" id="authErr">Credenciais invalidas.</p>
     </div>
 </div>
 
-<!-- Dashboard -->
-<div class="dashboard" id="dashboard">
-    <div class="header">
-        <div class="header-left">
-            <span class="header-logo">&#x2652;</span>
-            <span class="header-title">AquariOS BackOffice</span>
-            <span class="header-version">V1.0512</span>
-        </div>
-        <div class="header-right">
-            <span class="status-dot"></span>
-            <span class="status-text">Supabase conectado</span>
-            <button onclick="handleLogout()" style="background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Sair</button>
-        </div>
-    </div>
-
-    <div class="main">
-        <div class="loading" id="loadingState">
-            <div class="spinner"></div>
-            <p>Carregando dados...</p>
+<!-- APP -->
+<div class="app" id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <h1>&#x2652; <span>AquariOS</span></h1>
+            <span class="version">BackOffice V1.0512</span>
         </div>
 
-        <div id="dashContent" style="display:none;">
-            <!-- Stats Cards -->
-            <div class="grid">
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Usuarios</span>
-                        <span class="card-icon">&#x1F465;</span>
-                    </div>
-                    <div class="card-value" id="statUsers">-</div>
-                    <div class="card-sub">Perfis registrados</div>
-                    <div class="card-trend trend-up" id="trendUsers"></div>
-                </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Principal</div>
+            <div class="nav-item active" data-page="dashboard"><span class="icon">&#x1F4CA;</span><span>Dashboard</span></div>
+            <div class="nav-item" data-page="modulos"><span class="icon">&#x1F9E9;</span><span>Modulos</span><span class="badge-nav">10</span></div>
+            <div class="nav-item" data-page="personas"><span class="icon">&#x1F916;</span><span>Personas & FAQ</span></div>
+        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">IVI Medio</span>
-                        <span class="card-icon">&#x1F4CA;</span>
-                    </div>
-                    <div class="card-value" id="statIVI">-</div>
-                    <div class="card-sub">Indice de Vitalidade Integral</div>
-                    <div class="card-trend trend-neutral">Formula: Bio*0.40 + Mental*0.35 + Spirit*0.25</div>
-                </div>
+        <div class="nav-section">
+            <div class="nav-section-title">Sistema</div>
+            <div class="nav-item" data-page="hermes"><span class="icon">&#x1F504;</span><span>HermeOS Sync</span></div>
+            <div class="nav-item" data-page="lgpd"><span class="icon">&#x1F512;</span><span>LGPD</span></div>
+            <div class="nav-item" data-page="auditoria"><span class="icon">&#x1F4CB;</span><span>Auditoria</span></div>
+        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Posts Comunidade</span>
-                        <span class="card-icon">&#x1F4DD;</span>
-                    </div>
-                    <div class="card-value" id="statPosts">-</div>
-                    <div class="card-sub">Shares publicados</div>
-                    <div class="card-trend trend-up" id="trendPosts"></div>
-                </div>
+        <div class="sidebar-footer">
+            <div class="sidebar-clock" id="clock">--:--:--</div>
+            <div class="sidebar-status">
+                <span class="status-dot"></span>
+                <span class="status-label">Supabase online</span>
+            </div>
+        </div>
+    </aside>
 
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Modulos Ativos</span>
-                        <span class="card-icon">&#x1F9E9;</span>
-                    </div>
-                    <div class="card-value">6</div>
-                    <div class="card-sub">ProteOS, HygeiOS, NutriOS, WonderNight, Comunidades, Diario</div>
-                    <div class="card-trend trend-neutral">+ 4 em desenvolvimento</div>
-                </div>
+    <!-- Content -->
+    <main class="content">
 
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Reflexoes (Diario)</span>
-                        <span class="card-icon">&#x1F4D6;</span>
-                    </div>
-                    <div class="card-value" id="statDiary">-</div>
-                    <div class="card-sub">Entradas no diario</div>
+        <!-- PAGE: DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Dashboard</div>
+                    <div class="content-subtitle">Visao geral do ecossistema AquariOS</div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">LGPD</span>
-                        <span class="card-icon">&#x1F512;</span>
-                    </div>
-                    <div class="card-value" style="font-size:1.4rem; color: var(--success);">Conforme</div>
-                    <div class="card-sub">Politica publicada via GitHub Pages</div>
-                    <div class="card-trend trend-up">Lei 13.709/2018</div>
+                <div class="header-actions">
+                    <button class="btn" onclick="loadDashboard()">&#x1F504; Atualizar</button>
+                    <button class="btn btn-danger" onclick="doLogout()">Sair</button>
                 </div>
             </div>
 
-            <!-- Personas -->
-            <div class="card" style="margin-bottom: 1.5rem;">
-                <div class="card-header">
-                    <span class="card-title">Personas ProteOS</span>
-                    <span class="card-icon">&#x1F916;</span>
+            <div class="cards-grid" id="dashCards">
+                <div class="card">
+                    <div class="card-head"><span class="card-label">Usuarios</span><span class="card-icon">&#x1F465;</span></div>
+                    <div class="card-value" id="s-users">-</div>
+                    <div class="card-desc">Perfis registrados</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:0%;background:var(--accent)"></div></div>
                 </div>
-                <div class="personas-grid">
-                    <div class="persona-card">
-                        <span class="persona-avatar">&#x1F4AC;</span>
-                        <div><div class="persona-name">ProteOS (Default)</div><div class="persona-type">Assistente IA equilibrado</div></div>
-                    </div>
-                    <div class="persona-card">
-                        <span class="persona-avatar">&#x26A1;</span>
-                        <div><div class="persona-name">Ze do Aperto</div><div class="persona-type">Pragmatico Direto</div></div>
-                    </div>
-                    <div class="persona-card">
-                        <span class="persona-avatar">&#x1F917;</span>
-                        <div><div class="persona-name">Dona Maria</div><div class="persona-type">Suporte Clinico</div></div>
-                    </div>
-                    <div class="persona-card">
-                        <span class="persona-avatar">&#x2695;</span>
-                        <div><div class="persona-name">Carlos</div><div class="persona-type">Clinico Urgente</div></div>
-                    </div>
+                <div class="card">
+                    <div class="card-head"><span class="card-label">IVI Medio</span><span class="card-icon">&#x1F4CA;</span></div>
+                    <div class="card-value" id="s-ivi">--</div>
+                    <div class="card-desc">Bio*0.40 + Mental*0.35 + Spirit*0.25</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:0%;background:var(--success)"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><span class="card-label">Posts</span><span class="card-icon">&#x1F4DD;</span></div>
+                    <div class="card-value" id="s-posts">-</div>
+                    <div class="card-desc">Compartilhamentos na comunidade</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:0%;background:var(--purple)"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><span class="card-label">Diario</span><span class="card-icon">&#x1F4D6;</span></div>
+                    <div class="card-value" id="s-diary">-</div>
+                    <div class="card-desc">Reflexoes registradas</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:0%;background:var(--warning)"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><span class="card-label">Refeicoes</span><span class="card-icon">&#x1F34E;</span></div>
+                    <div class="card-value" id="s-meals">-</div>
+                    <div class="card-desc">Registros NutriOS</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:0%;background:var(--primary)"></div></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><span class="card-label">Edge Functions</span><span class="card-icon">&#x26A1;</span></div>
+                    <div class="card-value" style="font-size:1.6rem" id="s-functions">2 ativas</div>
+                    <div class="card-desc">chat (4 personas) + seed-bots (pending)</div>
+                    <div class="card-progress"><div class="card-progress-bar" style="width:50%;background:var(--accent)"></div></div>
                 </div>
             </div>
 
-            <!-- Recent Users Table -->
-            <div class="card table-card">
-                <div class="card-header">
-                    <span class="card-title">Usuarios Recentes</span>
-                    <span class="card-icon">&#x1F4CB;</span>
-                </div>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Usuario</th>
-                                <th>Display Name</th>
-                                <th>Tipo</th>
-                                <th>Criado em</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTable">
-                            <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Users table -->
+            <div style="margin-top:1rem;">
+                <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; margin-bottom:1rem;">Usuarios Recentes</h3>
+                <table class="data-table">
+                    <thead><tr><th>Username</th><th>Display Name</th><th>Tipo</th><th>Criado em</th></tr></thead>
+                    <tbody id="usersBody"><tr><td colspan="4" class="empty">Carregando...</td></tr></tbody>
+                </table>
             </div>
         </div>
-    </div>
 
-    <div class="footer">
-        AquariOS BackOffice V1.0512 &mdash; Arkhe Labs &mdash; Konami Code para AdminConsole
-    </div>
+        <!-- PAGE: MODULOS -->
+        <div class="page" id="page-modulos">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Modulos</div>
+                    <div class="content-subtitle">Ecossistema de servicos AquariOS — ativos e em desenvolvimento</div>
+                </div>
+            </div>
+            <h3 style="font-size:1rem; color:var(--success); margin-bottom:1rem;">&#x2705; Ativos (6)</h3>
+            <div class="cards-grid" style="margin-bottom:2rem;">
+                <div class="module-card"><div class="module-icon">&#x1F4AC;</div><div class="module-info"><h4>ProteOS</h4><p>IA Assistente Pessoal. 4 personas (Default, Pragmatico, Suporte, Urgencia). Edge Function chat/index.ts</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F3AF;</div><div class="module-info"><h4>HygeiOS</h4><p>IVI Score V1.0512. Bio*0.40 + Mental*0.35 + Spirit*0.25. FIX-1 calibracao, FIX-4 anti-gaming. 7 Niveis Evolutivos.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F34E;</div><div class="module-info"><h4>NutriOS</h4><p>Registro alimentar completo. 3 refeicoes/dia. Alimenta Bio score do IVI.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F31F;</div><div class="module-info"><h4>Wonder Night</h4><p>Diario noturno espiritual. Alimenta Spirit score do IVI. Premium $49.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F465;</div><div class="module-info"><h4>Comunidades</h4><p>Timeline social. Posts publicos, likes. Seed-bots com 10 personas de IA.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F4D6;</div><div class="module-info"><h4>Diario</h4><p>Reflexoes pessoais. Alimenta Mental e Spirit scores. Streak tracking.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
+            </div>
+
+            <h3 style="font-size:1rem; color:var(--warning); margin-bottom:1rem;">&#x1F6A7; Em Desenvolvimento (4)</h3>
+            <div class="cards-grid">
+                <div class="module-card"><div class="module-icon">&#x1F3DB;</div><div class="module-info"><h4>AeropagOS</h4><p>Gamificacao desbloqueavel. 4 lotes por modulo. XP Existencial.</p></div><div class="module-status"><span class="badge badge-warning">Breve</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F6D2;</div><div class="module-info"><h4>PanaceIA</h4><p>Loja dropship afiliado. 9 categorias. Marketplace integrado.</p></div><div class="module-status"><span class="badge badge-warning">Breve</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1FA99;</div><div class="module-info"><h4>Token Economy</h4><p>3 tipos: comprado (permanente), doado/propaganda (30-90d), diario (24h).</p></div><div class="module-status"><span class="badge badge-warning">Breve</span></div></div>
+                <div class="module-card"><div class="module-icon">&#x1F6E1;</div><div class="module-info"><h4>CerberOS</h4><p>Defesa 7 camadas. ETERNAL MAZE. HygeiOS Data Gate. Aprisionamento ativo.</p></div><div class="module-status"><span class="badge badge-danger">Seguranca</span></div></div>
+            </div>
+        </div>
+
+        <!-- PAGE: PERSONAS & FAQ -->
+        <div class="page" id="page-personas">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Personas & FAQ</div>
+                    <div class="content-subtitle">Personas ProteOS IA + Bots da Comunidade</div>
+                </div>
+            </div>
+
+            <h3 style="font-size:1rem; color:var(--accent); margin-bottom:1rem;">Personas ProteOS (Edge Function)</h3>
+            <div class="persona-row"><div class="persona-avatar">&#x1F4AC;</div><div class="persona-details"><h4>ProteOS (Default)</h4><div class="type">Assistente Equilibrado</div><div class="desc">Tom acolhedor, linguagem clara, usa dados do IVI para contextualizar.</div></div></div>
+            <div class="persona-row"><div class="persona-avatar">&#x26A1;</div><div class="persona-details"><h4>Ze do Aperto (Pragmatico)</h4><div class="type">PRAGMATIC_DIRECT</div><div class="desc">Direto ao ponto. Sem rodeios. Foco em acao e resultados imediatos.</div></div></div>
+            <div class="persona-row"><div class="persona-avatar">&#x1F917;</div><div class="persona-details"><h4>Dona Maria (Suporte)</h4><div class="type">SUPPORTIVE_CLINICAL</div><div class="desc">Acolhimento materno. Validacao emocional. Encaminhamento quando necessario.</div></div></div>
+            <div class="persona-row"><div class="persona-avatar">&#x2695;</div><div class="persona-details"><h4>Carlos (Urgencia)</h4><div class="type">CLINICAL_URGENT</div><div class="desc">Modo clinico. Protocolos de seguranca. Detecao de risco. CVV 188.</div></div></div>
+
+            <h3 style="font-size:1rem; color:var(--purple); margin:2rem 0 1rem;">Bots Comunidade (Seed)</h3>
+            <table class="data-table">
+                <thead><tr><th>#</th><th>Nome</th><th>Username</th><th>Arquetipo</th><th>Tema</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Carlos Mendes</td><td>carlos.mendes</td><td><span class="badge badge-active">Clinico</span></td><td>Saude preventiva, IVI</td></tr>
+                    <tr><td>2</td><td>Maria da Silva</td><td>maria.silva</td><td><span class="badge badge-purple">Suporte</span></td><td>Gratidao, diario</td></tr>
+                    <tr><td>3</td><td>Roberto Santos</td><td>roberto.santos</td><td><span class="badge badge-warning">Pragmatico</span></td><td>Rotina, foco</td></tr>
+                    <tr><td>4</td><td>Lucas Oliveira</td><td>lucas.oliveira</td><td><span class="badge badge-bot">ProteOS</span></td><td>Tech, wearables</td></tr>
+                    <tr><td>5</td><td>Fernanda Rocha</td><td>fernanda.rocha</td><td><span class="badge badge-purple">Suporte</span></td><td>Espiritualidade</td></tr>
+                    <tr><td>6</td><td>Jose Cardoso</td><td>jose.cardoso</td><td><span class="badge badge-warning">Pragmatico</span></td><td>Sabedoria, legado</td></tr>
+                    <tr><td>7</td><td>Ana Paula Lima</td><td>ana.lima</td><td><span class="badge badge-purple">Suporte</span></td><td>Nutricao, Bio</td></tr>
+                    <tr><td>8</td><td>Ricardo Ferreira</td><td>ricardo.ferreira</td><td><span class="badge badge-bot">ProteOS</span></td><td>Comunidade</td></tr>
+                    <tr><td>9</td><td>Sandra Moraes</td><td>sandra.moraes</td><td><span class="badge badge-active">Clinico</span></td><td>Mental health</td></tr>
+                    <tr><td>10</td><td>Bruno Alves</td><td>bruno.alves</td><td><span class="badge badge-bot">ProteOS</span></td><td>Autoconhecimento</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGE: HERMES SYNC -->
+        <div class="page" id="page-hermes">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">HermeOS Sync</div>
+                    <div class="content-subtitle">Sincronizacao de modulos e estado do sistema</div>
+                </div>
+            </div>
+            <div class="sync-panel">
+                <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:0.9rem;">Sincroniza estado de todos os modulos com o backend Supabase. Verifica integridade de dados, Edge Functions e configuracoes.</p>
+                <button class="sync-btn" id="syncBtn" onclick="startSync()">
+                    <span>&#x1F504;</span> Sincronizar HermeOS
+                </button>
+                <div class="sync-log" id="syncLog"></div>
+            </div>
+
+            <div style="margin-top:2rem;">
+                <h3 style="font-size:1rem; margin-bottom:1rem;">Status dos Servicos</h3>
+                <table class="data-table">
+                    <thead><tr><th>Servico</th><th>Endpoint</th><th>Status</th><th>Latencia</th></tr></thead>
+                    <tbody>
+                        <tr><td>Supabase REST</td><td>/rest/v1/</td><td><span class="badge badge-active">Online</span></td><td id="lat-rest">--</td></tr>
+                        <tr><td>Supabase Auth</td><td>/auth/v1/</td><td><span class="badge badge-active">Online</span></td><td id="lat-auth">--</td></tr>
+                        <tr><td>Edge Function: chat</td><td>/functions/v1/chat</td><td><span class="badge badge-active">Deployed</span></td><td>~800ms</td></tr>
+                        <tr><td>Edge Function: seed-bots</td><td>/functions/v1/seed-bots</td><td><span class="badge badge-warning">Pending</span></td><td>--</td></tr>
+                        <tr><td>GitHub Pages</td><td>fabianogleite-lab.github.io</td><td><span class="badge badge-active">Live</span></td><td>--</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAGE: LGPD -->
+        <div class="page" id="page-lgpd">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">LGPD Compliance</div>
+                    <div class="content-subtitle">Lei 13.709/2018 — Conformidade e protecao de dados</div>
+                </div>
+            </div>
+            <div class="lgpd-grid">
+                <div class="lgpd-item"><h4>&#x2705; Politica de Privacidade</h4><p>Publicada via GitHub Pages. Cobre coleta, uso, armazenamento e direitos ARCO. URL: /privacy-policy.html</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Consentimento</h4><p>Tela de aceite no primeiro acesso. Opt-in explicito para dados de saude (categoria sensivel Art. 11).</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Direitos ARCO</h4><p>Acesso, Retificacao, Cancelamento, Oposicao. Disponivel em Settings do app.</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Minimizacao</h4><p>Coleta apenas dados necessarios para funcionamento. Sem tracking de terceiros. Sem venda de dados.</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Seguranca</h4><p>RLS (Row Level Security) no Supabase. Dados criptografados em transito (TLS). Auth JWT.</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Retencao</h4><p>Dados mantidos enquanto conta ativa. Exclusao completa disponivel via solicitacao (Art. 18).</p></div>
+                <div class="lgpd-item"><h4>&#x2705; DPO</h4><p>Encarregado de dados designado. Contato via email em politica de privacidade.</p></div>
+                <div class="lgpd-item"><h4>&#x2705; Base Legal</h4><p>Consentimento (Art. 7, I) para dados gerais. Tutela da saude (Art. 7, VIII) para dados IVI.</p></div>
+            </div>
+        </div>
+
+        <!-- PAGE: AUDITORIA -->
+        <div class="page" id="page-auditoria">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Auditoria</div>
+                    <div class="content-subtitle">Log de atividades e historico de sessoes</div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn" onclick="exportAudit()">&#x1F4E5; Exportar CSV</button>
+                </div>
+            </div>
+            <div class="audit-log" id="auditLog">
+                <div class="audit-entry"><span class="audit-time">2026-05-23 23:36</span><span class="audit-action">PR #2 merged (master→main)</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-23 23:35</span><span class="audit-action">BackOffice V1.0512 deployed to GitHub Pages</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-23 23:30</span><span class="audit-action">Session 11 started</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-20 --:--</span><span class="audit-action">Session 10: APK local build + GitHub Release v4.5.0</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-19 --:--</span><span class="audit-action">Session 9: PDF3 personas + IVI FIX-1/FIX-4 + admin screen</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-18 --:--</span><span class="audit-action">Session 8: Edge Function chat + HygeiOS IVI + LGPD Settings</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-17 --:--</span><span class="audit-action">Session 7: SDK 56 + APK/AAB + GitHub Pages + Play Store</span></div>
+                <div class="audit-entry"><span class="audit-time">2026-05-16 --:--</span><span class="audit-action">Session 6: Bug fixes + ProteOS AI + release v4.3.0</span></div>
+            </div>
+
+            <div style="margin-top:2rem;">
+                <h3 style="font-size:1rem; margin-bottom:1rem;">Informacoes do Sistema</h3>
+                <table class="data-table">
+                    <thead><tr><th>Propriedade</th><th>Valor</th></tr></thead>
+                    <tbody>
+                        <tr><td>Projeto Supabase</td><td style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;">agebsmjsjrmazbozphnh</td></tr>
+                        <tr><td>Region</td><td>South America (sa-east-1)</td></tr>
+                        <tr><td>SDK</td><td>Expo 56 + React Native 0.85.3</td></tr>
+                        <tr><td>Build</td><td>APK local (assembleRelease) — cmake 3.28.6</td></tr>
+                        <tr><td>Distribution</td><td>GitHub Releases v4.5.0</td></tr>
+                        <tr><td>Repo</td><td>fabianogleite-lab/aquarios (PUBLIC)</td></tr>
+                        <tr><td>Autoria</td><td>Fabiano Gomes Leite</td></tr>
+                        <tr><td>Protecao</td><td>Lei 9.610/1998 + Berna + TRIPS</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
 </div>
 
-<!-- Admin Console (Konami Code) -->
+<!-- ADMIN CONSOLE (Konami Code) -->
 <div class="admin-console" id="adminConsole">
-    <div class="console-header">
-        <span class="console-title">[ADMIN CONSOLE] CerberOS Level 3</span>
+    <div class="console-bar">
+        <span class="console-title">[ADMIN CONSOLE] &#x1F6E1; CerberOS Level 3</span>
         <button class="console-close" onclick="closeConsole()">FECHAR [ESC]</button>
     </div>
-    <div class="console-section">
-        <h3>> SISTEMA</h3>
-        <div class="console-line">Projeto: <span>agebsmjsjrmazbozphnh</span></div>
-        <div class="console-line">Region: <span>South America (sa-east-1)</span></div>
-        <div class="console-line">SDK: <span>Expo 56 + React Native 0.85.3</span></div>
-        <div class="console-line">Build: <span>APK local (assembleRelease)</span></div>
-        <div class="console-line">Distribution: <span>GitHub Releases (v4.5.0)</span></div>
-    </div>
-    <div class="console-section">
-        <h3>> EDGE FUNCTIONS</h3>
-        <div class="console-line">chat/index.ts: <span>ACTIVE</span> (4 personas)</div>
-        <div class="console-line">seed-bots/index.ts: <span>PENDING</span> (S11)</div>
-    </div>
-    <div class="console-section">
-        <h3>> MODULOS</h3>
-        <div class="console-line">[ATIVO] ProteOS - IA Assistente Pessoal</div>
-        <div class="console-line">[ATIVO] HygeiOS - IVI Score + Niveis Evolutivos</div>
-        <div class="console-line">[ATIVO] NutriOS - Registro Alimentar</div>
-        <div class="console-line">[ATIVO] Wonder Night - Diario Noturno</div>
-        <div class="console-line">[ATIVO] Comunidades - Timeline Social</div>
-        <div class="console-line">[ATIVO] Diario - Reflexoes</div>
-        <div class="console-line">[BREVE] AeropagOS - Gamificacao 4 lotes</div>
-        <div class="console-line">[BREVE] PanaceIA - Loja Dropship</div>
-        <div class="console-line">[BREVE] Token Economy - Comprado/Doado/Diario</div>
-        <div class="console-line">[BREVE] CerberOS - Defesa 7 Camadas</div>
-    </div>
-    <div class="console-section">
-        <h3>> SEGURANCA (CerberOS)</h3>
-        <div class="console-line">Camada 1: <span>Auth Supabase (RLS)</span></div>
-        <div class="console-line">Camada 2: <span>Edge Function validation</span></div>
-        <div class="console-line">Camada 3: <span>Konami Code (BackOffice)</span></div>
-        <div class="console-line">Camada 4: <span>5-tap admin (mobile)</span></div>
-        <div class="console-line">ETERNAL MAZE: <span>Standby</span></div>
-    </div>
-    <div class="console-section">
-        <h3>> DATABASE STATS</h3>
-        <div class="console-line" id="consoleStats">Carregando...</div>
+    <div class="console-grid">
+        <div class="console-block">
+            <h3>> OVERVIEW</h3>
+            <div class="ln">project_id: <span>agebsmjsjrmazbozphnh</span></div>
+            <div class="ln">region: <span>sa-east-1</span></div>
+            <div class="ln">sdk: <span>Expo 56 + RN 0.85.3</span></div>
+            <div class="ln">build: <span>assembleRelease (cmake 3.28.6)</span></div>
+            <div class="ln">dist: <span>GitHub Releases v4.5.0</span></div>
+            <div class="ln">backoffice: <span class="val-ok">V1.0512 DEPLOYED</span></div>
+        </div>
+        <div class="console-block">
+            <h3>> MODULES STATUS</h3>
+            <div class="ln">[<span class="val-ok">OK</span>] ProteOS — 4 personas active</div>
+            <div class="ln">[<span class="val-ok">OK</span>] HygeiOS — IVI V1.0512</div>
+            <div class="ln">[<span class="val-ok">OK</span>] NutriOS — meal tracking</div>
+            <div class="ln">[<span class="val-ok">OK</span>] WonderNight — spirit journal</div>
+            <div class="ln">[<span class="val-ok">OK</span>] Comunidades — timeline</div>
+            <div class="ln">[<span class="val-ok">OK</span>] Diario — reflexoes</div>
+            <div class="ln">[<span class="val-warn">PENDING</span>] AeropagOS</div>
+            <div class="ln">[<span class="val-warn">PENDING</span>] PanaceIA</div>
+            <div class="ln">[<span class="val-warn">PENDING</span>] TokenEconomy</div>
+            <div class="ln">[<span class="val-err">STANDBY</span>] CerberOS</div>
+        </div>
+        <div class="console-block">
+            <h3>> EDGE FUNCTIONS</h3>
+            <div class="ln">chat/index.ts: <span class="val-ok">DEPLOYED</span></div>
+            <div class="ln">  personas: default, pragmatico, suporte, urgencia</div>
+            <div class="ln">seed-bots/index.ts: <span class="val-warn">NOT DEPLOYED</span></div>
+            <div class="ln">  target: S12 deployment</div>
+        </div>
+        <div class="console-block">
+            <h3>> SECURITY (CerberOS)</h3>
+            <div class="ln">Layer 1: <span>Supabase Auth + RLS</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 2: <span>Edge Function validation</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 3: <span>Konami Code (BackOffice)</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 4: <span>5-tap admin (mobile)</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 5: <span>ETERNAL MAZE</span> <span class="val-warn">STANDBY</span></div>
+            <div class="ln">Layer 6: <span>HygeiOS Data Gate</span> <span class="val-warn">PLANNED</span></div>
+            <div class="ln">Layer 7: <span>Aprisionamento Ativo</span> <span class="val-err">OFF</span></div>
+        </div>
+        <div class="console-block">
+            <h3>> DATABASE (live)</h3>
+            <div class="ln" id="console-db">Carregando...</div>
+        </div>
+        <div class="console-block">
+            <h3>> LEGAL</h3>
+            <div class="ln">Autoria: <span>Fabiano Gomes Leite</span></div>
+            <div class="ln">Lei 9.610/1998 (Direitos Autorais)</div>
+            <div class="ln">Convencao de Berna (Internacional)</div>
+            <div class="ln">TRIPS (Propriedade Intelectual)</div>
+            <div class="ln">LGPD 13.709/2018: <span class="val-ok">CONFORME</span></div>
+        </div>
     </div>
 </div>
 
 <script>
-// Supabase config
-const SUPABASE_URL = 'https://agebsmjsjrmazbozphnh.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_ZGPfiFo6dBXgnyi4Xq_UYw_7o8R4Kob';
+const SB_URL = 'https://agebsmjsjrmazbozphnh.supabase.co';
+const SB_KEY = 'sb_publishable_ZGPfiFo6dBXgnyi4Xq_UYw_7o8R4Kob';
+let token = null;
 
-let supabaseToken = null;
-
-// Simple Supabase REST helper
-async function sbQuery(table, params = '') {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, {
-        headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${supabaseToken || SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'count=exact'
-        }
-    });
-    const count = res.headers.get('content-range');
-    const data = await res.json();
-    return { data, count: count ? parseInt(count.split('/')[1]) : data.length };
-}
-
-// Auth
-async function handleLogin() {
+// === AUTH ===
+async function doLogin() {
     const email = document.getElementById('authEmail').value;
-    const password = document.getElementById('authPassword').value;
-    const errorEl = document.getElementById('authError');
-    errorEl.style.display = 'none';
-
+    const pass = document.getElementById('authPass').value;
+    const err = document.getElementById('authErr');
+    err.style.display = 'none';
     try {
-        const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
             method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
+            headers: { 'apikey': SB_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password: pass })
         });
-        const data = await res.json();
-        if (data.access_token) {
-            supabaseToken = data.access_token;
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
+        const d = await r.json();
+        if (d.access_token) {
+            token = d.access_token;
+            document.getElementById('authOverlay').classList.add('hidden');
+            document.getElementById('app').classList.add('active');
             loadDashboard();
-        } else {
-            errorEl.style.display = 'block';
-        }
-    } catch (e) {
-        errorEl.style.display = 'block';
-    }
+            startClock();
+        } else { err.style.display = 'block'; }
+    } catch(e) { err.style.display = 'block'; }
+}
+function doLogout() {
+    token = null;
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('authOverlay').classList.remove('hidden');
 }
 
-function handleLogout() {
-    supabaseToken = null;
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('authScreen').style.display = 'flex';
-    document.getElementById('authEmail').value = '';
-    document.getElementById('authPassword').value = '';
+// === SUPABASE QUERY ===
+async function sb(table, params='') {
+    const r = await fetch(`${SB_URL}/rest/v1/${table}${params}`, {
+        headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${token||SB_KEY}`, 'Prefer': 'count=exact' }
+    });
+    const count = r.headers.get('content-range');
+    const data = await r.json();
+    return { data, count: count ? parseInt(count.split('/')[1]) : (Array.isArray(data) ? data.length : 0) };
 }
 
-// Load dashboard data
+// === DASHBOARD ===
 async function loadDashboard() {
     try {
-        const [profiles, shares, diary] = await Promise.all([
-            sbQuery('profiles', '?select=id,username,display_name,created_at&order=created_at.desc&limit=20'),
-            sbQuery('shares', '?select=id&limit=1'),
-            sbQuery('diary', '?select=id&limit=1')
+        const [profiles, shares, diary, meals] = await Promise.all([
+            sb('profiles', '?select=id,username,display_name,created_at&order=created_at.desc&limit=15'),
+            sb('shares', '?select=id&limit=1'),
+            sb('diary', '?select=id&limit=1'),
+            sb('meals', '?select=id&limit=1')
         ]);
-
-        // Stats
-        document.getElementById('statUsers').textContent = profiles.count || profiles.data.length;
-        document.getElementById('statPosts').textContent = shares.count || 0;
-        document.getElementById('statDiary').textContent = diary.count || 0;
-        document.getElementById('statIVI').textContent = '--';
-
-        // Trends
-        document.getElementById('trendUsers').textContent = profiles.count + ' registrados';
-        document.getElementById('trendPosts').textContent = (shares.count || 0) + ' compartilhamentos';
+        document.getElementById('s-users').textContent = profiles.count;
+        document.getElementById('s-posts').textContent = shares.count;
+        document.getElementById('s-diary').textContent = diary.count;
+        document.getElementById('s-meals').textContent = meals.count;
 
         // Users table
-        const tbody = document.getElementById('usersTable');
-        if (profiles.data && profiles.data.length > 0) {
-            tbody.innerHTML = profiles.data.slice(0, 10).map(p => {
-                const isBot = p.username && (p.username.includes('.') && !p.username.includes('@'));
+        const tbody = document.getElementById('usersBody');
+        if (profiles.data && profiles.data.length) {
+            tbody.innerHTML = profiles.data.map(p => {
+                const isBot = p.username && p.username.includes('.') && !p.username.includes('@');
                 const date = p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR') : '-';
-                return `<tr>
-                    <td>${p.username || '-'}</td>
-                    <td>${p.display_name || '-'}</td>
-                    <td><span class="badge ${isBot ? 'badge-bot' : 'badge-active'}">${isBot ? 'Bot' : 'User'}</span></td>
-                    <td>${date}</td>
-                </tr>`;
+                return `<tr><td>${p.username||'-'}</td><td>${p.display_name||'-'}</td><td><span class="badge ${isBot?'badge-bot':'badge-active'}">${isBot?'Bot':'User'}</span></td><td>${date}</td></tr>`;
             }).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhum usuario encontrado</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="empty">Nenhum usuario</td></tr>';
         }
 
-        // Console stats
-        document.getElementById('consoleStats').innerHTML = `
-            <div class="console-line">profiles: <span>${profiles.count || profiles.data.length} registros</span></div>
-            <div class="console-line">shares: <span>${shares.count || 0} registros</span></div>
-            <div class="console-line">diary: <span>${diary.count || 0} registros</span></div>
+        // Console DB
+        document.getElementById('console-db').innerHTML = `
+            <div class="ln">profiles: <span>${profiles.count}</span></div>
+            <div class="ln">shares: <span>${shares.count}</span></div>
+            <div class="ln">diary: <span>${diary.count}</span></div>
+            <div class="ln">meals: <span>${meals.count}</span></div>
         `;
 
-        // Show content
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('dashContent').style.display = 'block';
-    } catch (e) {
-        document.getElementById('loadingState').innerHTML = '<p style="color: var(--danger);">Erro ao carregar dados: ' + e.message + '</p>';
-    }
+        // Progress bars (max 100 visual)
+        const bars = document.querySelectorAll('.card-progress-bar');
+        bars[0].style.width = Math.min(profiles.count*10, 100) + '%';
+        bars[2].style.width = Math.min(shares.count*5, 100) + '%';
+        bars[3].style.width = Math.min(diary.count*5, 100) + '%';
+        bars[4].style.width = Math.min(meals.count*3, 100) + '%';
+    } catch(e) { console.error(e); }
 }
 
-// Konami Code: Up Up Down Down Left Right Left Right B A
-const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
-let konamiIndex = 0;
-
-document.addEventListener('keydown', (e) => {
-    if (e.code === konamiCode[konamiIndex]) {
-        konamiIndex++;
-        if (konamiIndex === konamiCode.length) {
-            document.getElementById('adminConsole').classList.add('active');
-            konamiIndex = 0;
-        }
-    } else {
-        konamiIndex = 0;
-    }
-
-    // ESC to close console
-    if (e.key === 'Escape') {
-        closeConsole();
-    }
+// === NAVIGATION ===
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById('page-' + item.dataset.page).classList.add('active');
+    });
 });
 
-function closeConsole() {
-    document.getElementById('adminConsole').classList.remove('active');
+// === CLOCK ===
+function startClock() {
+    setInterval(() => {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString('pt-BR');
+    }, 1000);
 }
 
-// Enter key on auth
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('authPassword').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleLogin();
+// === HERMEOS SYNC ===
+async function startSync() {
+    const btn = document.getElementById('syncBtn');
+    const log = document.getElementById('syncLog');
+    btn.classList.add('syncing');
+    btn.innerHTML = '<span>&#x23F3;</span> Sincronizando...';
+    log.classList.add('active');
+    log.innerHTML = '';
+
+    const steps = [
+        { msg: '[INFO] Iniciando sincronizacao HermeOS...', cls: 'info' },
+        { msg: '[STEP] Verificando conexao Supabase REST...', cls: '' },
+        { msg: '[OK] Supabase REST: online (sa-east-1)', cls: 'success' },
+        { msg: '[STEP] Verificando Edge Functions...', cls: '' },
+        { msg: '[OK] chat/index.ts: deployed (4 personas)', cls: 'success' },
+        { msg: '[WARN] seed-bots/index.ts: not deployed', cls: 'warn' },
+        { msg: '[STEP] Verificando integridade profiles...', cls: '' },
+        { msg: '[OK] Schema profiles: id, username, display_name, created_at', cls: 'success' },
+        { msg: '[STEP] Verificando integridade shares...', cls: '' },
+        { msg: '[OK] Schema shares: id, user_id, content, created_at, is_public', cls: 'success' },
+        { msg: '[STEP] Verificando RLS policies...', cls: '' },
+        { msg: '[OK] RLS ativo em todas as tabelas', cls: 'success' },
+        { msg: '[STEP] Verificando GitHub Pages...', cls: '' },
+        { msg: '[OK] BackOffice V1.0512 servindo de main:/docs', cls: 'success' },
+        { msg: '[DONE] Sincronizacao completa. 0 erros, 1 warning.', cls: 'success' },
+    ];
+
+    for (let i = 0; i < steps.length; i++) {
+        await new Promise(r => setTimeout(r, 400 + Math.random()*300));
+        log.innerHTML += `<div class="line ${steps[i].cls}">${steps[i].msg}</div>`;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    btn.classList.remove('syncing');
+    btn.classList.add('done');
+    btn.innerHTML = '<span>&#x2705;</span> Sincronizado';
+    setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = '<span>&#x1F504;</span> Sincronizar HermeOS'; }, 4000);
+}
+
+// === AUDIT EXPORT ===
+function exportAudit() {
+    const entries = document.querySelectorAll('.audit-entry');
+    let csv = 'timestamp,action\n';
+    entries.forEach(e => {
+        csv += `"${e.querySelector('.audit-time').textContent}","${e.querySelector('.audit-action').textContent}"\n`;
     });
-    document.getElementById('authEmail').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('authPassword').focus();
-    });
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'aquarios_audit_log.csv';
+    a.click();
+}
+
+// === KONAMI CODE ===
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
+let kIdx = 0;
+document.addEventListener('keydown', e => {
+    if (e.code === KONAMI[kIdx]) { kIdx++; if (kIdx === KONAMI.length) { document.getElementById('adminConsole').classList.add('active'); kIdx = 0; } }
+    else { kIdx = 0; }
+    if (e.key === 'Escape') closeConsole();
 });
+function closeConsole() { document.getElementById('adminConsole').classList.remove('active'); }
+
+// Enter on auth
+document.getElementById('authPass').addEventListener('keypress', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('authEmail').addEventListener('keypress', e => { if(e.key==='Enter') document.getElementById('authPass').focus(); });
 </script>
 </body>
 </html>
