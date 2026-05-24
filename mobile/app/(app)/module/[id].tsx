@@ -7,18 +7,8 @@ import { LoadingState } from '../../../components/LoadingState';
 import { useXP } from '../../../hooks/useXP';
 import { useTokens } from '../../../hooks/useTokens';
 import { useGate } from '../../../hooks/useGate';
+import { getModuleConfig, ModuleConfig } from '../../../config/modules-registry';
 import { colors } from '../../../lib/theme';
-
-interface ModuleConfig {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  status: 'active' | 'coming_soon' | 'locked';
-  gate?: { type: 'xp' | 'plan' | 'tokens'; min_level?: number; min_plan?: string; min_tokens?: number };
-  lotes?: Array<any>;
-  [key: string]: any;
-}
 
 export default function ModuleScreen() {
   const { id } = useLocalSearchParams();
@@ -38,13 +28,19 @@ export default function ModuleScreen() {
     try {
       if (!id) return;
 
-      // Dynamically import config based on module ID
-      const configModule = await import(`../../../config/modules/${id}.json`);
-      setConfig(configModule.default);
+      // Use static registry instead of dynamic import
+      const moduleId = Array.isArray(id) ? id[0] : id;
+      const config = getModuleConfig(moduleId);
+
+      if (!config) {
+        throw new Error(`Module not found: ${moduleId}`);
+      }
+
+      setConfig(config);
     } catch (err) {
       console.error('Failed to load module config', err);
       // Fallback to coming soon page
-      router.replace({ pathname: '/coming-soon', params: { module: id as string } });
+      router.replace({ pathname: '/coming-soon', params: { module: Array.isArray(id) ? id[0] : id } });
     } finally {
       setLoading(false);
     }
