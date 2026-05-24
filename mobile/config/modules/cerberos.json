@@ -1,0 +1,69 @@
+{
+  "id": "cerberos",
+  "name": "CerberOS",
+  "icon": "🔐",
+  "description": "Segurança ativa em 7 camadas — proteção contra abuso",
+  "status": "active",
+  "layers": [
+    {
+      "id": 1,
+      "name": "Auth + RLS",
+      "status": "active",
+      "description": "Autenticação Supabase + Row Level Security em todas as tabelas"
+    },
+    {
+      "id": 2,
+      "name": "Edge Validation",
+      "status": "active",
+      "description": "Validação server-side de todas as requisições"
+    },
+    {
+      "id": 3,
+      "name": "Konami BackOffice",
+      "status": "active",
+      "description": "Admin panel oculto via Konami Code"
+    },
+    {
+      "id": 4,
+      "name": "5-tap Admin Mobile",
+      "status": "active",
+      "description": "Admin menu desbloqueável no app"
+    },
+    {
+      "id": 5,
+      "name": "ETERNAL MAZE",
+      "status": "planned",
+      "description": "Honeypot routes para detectar bots"
+    },
+    {
+      "id": 6,
+      "name": "HygeiOS Data Gate",
+      "status": "planned",
+      "description": "Isolamento de dados de saúde com encriptação adicional"
+    },
+    {
+      "id": 7,
+      "name": "Aprisionamento Ativo",
+      "status": "planned",
+      "description": "Detecção e bloqueio automático de comportamento malicioso"
+    }
+  ],
+  "rate_limits": {
+    "chat": {
+      "requests_per_minute": 10,
+      "daily_max": 100
+    },
+    "seed_bots": {
+      "admin_only": true
+    },
+    "engine": {
+      "requests_per_minute": 30
+    }
+  },
+  "honeypot_routes": [
+    "/admin",
+    "/api/secret",
+    "/debug",
+    "/config"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "aeropagos",
+  "name": "AeropagOS",
+  "icon": "🏛",
+  "description": "Gamificação desbloqueável por lotes — progresso estruturado com metas claras",
+  "status": "coming_soon",
+  "gate": {
+    "type": "xp",
+    "min_level": 3
+  },
+  "lotes": [
+    {
+      "id": 1,
+      "name": "Fundamentos",
+      "xp_required": 0,
+      "features": [
+        "Onboarding guiado",
+        "Dashboard XP em tempo real",
+        "Sistema de badges básicas"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Expansão",
+      "xp_required": 500,
+      "features": [
+        "Leaderboard da comunidade",
+        "Desafios semanais desbloqueados",
+        "Acesso a achievements especiais",
+        "Taxa bônus XP +20%"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Maestria",
+      "xp_required": 1500,
+      "features": [
+        "Modo mentor (ajuda outros usuários)",
+        "Customização de avatar",
+        "Badge exclusiva 'Mestre'",
+        "Acesso a desafios épicos"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Transcendência",
+      "xp_required": 5000,
+      "features": [
+        "Status especial no perfil",
+        "Ability para criar desafios personalizados",
+        "Acesso ao Discord VIP",
+        "Prioridade no support"
+      ]
+    }
+  ]
+}
