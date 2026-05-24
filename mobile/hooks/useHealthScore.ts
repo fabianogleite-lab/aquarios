@@ -2,8 +2,8 @@
 // Implementação do Scoring Engine (M-04)
 // Vide: memory/integration_roadmap_s13_s15.md § 1.2
 
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useAuth } from '@clerk/clerk-react';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../store/auth';
 
 export interface ScoreResult {
   userId: string;
@@ -16,25 +16,24 @@ export interface ScoreResult {
 }
 
 export function useHealthScore() {
-  const supabase = useSupabaseClient();
-  const { session } = useAuth();
+  const { user } = useAuthStore();
 
   const calculateHealthScore = async (): Promise<ScoreResult | null> => {
-    if (!session?.user?.id) return null;
+    if (!user?.id) return null;
 
     try {
       // Fetch telemetry data for user
       const { data: telemetry } = await supabase
         .from('telemetry_vitality_logs')
         .select('metric_type, calculated_score')
-        .eq('user_id', session.user.id)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50);
 
       if (!telemetry || telemetry.length === 0) {
         // Default score for new users
         return {
-          userId: session.user.id,
+          userId: user.id,
           totalScore: 0.5,
           healthLevel: 50,
           planTier: 'Onboarding',
@@ -100,7 +99,7 @@ export function useHealthScore() {
       if (dimensions.stress_regulation < 0.4) patterns.push('stress_overload');
 
       return {
-        userId: session.user.id,
+        userId: user.id,
         totalScore,
         healthLevel,
         planTier,

@@ -1,5 +1,5 @@
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useAuth } from '@clerk/clerk-react';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../store/auth';
 import { useState } from 'react';
 
 interface EconomyEngineResult {
@@ -9,8 +9,7 @@ interface EconomyEngineResult {
 }
 
 export function useEconomyEngine() {
-  const supabase = useSupabaseClient();
-  const { session } = useAuth();
+  const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
   const callEngine = async (
@@ -19,7 +18,7 @@ export function useEconomyEngine() {
   ): Promise<EconomyEngineResult> => {
     setLoading(true);
 
-    if (!session?.user?.id) {
+    if (!user?.id) {
       return { success: false, error: 'User not authenticated' };
     }
 
@@ -28,7 +27,7 @@ export function useEconomyEngine() {
         body: {
           action,
           data,
-          userId: session.user.id,
+          userId: user.id,
         },
       });
 

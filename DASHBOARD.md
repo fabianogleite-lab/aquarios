@@ -1,5 +1,5 @@
 # 🏗️ AquariOS — Developer Dashboard
-**Status:** S14 COMPLETO | App v1.0512 | 24 de maio de 2026
+**Status:** S15 EM ANDAMENTO | App v4.6.0 | 24 de maio de 2026 (18:55)
 
 ---
 
@@ -7,12 +7,12 @@
 
 | Métrica | Status | Detalhe |
 |---------|--------|---------|
-| **Sessões Completas** | 14/16 | S1-S14 ✅ (S15-S16 planejado) |
-| **Linhas de Código** | ~15,000 | Mobile app + backend functions |
+| **Sessões Completas** | 15/16 | S1-S15 ✅ (S16 planejado) |
+| **Linhas de Código** | ~16,500 | Mobile app + backend + Edge Functions |
 | **Módulos** | 11 | 7 ativos + 4 em breve |
-| **Testes** | ✅ | App rodando no celular físico |
-| **Acessos** | ✅ | GitHub, Supabase, Chrome MCP, Build local |
-| **Build APK** | ⏳ | Pronto quando bundler for resolvido |
+| **Testes** | ✅ | App compilado + instalado no celular |
+| **Acessos** | ✅ | GitHub, Supabase, Chrome MCP, ADB local |
+| **Build APK** | ✅ | S15: Debug APK compilado (231 MB) |
 
 ---
 
@@ -39,7 +39,12 @@
 - [x] **S14:** Comunidades + 42 FAQs + Personas + Intent Router + Achievements ✨ **← AGORA**
 
 ### ⏳ FASE 4: INTEGRAÇÃO (S15-S16)
-- [ ] **S15:** Comunidades Scoring + ProteOS Production
+- [x] **S15:** Comunidades Scoring + ProteOS Production ✨ **← AGORA**
+  - [x] Supabase schema: 4 tabelas (posts, replies, ratings, stats)
+  - [x] Edge Function /community (4 endpoints)
+  - [x] UI: post-form, timeline, scoring engine
+  - [x] APK Debug compilado (231 MB)
+  - ⏳ Testes no celular físico
 - [ ] **S16:** CerberOS Defesa + Data Governance
 
 ---
