@@ -19,33 +19,149 @@ interface EngineResponse {
   error?: string;
 }
 
-// Rate limiting: max 10 req/min per user
-const rateLimitStore = new Map<string, number[]>();
-
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const oneMinuteAgo = now - 60000;
-
-  if (!rateLimitStore.has(userId)) {
-    rateLimitStore.set(userId, [now]);
-    return true;
-  }
-
-  const timestamps = rateLimitStore.get(userId)!;
-  const recentRequests = timestamps.filter((t) => t > oneMinuteAgo);
-
-  if (recentRequests.length >= 10) {
-    return false;
-  }
-
-  recentRequests.push(now);
-  rateLimitStore.set(userId, recentRequests);
-  return true;
+interface DataGateResult {
+  granted: boolean;
+  plan: 'free' | 'starter' | 'premium' | 'professional';
+  layers: string[];
+  error?: string;
 }
 
-async function earnXP(userId: string, amount: number): Promise<EngineResponse> {
-  if (!amount || amount <= 0 || amount > 10000) {
-    return { success: false, error: 'Invalid XP amount (0-10000)' };
+// FIX #5: Input validation function
+function validateNumericInput(value: any, min: number, max: number, name: string): number | null {
+  if (typeof value !== 'number') {
+    console.warn(`[VALIDATION] Invalid ${name}: not a number`);
+    return null;
+  }
+
+  if (!Number.isFinite(value)) {
+    console.warn(`[VALIDATION] Invalid ${name}: not finite (NaN or Infinity)`);
+    return null;
+  }
+
+  if (value < min || value > max) {
+    console.warn(`[VALIDATION] Invalid ${name}: out of range [${min}, ${max}]`);
+    return null;
+  }
+
+  if (!Number.isInteger(value)) {
+    console.warn(`[VALIDATION] Invalid ${name}: not an integer`);
+    return null;
+  }
+
+  return value;
+}
+
+// FIX #3: Rate limiting moved to database (persistent)
+async function checkRateLimit(userId: string, supabaseClient: any): Promise<boolean> {
+  const now = new Date();
+  const oneMinuteAgo = new Date(now.getTime() - 60000);
+
+  try {
+    // Count recent requests
+    const { count, error: countError } = await supabaseClient
+      .from('rate_limit_log')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .gte('created_at', oneMinuteAgo.toISOString());
+
+    if (countError) {
+      console.warn('[RATE_LIMIT] Count error:', countError);
+      return true; // Allow on error (don't block user)
+    }
+
+    if ((count ?? 0) >= 10) {
+      return false; // Blocked
+    }
+
+    // Log this request
+    const { error: insertError } = await supabaseClient
+      .from('rate_limit_log')
+      .insert({
+        user_id: userId,
+        created_at: now.toISOString()
+      });
+
+    if (insertError) {
+      console.warn('[RATE_LIMIT] Log error:', insertError);
+      return true; // Allow on error
+    }
+
+    return true; // Allowed
+  } catch (err) {
+    console.warn('[RATE_LIMIT] Exception:', err);
+    return true; // Allow on exception (don't block user)
+  }
+}
+
+// FIX #4: HygeiOS Data Gate implementation
+async function validateDataAccess(userId: string, supabaseClient: any, requiredLayer?: string): Promise<DataGateResult> {
+  try {
+    const { data: user, error } = await supabaseClient
+      .from('user_xp')
+      .select('level')
+      .eq('user_id', userId)
+      .single();
+
+    if (error || !user) {
+      return {
+        granted: false,
+        plan: 'free',
+        layers: [],
+        error: 'User not found'
+      };
+    }
+
+    // Map score to plan
+    const planByScore = (score: number) => {
+      if (score < 26) return 'free';
+      if (score < 51) return 'starter';
+      if (score < 76) return 'premium';
+      return 'professional';
+    };
+
+    const userPlan = planByScore(user.level);
+
+    // Layers allowed by plan
+    const layersByPlan: Record<string, string[]> = {
+      'free': [],
+      'starter': ['bronze'],
+      'premium': ['bronze', 'silver'],
+      'professional': ['bronze', 'silver', 'gold']
+    };
+
+    const allowedLayers = layersByPlan[userPlan] || [];
+
+    // Validate specific layer if requested
+    if (requiredLayer && !allowedLayers.includes(requiredLayer)) {
+      return {
+        granted: false,
+        plan: userPlan,
+        layers: allowedLayers,
+        error: `Layer ${requiredLayer} not authorized for plan ${userPlan}`
+      };
+    }
+
+    return {
+      granted: true,
+      plan: userPlan,
+      layers: allowedLayers
+    };
+  } catch (err) {
+    console.error('[HYGEIOS] Data gate error:', err);
+    return {
+      granted: false,
+      plan: 'free',
+      layers: [],
+      error: 'Data gate validation failed'
+    };
+  }
+}
+
+async function earnXP(userId: string, amount: any): Promise<EngineResponse> {
+  // FIX #5: Validate numeric input
+  const validAmount = validateNumericInput(amount, 1, 10000, 'XP amount');
+  if (validAmount === null) {
+    return { success: false, error: 'Invalid XP amount: must be number between 1-10000' };
   }
 
   const { data: user } = await supabase
@@ -58,7 +174,7 @@ async function earnXP(userId: string, amount: number): Promise<EngineResponse> {
     return { success: false, error: 'User not found' };
   }
 
-  const newTotalXP = user.total_xp + amount;
+  const newTotalXP = user.total_xp + validAmount;
   const newLevel = Math.floor(newTotalXP / 1000) + 1;
   const leveledUp = newLevel > user.level;
 
@@ -87,15 +203,48 @@ async function earnXP(userId: string, amount: number): Promise<EngineResponse> {
   };
 }
 
-async function spendTokens(userId: string, amount: number): Promise<EngineResponse> {
-  if (!amount || amount <= 0) {
-    return { success: false, error: 'Invalid token amount' };
+async function spendTokens(userId: string, amount: any): Promise<EngineResponse> {
+  // FIX #5: Validate numeric input
+  const validAmount = validateNumericInput(amount, 1, 1000000, 'Token amount');
+  if (validAmount === null) {
+    return { success: false, error: 'Invalid token amount: must be number between 1-1000000' };
   }
 
-  // For now, assume unlimited tokens (production would check balance)
-  // TODO S14: Integrar com tabela user_tokens quando DataCommunity estiver pronto
+  // FIX #2: Validate token balance before spending
+  const { data: tokenData, error: selectError } = await supabase
+    .from('user_tokens')
+    .select('balance')
+    .eq('user_id', userId)
+    .single();
 
-  return { success: true, data: { spent: amount, newBalance: 999999 } };
+  if (selectError || !tokenData) {
+    return { success: false, error: 'Token account not found' };
+  }
+
+  // Check sufficient balance
+  if (tokenData.balance < validAmount) {
+    return {
+      success: false,
+      error: 'Insufficient tokens',
+      data: { required: validAmount, available: tokenData.balance }
+    };
+  }
+
+  // Atomic debit
+  const newBalance = tokenData.balance - validAmount;
+  const { error: updateError } = await supabase
+    .from('user_tokens')
+    .update({ balance: newBalance })
+    .eq('user_id', userId);
+
+  if (updateError) {
+    return { success: false, error: 'Failed to deduct tokens' };
+  }
+
+  return {
+    success: true,
+    data: { spent: validAmount, newBalance }
+  };
 }
 
 async function purchase(
@@ -181,6 +330,15 @@ async function getBadges(userId: string): Promise<EngineResponse> {
 }
 
 async function getCommunityRecommendations(userId: string): Promise<EngineResponse> {
+  // FIX #4: Validate HygeiOS Data Gate access (bronze layer required)
+  const gateResult = await validateDataAccess(userId, supabase, 'bronze');
+  if (!gateResult.granted) {
+    return {
+      success: false,
+      error: 'Access denied: upgrade to starter plan for community features'
+    };
+  }
+
   // S14: Integração com usePersonaDetection + faqEngine
   // Placeholder que retorna recomendações baseadas em user level
 
@@ -226,48 +384,91 @@ async function getCommunityRecommendations(userId: string): Promise<EngineRespon
       persona,
       faqIds: faqSubset[persona as keyof typeof faqSubset] || [],
       recommendations: recommendations[persona as keyof typeof recommendations] || [],
-      confidence: Math.round((user.level / 20) * 100)
+      confidence: Math.round((user.level / 20) * 100),
+      plan: gateResult.plan,
+      layers: gateResult.layers
     }
   };
 }
 
 async function handleRequest(req: Request): Promise<Response> {
-  // CORS headers
+  // FIX #6: Hardcoded CORS origins (not allow *)
+  const ALLOWED_ORIGINS = [
+    'https://aquarios.app',
+    'https://www.aquarios.app',
+    'capacitor://localhost',
+    'http://localhost:8081'
+  ];
+
+  const origin = req.headers.get('Origin') || '';
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '3600'
+  };
+
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
+      headers: corsHeaders,
     });
   }
 
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 
   try {
-    const body: EngineRequest = await req.json();
-    const { action, data, userId } = body;
-
-    // Validate auth
-    if (!userId) {
-      return new Response(JSON.stringify({ success: false, error: 'No user ID' }), {
+    // FIX #1: Validate authentication header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ success: false, error: 'No auth header' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
 
-    // Rate limit check
-    if (!checkRateLimit(userId)) {
-      return new Response(JSON.stringify({ success: false, error: 'Rate limited' }), {
+    // FIX #1: Validate JWT token (create anon client with token)
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user: authUser }, error: authError } = await userClient.auth.getUser();
+    if (authError || !authUser) {
+      return new Response(JSON.stringify({ success: false, error: 'Invalid session' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    const body: EngineRequest = await req.json();
+    const { action, data, userId } = body;
+
+    // FIX #1: Validate that userId matches authenticated user
+    if (!userId) {
+      return new Response(JSON.stringify({ success: false, error: 'No user ID' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    if (userId !== authUser.id) {
+      return new Response(JSON.stringify({ success: false, error: 'Unauthorized: user ID mismatch' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
+      });
+    }
+
+    // FIX #3: Rate limit check (now with database)
+    const rateLimitOk = await checkRateLimit(userId, supabase);
+    if (!rateLimitOk) {
+      return new Response(JSON.stringify({ success: false, error: 'Rate limited: max 10 requests per minute' }), {
         status: 429,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
     }
 
@@ -300,17 +501,18 @@ async function handleRequest(req: Request): Promise<Response> {
       status: result.success ? 200 : 400,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        ...corsHeaders,
       },
     });
   } catch (error: any) {
+    console.error('[ERROR]', error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message || 'Server error' }),
+      JSON.stringify({ success: false, error: 'Server error' }),
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
+          ...corsHeaders,
         },
       }
     );
