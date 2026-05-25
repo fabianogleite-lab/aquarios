@@ -1,10 +1,21 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+// FIX #6: Hardcoded CORS origins (not allow *)
+const ALLOWED_ORIGINS = [
+  'https://aquarios.app',
+  'https://www.aquarios.app',
+  'capacitor://localhost',
+  'http://localhost:8081'
+];
+
+function getCorsHeaders(origin?: string) {
+  return {
+    "Access-Control-Allow-Origin": origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "3600"
+  };
+}
 
 interface BotDef {
   email: string;
@@ -128,7 +139,21 @@ const BOTS: BotDef[] = [
   },
 ];
 
+// FIX #9: Generate secure random password
+function generateSecurePassword(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const randomHex = Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, 32);
+  return randomHex + '!Aa1';
+}
+
 Deno.serve(async (req) => {
+  const origin = req.headers.get("Origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -182,10 +207,13 @@ Deno.serve(async (req) => {
         continue;
       }
 
+      // FIX #9: Use secure random password (not hardcoded pattern)
+      const securePassword = generateSecurePassword();
+
       // Cria auth user — trigger on_auth_user_created auto-cria o profile
       const { data: authData, error: createError } = await adminClient.auth.admin.createUser({
         email: bot.email,
-        password: `AquariosBot_${bot.username.replace(".", "_")}_2026!`,
+        password: securePassword,
         email_confirm: true,
         user_metadata: { display_name: bot.display_name },
       });
@@ -196,6 +224,25 @@ Deno.serve(async (req) => {
       }
 
       const userId = authData.user.id;
+
+      // FIX #10: Audit logging
+      const { error: auditError } = await adminClient
+        .from('audit_log')
+        .insert({
+          action: 'bot_created',
+          bot_id: userId,
+          bot_email: bot.email,
+          bot_username: bot.username,
+          created_by: user.id,
+          timestamp: new Date().toISOString(),
+          ip_address: req.headers.get('x-forwarded-for') || 'unknown',
+          user_agent: req.headers.get('user-agent') || 'unknown'
+        });
+
+      if (auditError) {
+        console.warn('[AUDIT_LOG] Failed to log bot creation:', auditError);
+        // Continue even if audit logging fails (don't block operation)
+      }
 
       // Atualiza profile com username (trigger não seta este campo)
       const { error: profileError } = await adminClient
