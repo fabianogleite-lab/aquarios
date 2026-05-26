@@ -14,16 +14,20 @@ const MODULES = [
   { icon: '🌙', title: 'Wonder Night', desc: 'Rituais noturnos de transformação', route: '/wonder-night' as const },
 ];
 
+const NEW_MODULES = [
+  { icon: '🏛', title: 'AeropagOS', desc: 'Gamificação desbloqueável por lotes', module: 'aeropagos' },
+  { icon: '💰', title: 'Token Economy', desc: 'Sistema de economia interna', module: 'token_economy' },
+  { icon: '🛒', title: 'PanaceIA', desc: 'Marketplace consciente de bem-estar', module: 'panaceia' },
+  { icon: '🔐', title: 'CerberOS', desc: 'Segurança ativa em 7 camadas', module: 'cerberos' },
+];
+
 const COMING_SOON = [
   { icon: '🔮', title: 'SandeirOS', desc: 'Engine simbólica dos 22 arcanos', module: 'sandeiros' },
   { icon: '⚕', title: 'AsclepiOS', desc: 'Módulo médico inteligente', module: 'asclepios' },
   { icon: '💰', title: 'HermeOS', desc: 'Inteligência financeira pessoal', module: 'hermeos' },
   { icon: '📡', title: 'EteriOS', desc: 'Conexão com wearables e IoT', module: 'eterios' },
   { icon: '☯', title: 'EcumenicOS', desc: 'Sabedoria inter-religiosa', module: 'ecumenicos' },
-  { icon: '🛍', title: 'PanaceIA', desc: 'Marketplace de saúde e bem-estar', module: 'panaceia' },
   { icon: '🏢', title: 'Beck Office', desc: 'Plataforma B2B para clínicas e empresas', module: 'beck-office' },
-  { icon: '🪙', title: 'Token Economy', desc: 'Tokens AquariOS · recompensas e acesso', module: 'token-economy' },
-  { icon: '🛡', title: 'CerberOS', desc: 'Segurança ativa · 7 camadas de proteção', module: 'cerberos' },
 ];
 
 export default function HomeScreen() {
@@ -51,6 +55,24 @@ export default function HomeScreen() {
               <View style={s.cardContent}>
                 <Text style={s.cardTitle}>{mod.title}</Text>
                 <Text style={s.cardDesc}>{mod.desc}</Text>
+              </View>
+            </PressableScale>
+          </FadeInView>
+        ))}
+      </View>
+
+      <View style={s.section}>
+        <Text style={s.sectionTitle}>Novos Módulos</Text>
+        {NEW_MODULES.map((mod, i) => (
+          <FadeInView key={mod.title} delay={100 + i * 80}>
+            <PressableScale style={s.card} onPress={() => router.push(`/module/${mod.module}`)}>
+              <Text style={s.cardIcon}>{mod.icon}</Text>
+              <View style={s.cardContent}>
+                <Text style={s.cardTitle}>{mod.title}</Text>
+                <Text style={s.cardDesc}>{mod.desc}</Text>
+              </View>
+              <View style={s.badge}>
+                <Text style={s.badgeText}>✨ NOVO</Text>
               </View>
             </PressableScale>
           </FadeInView>

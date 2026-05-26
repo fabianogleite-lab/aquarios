@@ -11,6 +11,7 @@ import {
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { encryptField, decryptOrFallback } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
@@ -55,7 +56,7 @@ export default function ProteosScreen() {
 
     const { data, error } = await supabase
       .from('chat_messages')
-      .select('*')
+      .select('id, role, content, content_encrypted, content_nonce, conversation_id, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: true })
       .limit(50);
@@ -66,14 +67,15 @@ export default function ProteosScreen() {
     }
 
     if (data && data.length > 0) {
-      setMessages(
-        data.map((msg: any) => ({
+      const decrypted = await Promise.all(
+        data.map(async (msg: any) => ({
           id: msg.id,
           role: msg.role,
-          content: msg.content,
+          content: await decryptOrFallback(msg.content_encrypted, msg.content_nonce, msg.content),
           created_at: msg.created_at,
         }))
       );
+      setMessages(decrypted);
       setConversationId(data[0].conversation_id);
     }
   };
@@ -120,9 +122,24 @@ export default function ProteosScreen() {
 
       const futureTime = new Date().toISOString();
 
+      const [encUser, encAssistant] = await Promise.all([
+        encryptField(userInput),
+        encryptField(assistantContent),
+      ]);
+
       const { error: saveError } = await supabase.from('chat_messages').insert([
-        { conversation_id: newConvId, user_id: user.id, role: 'user', content: userInput, created_at: now },
-        { conversation_id: newConvId, user_id: user.id, role: 'assistant', content: assistantContent, created_at: futureTime },
+        {
+          conversation_id: newConvId, user_id: user.id, role: 'user',
+          content: '[encrypted]',
+          content_encrypted: encUser.ciphertext, content_nonce: encUser.nonce,
+          created_at: now,
+        },
+        {
+          conversation_id: newConvId, user_id: user.id, role: 'assistant',
+          content: '[encrypted]',
+          content_encrypted: encAssistant.ciphertext, content_nonce: encAssistant.nonce,
+          created_at: futureTime,
+        },
       ]);
 
       if (saveError) console.error('Save error:', saveError);

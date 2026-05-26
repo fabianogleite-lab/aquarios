@@ -2,11 +2,22 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const DAILY_LIMIT = 50;
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-};
+// FIX #6: Hardcoded CORS origins (not allow *)
+const ALLOWED_ORIGINS = [
+  'https://aquarios.app',
+  'https://www.aquarios.app',
+  'capacitor://localhost',
+  'http://localhost:8081'
+];
+
+function getCorsHeaders(origin?: string) {
+  return {
+    "Access-Control-Allow-Origin": origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "3600"
+  };
+}
 
 const PERSONAS: Record<string, string> = {
   default:
@@ -20,6 +31,9 @@ const PERSONAS: Record<string, string> = {
 };
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get("Origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -82,10 +96,20 @@ Deno.serve(async (req) => {
       );
     }
 
+    // FIX #7: Validate persona whitelist (prevent prompt injection)
+    const VALID_PERSONAS = ['default', 'pragmatico', 'suporte', 'urgencia'];
+    if (!VALID_PERSONAS.includes(persona as string)) {
+      return new Response(
+        JSON.stringify({ error: "Persona inválida" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const anthropicKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!anthropicKey) {
+      console.error('[ERROR] ANTHROPIC_API_KEY not configured');
       return new Response(
-        JSON.stringify({ error: "Configuração do servidor incompleta" }),
+        JSON.stringify({ error: "Serviço temporariamente indisponível" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -100,16 +124,25 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1024,
-        system: PERSONAS[persona as string] ?? PERSONAS.default,
+        system: PERSONAS[persona as keyof typeof PERSONAS],
         messages,
       }),
     });
 
     if (!anthropicRes.ok) {
+      // FIX #8: Don't expose error details to client
       const errText = await anthropicRes.text();
+      console.error('[ERROR] Anthropic API failed:', {
+        status: anthropicRes.status,
+        error: errText
+      });
+
       return new Response(
-        JSON.stringify({ error: "Erro na IA", details: errText }),
-        { status: anthropicRes.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({
+          error: "Serviço temporariamente indisponível",
+          code: "SERVICE_UNAVAILABLE"
+        }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
@@ -121,8 +154,13 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
+    // FIX #8: Don't expose error details
+    console.error('[ERROR] Request processing failed:', err);
     return new Response(
-      JSON.stringify({ error: "Erro interno", details: String(err) }),
+      JSON.stringify({
+        error: "Erro ao processar requisição",
+        code: "INTERNAL_ERROR"
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

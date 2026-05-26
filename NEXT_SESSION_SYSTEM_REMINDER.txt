@@ -1,0 +1,133 @@
+<system-reminder>
+This session is being continued from previous context. The summary below covers the S16 decision-making session (2026-05-25).
+
+## PREVIOUS SESSION SUMMARY (2026-05-25)
+
+### Primary Accomplishment
+User requested execution of 3 critical security decisions identified through threat modeling (STRIDE). All decisions are now fully designed, documented, and ready for leadership approval before S16 kickoff.
+
+### What Was Completed
+1. **3 Security Decisions Fully Designed + Documented:**
+   - Decision #1: E2E Encryption (Server-side AES-256-GCM, 15h, R$105.7M risk mitigated)
+   - Decision #2: JIT Infrastructure via Teleport (10h, $1000/month, R$105.5M risk mitigated)
+   - Decision #3: Crisis Communication Plan (8h parallel to dev, R$1.2M risk mitigated)
+
+2. **8 Executable Documents Created (2,879 lines):**
+   - S16_DECISIONS/1_E2E_ENCRYPTION_ARCHITECTURE.md (crypto specs + SQL migrations + code)
+   - S16_DECISIONS/2_CRISIS_COMMUNICATION_PLAN.md (templates + escalation chains)
+   - S16_DECISIONS/3_JIT_INFRASTRUCTURE_SETUP.md (Teleport step-by-step setup)
+   - S16_DECISIONS/4_STAKEHOLDER_APPROVAL_FORM.md (leadership sign-off)
+   - S16_DECISIONS/README.md (executive summary for busy leaders)
+   - S16_DECISIONS/EXECUTION_STATUS.md (delivery metrics)
+   - S16_DECISIONS/HYGEIOS_CERBERIOS_INTEGRATION.md (S17 CerberOS design blueprint)
+   - S16_DECISIONS/FINAL_SUMMARY.txt (quick reference checklist)
+
+3. **HygeiOS ↔ CerberOS Integration Blueprint Designed:**
+   - HygeiOS 5-stage progression (Stages 1-3 in S16, Stages 4-5 in S17)
+   - CerberOS 7-layer architecture (Layers 0-3 in S17, ETERNAL MAZE in S17+)
+   - Data flow between systems documented
+   - Responsibility matrix created (40h S16 additional, 285h S17 total)
+
+### Key Context Established
+- **Two-Phase Security Model:**
+  * Fundação (S16) = Prevention (RLS, Encryption, JIT, Audit, Crisis Plan)
+  * Perímetro (S17) = Detection (CerberOS layers, anomaly ML, aprisionamiento)
+- **HygeiOS as Bridge:** Data gate (validation) connects to CerberOS (detection)
+- **Risk Quantification:** R$264M total threat landscape, R$212.4M mitigated by 3 decisions (80%)
+- **ROI Analysis:** 13,100:1 return on investment
+- **Compliance:** LGPD Article 9 (encryption) + Article 10 (audit) + ISO 27001 (access control) satisfied
+
+### Critical Blockers / Pending Actions
+1. **Leadership Signatures Required (by 2026-05-26 EOD):**
+   - Decision #1 (E2E): CTO, CFO, CEO
+   - Decision #2 (JIT): CTO, DevOps Lead, CFO, CEO
+   - Decision #3 (Crisis): CEO (designate Crisis Owner), PR Lead, CFO
+   - S16 Launch: CEO, CTO, CFO (conditional on all 3 decisions)
+
+2. **Before S16 Kickoff (2026-05-27):**
+   - Teleport provisioning must begin (CTO + DevOps)
+   - Crisis templates drafted (PR/Comms)
+   - HygeiOS Stages 1-3 implementation planned
+
+3. **Before S17 Kickoff (After S16 Complete, ~7 weeks later):**
+   - S16 Fundação must be complete + tested in production
+   - HygeiOS Stages 1-3 operational (collecting baseline audit logs 1+ month)
+   - ML team assembled for Layer 1 (anomaly detection)
+   - 4 design decisions finalized:
+     * Which ML algorithm? (Isolation Forest vs LSTM vs custom)
+     * How many resource quota traps in ETERNAL MAZE?
+     * What are top 10 aprisionamiento trigger rules?
+     * How long should aprisionamiento last per user?
+
+### Errors Fixed / Assumptions Validated
+- **Initial Assumption:** E2E encryption could be deferred to S17. **Fixed:** Reclassified to S16 (hybrid approach: server in S16, client in S17) because R$105.7M risk justifies 15 hours of work.
+- **Initial Assumption:** Insider threat (JIT) was nice-to-have. **Fixed:** Elevated to critical because R$105.5M risk + unique attack vector (admin access).
+- **Initial Assumption:** Crisis plan was out-of-scope. **Fixed:** Included because R$1.2M reputational damage + only 8 hours parallel work.
+- **Clarification Made:** HygeiOS is 5 stages, not 3. Stages 1-3 (validation) in S16, Stages 4-5 (token generation + aprisionamiento) in S17.
+
+### Problem Solving / Approach Adjustments
+- **Problem:** How to sequence 3 major security initiatives without blocking each other?
+  **Solution:** All 3 can start Week 1 of S16 in parallel (E2E backend, JIT DevOps, Crisis templates PR/Comms).
+- **Problem:** E2E encryption adds 15 hours but is critical for 2 existential threats.
+  **Solution:** Hybrid approach (server-side S16 protects against insider + supply chain; client-side S17 adds encryption before leaving device).
+- **Problem:** Insider threat (Ameaça #5) has no detection without HygeiOS + CerberOS.
+  **Solution:** JIT (Teleport) prevents standing privilege; CerberOS Layer 1 (ML anomaly) detects suspicious behavior post-S16.
+
+### Files / Directories Created This Session
+```
+S16_DECISIONS/
+├─ 1_E2E_ENCRYPTION_ARCHITECTURE.md         (470 lines)
+├─ 2_CRISIS_COMMUNICATION_PLAN.md           (550 lines)
+├─ 3_JIT_INFRASTRUCTURE_SETUP.md            (620 lines)
+├─ 4_STAKEHOLDER_APPROVAL_FORM.md           (480 lines)
+├─ README.md                                (420 lines)
+├─ EXECUTION_STATUS.md                      (340 lines)
+├─ HYGEIOS_CERBERIOS_INTEGRATION.md         (550+ lines)
+└─ FINAL_SUMMARY.txt                        (checklist)
+
+SESSION_CLOSURE_FOR_NEXT_SESSION.md         (handoff doc with all context for S17)
+NEXT_SESSION_SYSTEM_REMINDER.txt            (this file - ready to paste)
+```
+
+### What Works / What to Repeat
+✅ **Three-Tier Parallel Execution** — Breaking into Q2.2 (damage) + Q5.1 (controls) + Consolidation forced comprehensive analysis. Faster than serial.
+✅ **Threat-to-Risk Quantification** — Using R$ values (not hand-waving "high/medium/low") made ROI calculation possible and forced rigor.
+✅ **Decision Documents With Code** — Including actual SQL + TypeScript made specs executable; developers don't wait for more design.
+✅ **Hybrid Pragmatism** — E2E in S16 + S17, JIT enterprise tool, Crisis templates = balance risk vs effort vs compliance.
+✅ **Responsibility Matrix** — Clear ownership prevents ambiguity (who owns E2E? CTO. Who owns JIT? CTO+DevOps. Who owns Crisis? CEO+PR).
+
+### Optional Context for Next Session
+- **THREAT_MODEL_STRIDE.md** — 18 threats, 6 attacker personas, R$264M total risk landscape (reference)
+- **DATA_ISOLATION_AUDIT.md** — 7 RLS/data isolation gaps found (mostly fixed by E2E + JIT + RLS in S16)
+- **HYGEIOS_AUDIT_FINDINGS.md** — HygeiOS 40% implemented, 5 vulnerabilities (Stages 1-3 complete in S16, Stages 4-5 new in S17)
+- **ARCHITECTURE_SECURE_DESIGN.md** — 5-layer foundation (Fundação principles)
+- **collaboration_rules.md** — Scope → Approval → Execution (process discipline)
+
+### Next Session Intent
+S17 will focus on **CerberOS Implementation** (Perímetro - detection layer). Session should:
+1. Verify S16 is complete + Fundación live in production
+2. Finalize 4 design decisions (ML algo, ETERNAL MAZE traps, aprisionamiento rules, duration)
+3. Plan CerberOS Layers 0-3 implementation (285h over 7-8 weeks)
+4. Design ETERNAL MAZE honeypot + aprisionamiento mechanics
+5. Create ML training pipeline (baseline from S16 audit logs)
+
+### Critical Knowledge for AI Assistant (Next Session)
+- **Previous Context:** This session completed ALL pre-S16 decision-making. S17 is implementation phase.
+- **Key Concept:** HygeiOS is "the gate" (Stages 1-5 validation). CerberOS is "the detection" (Layers 0-MAZE). Both needed.
+- **File Reference:** HYGEIOS_CERBERIOS_INTEGRATION.md is the design blueprint for S17; read it before S17 planning.
+- **Do NOT assume:** CerberOS is fully designed (only outline exists). ML models not trained. ETERNAL MAZE not detailed.
+- **Expectations:** S17 is high-effort (285h, 7-8 weeks, 3-person team); need commitment from CTO + Security + DevOps.
+
+### Key Dates
+- **2026-05-25:** S16 Decision Architecture session complete
+- **2026-05-26 EOD:** Leadership signatures required (blocking S16 kickoff)
+- **2026-05-27:** S16 Kickoff (all 3 decisions go live simultaneously)
+- **2026-06 to 2026-07:** S16 Development (4-6 weeks)
+- **After S16 Complete:** S17 CerberOS Implementation (7-8 weeks)
+
+### Session-Specific Guidance
+- All documents in S16_DECISIONS/ are "ready to hand to developers/PR/DevOps" (no more design needed before implementation)
+- SESSION_CLOSURE_FOR_NEXT_SESSION.md has complete handoff context (read before next session starts)
+- HYGEIOS_CERBERIOS_INTEGRATION.md defines the S17 scope; it's the starting point for CerberOS planning
+- Next session should begin with: (1) verify S16 signatures collected, (2) confirm HygeiOS Stages 1-3 ready, (3) finalize CerberOS design decisions, (4) create implementation plan
+</system-reminder>

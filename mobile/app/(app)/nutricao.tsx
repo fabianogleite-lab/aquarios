@@ -10,6 +10,7 @@ import { useState, useCallback } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { decryptOrFallback } from '../../lib/crypto';
 import { LoadingState } from '../../components/LoadingState';
 import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
@@ -85,11 +86,20 @@ export default function NutricaoScreen() {
     today.setHours(0, 0, 0, 0);
 
     const [mealsRes, goalsRes] = await Promise.all([
-      supabase.from('meals').select('*').eq('user_id', user.id).gte('created_at', today.toISOString()).order('created_at', { ascending: false }),
+      supabase.from('meals').select('id, name, name_encrypted, name_nonce, calories, protein, carbs, fat, meal_type, notes, notes_encrypted, notes_nonce, created_at').eq('user_id', user.id).gte('created_at', today.toISOString()).order('created_at', { ascending: false }),
       supabase.from('nutrition_goals').select('*').eq('user_id', user.id).single(),
     ]);
 
-    if (!mealsRes.error) setMeals(mealsRes.data || []);
+    if (!mealsRes.error) {
+      const decryptedMeals = await Promise.all(
+        (mealsRes.data || []).map(async (m: any) => ({
+          ...m,
+          name: await decryptOrFallback(m.name_encrypted, m.name_nonce, m.name),
+          notes: await decryptOrFallback(m.notes_encrypted, m.notes_nonce, m.notes),
+        }))
+      );
+      setMeals(decryptedMeals);
+    }
     if (!goalsRes.error && goalsRes.data) setGoals(goalsRes.data);
     setLoading(false);
   };

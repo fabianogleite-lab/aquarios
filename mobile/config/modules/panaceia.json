@@ -1,0 +1,30 @@
+{
+  "id": "panaceia",
+  "name": "PanaceIA",
+  "icon": "🛒",
+  "description": "Marketplace consciente — produtos alinhados com bem-estar",
+  "status": "coming_soon",
+  "gate": {
+    "type": "plan",
+    "min_plan": "starter"
+  },
+  "categorias": [
+    "Suplementos",
+    "Fitoterapicos",
+    "Organicos",
+    "Bem-estar",
+    "Livros",
+    "Cursos",
+    "Wearables",
+    "Meditacao",
+    "Terapias"
+  ],
+  "description_long": "Marketplace integrado com filtros por saúde, sustentabilidade e comunidade. Compre com tokens ou fiat, receba recomendações baseadas em seu IVI.",
+  "affiliate_partners": [
+    "iHerb",
+    "Mercado Livre",
+    "Amazon",
+    "Natura",
+    "Localizado"
+  ]
+}

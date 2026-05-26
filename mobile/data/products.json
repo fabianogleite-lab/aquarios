@@ -1,0 +1,74 @@
+[
+  {
+    "id": "whey_protein",
+    "nome": "Whey Protein Concentrate 1kg",
+    "categoria": "Suplementos",
+    "preco": 89.90,
+    "link_afiliado": "https://amzn.to/whey-protein",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/463/463299.png"
+  },
+  {
+    "id": "ashwagandha",
+    "nome": "Ashwagandha 500mg - 60 cápsulas",
+    "categoria": "Fitoterapicos",
+    "preco": 65.00,
+    "link_afiliado": "https://amzn.to/ashwagandha",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/3670/3670147.png"
+  },
+  {
+    "id": "cafe_arabica",
+    "nome": "Café Arábica Premium 500g",
+    "categoria": "Organicos",
+    "preco": 34.90,
+    "link_afiliado": "https://amzn.to/cafe-arabica",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/924/924514.png"
+  },
+  {
+    "id": "yoga_mat",
+    "nome": "Tapete Yoga Premium 6mm",
+    "categoria": "Bem-estar",
+    "preco": 129.00,
+    "link_afiliado": "https://amzn.to/yoga-mat",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/3969/3969019.png"
+  },
+  {
+    "id": "inconsciente_coletivo",
+    "nome": "O Inconsciente Coletivo - Jung",
+    "categoria": "Livros",
+    "preco": 78.50,
+    "link_afiliado": "https://amzn.to/inconsciente-coletivo",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/3143/3143615.png"
+  },
+  {
+    "id": "nutricao_integral",
+    "nome": "Curso Online: Nutrição Integral",
+    "categoria": "Cursos",
+    "preco": 297.00,
+    "link_afiliado": "https://curso.nutricao-integral.com.br",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/3050/3050159.png"
+  },
+  {
+    "id": "smartwatch",
+    "nome": "Smartwatch Fitness Tracker",
+    "categoria": "Wearables",
+    "preco": 349.00,
+    "link_afiliado": "https://amzn.to/smartwatch-fitness",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/1999/1999818.png"
+  },
+  {
+    "id": "almofada_meditacao",
+    "nome": "Almofada Meditação (Zafu) Premium",
+    "categoria": "Meditacao",
+    "preco": 185.00,
+    "link_afiliado": "https://amzn.to/almofada-zafu",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/3556/3556098.png"
+  },
+  {
+    "id": "cristais_cura",
+    "nome": "Kit 7 Cristais de Cura + Bolsa",
+    "categoria": "Terapias",
+    "preco": 159.90,
+    "link_afiliado": "https://amzn.to/cristais-cura",
+    "imagem_url": "https://cdn-icons-png.flaticon.com/128/1995/1995467.png"
+  }
+]
