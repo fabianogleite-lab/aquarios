@@ -1,3 +1,4 @@
+import '../i18n';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, Animated, Dimensions, ActivityIndicator } from 'react-native';
@@ -5,6 +6,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/auth';
 import { OfflineNotice } from '../components/OfflineNotice';
 import { colors, fontSize } from '../lib/theme';
+import * as Localization from 'expo-localization';
+import { applyRTL } from '../i18n/rtl';
 
 const { width } = Dimensions.get('window');
 
@@ -63,6 +66,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     initialize();
+    const locale = Localization.getLocales()?.[0]?.languageTag ?? 'pt-BR';
+    applyRTL(locale);
   }, []);
 
   useEffect(() => {
