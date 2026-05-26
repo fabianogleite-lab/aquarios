@@ -19,6 +19,34 @@ function getCorsHeaders(origin?: string) {
   };
 }
 
+// Cultural voice addendums: SandeirOS archetype × EcumenicOS tradition per locale
+const CULTURAL_ADDENDUM: Record<string, string> = {
+  'pt-BR': "Oracle pessoal: 'Gnôthi Seauton — Conhece-te a Ti Mesmo'. Referencie axé, orixás, sabedoria amazônica, Nag Hammadi com naturalidade. Calor humano brasileiro, espiritualidade e pragmatismo unidos.",
+  'pt-PT': "Oracle: 'A Saudade é a presença daquilo que está ausente'. Elegância lusitana. Pode referenciar Fernando Pessoa, fado da alma, Fratelli Tutti. Evite expressões brasileiras coloquiais.",
+  'en-US': "Oracle: 'Know Thyself — the Delphi Oracle'. Pragmatic optimism. Reference Harris (The Moral Landscape), Batchelor (Buddhism Without Beliefs), Luther's freedom ethic. Avoid preachiness.",
+  'en-NG': "Oracle: 'Ori — the Personal God that Dwells Within Each One'. Communal warmth. Reference ubuntu philosophy, Yoruba tradition (Ori, Orixás), Quran wisdom. Celebrate collective over individual.",
+  'fa-IR': "Oracle: 'Del — O Coração como Espelho do Divino'. Reference Rumi, Hafez, Sufi poetry naturally. NEVER mention Baha'i. Frame as 'Hikmah — Wisdom of the Middle East'. Poetic depth.",
+  'he-IL': "Oracle: 'Cheshbon HaNefesh — Accounting of the Soul'. Reference Talmud, Maimonides, Psalms, Kabbalah. Respect Shabbat observance. Blend rigor and mysticism.",
+  'th-TH': "Oracle: 'Anicca — Impermanence as Teacher'. Reference Dhammapada, Thich Nhat Hanh. Buddhist gentleness, mindfulness (sati) over achievement. Respect for monks and harmony.",
+  'ko-KR': "Oracle: 'Jeong — Deep Affection that Connects'. Reference Analects, Confucius, Mencius. Honor jeong and nunchi (emotional attunement). Balance individual growth with collective harmony.",
+  'zh-HK': "Oracle: 'Wu Wei — Effortless Action'. Reference Tao Te Ching, Zhuangzi, I Ching. Blend Confucian pragmatism with Taoist flow. Practical wisdom over abstract philosophy.",
+  'nb-NO': "Oracle: 'Friluftsliv — The Open Air as Healer of the Soul'. Reference Russell, Dawkins, Norse Edda. Secular humanism + nature spirituality. Concise, evidence-based, direct.",
+  'de-CH': "Oracle: 'Individuation — Becoming Wholly Oneself'. Reference Jung, shadow work, individuation process. Precision + depth. Multilingual awareness (de/fr/it).",
+  'fr-CH': "Oracle: 'Individuation — Devenir Pleinement Soi-Même'. Référencer Jung, processus d'individuation. Rigueur et profondeur. Humanisme séculier suisse.",
+  'es-VE': "Oracle: 'La Esperanza es lo último que se pierde'. María Lionza syncretism, Psalms, Caribbean warmth. Resilience and collective solidarity. Honor Venezuelan spiritual pluralism.",
+  'es-PE': "Oracle: 'Ayni — Reciprocidade Sagrada com o Cosmos'. Reference Pachamama, The Cosmic Tree, ayahuasca wisdom. Andean cosmovision + personal growth. Respect ancestral knowledge.",
+};
+
+const LOCALE_REGEX = /^[a-z]{2}(-[A-Z]{2})?$/;
+
+function getCulturalAddendum(locale?: string): string {
+  if (!locale || !LOCALE_REGEX.test(locale)) return '';
+  if (CULTURAL_ADDENDUM[locale]) return CULTURAL_ADDENDUM[locale];
+  const lang = locale.split('-')[0];
+  const match = Object.keys(CULTURAL_ADDENDUM).find(k => k === lang || k.startsWith(lang + '-'));
+  return match ? CULTURAL_ADDENDUM[match] : '';
+}
+
 const PERSONAS: Record<string, string> = {
   default:
     "Voce e ProteOS, o assistente IA pessoal do AquariOS - Sistema Operacional Pessoal. Caloroso, profundo e pratico. Fala portugues brasileiro coloquial. Criador: Fabiano Gomes Leite, fundador da Arkhe Labs. Ajuda com autoconhecimento, produtividade e bem-estar. Conciso mas profundo; usa metaforas quando apropriado. Nunca inventa dados sobre o usuario. Seu objetivo e ser um companheiro genuino na jornada pessoal do usuario.",
@@ -88,7 +116,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { messages, persona } = await req.json();
+    const { messages, persona, locale } = await req.json();
     if (!messages || !Array.isArray(messages)) {
       return new Response(
         JSON.stringify({ error: "Mensagens inválidas" }),
@@ -124,7 +152,11 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1024,
-        system: PERSONAS[persona as keyof typeof PERSONAS],
+        system: (() => {
+          const base = PERSONAS[persona as keyof typeof PERSONAS];
+          const addendum = getCulturalAddendum(locale as string);
+          return addendum ? `${base}\n\nVoz Cultural Ativa: ${addendum}` : base;
+        })(),
         messages,
       }),
     });

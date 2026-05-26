@@ -9,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import * as Localization from 'expo-localization';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { encryptField, decryptOrFallback } from '../../lib/crypto';
@@ -105,8 +106,9 @@ export default function ProteosScreen() {
       let assistantContent = 'Desculpe, não consegui processar. Tente novamente.';
 
       try {
+        const locale = Localization.getLocales()?.[0]?.languageTag ?? 'pt-BR';
         const { data, error: fnError } = await supabase.functions.invoke('chat', {
-          body: { messages: apiMessages, persona },
+          body: { messages: apiMessages, persona, locale },
         });
 
         if (fnError) {
