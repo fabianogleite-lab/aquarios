@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { encryptField } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
@@ -57,8 +58,23 @@ export default function DiarioNewScreen() {
     setLoading(true);
     const tags = tagsInput.split(',').map((t) => t.trim().toLowerCase()).filter((t) => t.length > 0);
 
+    let encryptedContent: { ciphertext: string; nonce: string } | null = null;
+    try {
+      encryptedContent = await encryptField(content.trim());
+    } catch (cryptoErr) {
+      setLoading(false);
+      Alert.alert('Erro de Segurança', 'Não foi possível criptografar sua reflexão. Tente novamente.');
+      return;
+    }
+
     const { error } = await supabase.from('diario_entries').insert([{
-      user_id: user.id, content: content.trim(), mood, tags, created_at: new Date().toISOString(),
+      user_id: user.id,
+      content: '[encrypted]',
+      content_encrypted: encryptedContent.ciphertext,
+      content_nonce: encryptedContent.nonce,
+      mood,
+      tags,
+      created_at: new Date().toISOString(),
     }]);
 
     setLoading(false);

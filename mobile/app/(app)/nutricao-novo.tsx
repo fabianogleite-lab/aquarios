@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { encryptField } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
@@ -41,10 +42,31 @@ export default function NutricaoNovoScreen() {
     if (!calories.trim() || isNaN(Number(calories))) { Alert.alert('Erro', 'Informe as calorias'); return; }
 
     setSaving(true);
+
+    let encName: { ciphertext: string; nonce: string };
+    let encNotes: { ciphertext: string; nonce: string } | null = null;
+    try {
+      encName = await encryptField(name.trim());
+      if (notes.trim()) encNotes = await encryptField(notes.trim());
+    } catch {
+      setSaving(false);
+      Alert.alert('Erro de Segurança', 'Não foi possível criptografar os dados. Tente novamente.');
+      return;
+    }
+
     const { error } = await supabase.from('meals').insert({
-      user_id: user?.id, name: name.trim(), calories: Number(calories),
-      protein: protein ? Number(protein) : null, carbs: carbs ? Number(carbs) : null,
-      fat: fat ? Number(fat) : null, meal_type: mealType, notes: notes.trim() || null,
+      user_id: user?.id,
+      name: '[encrypted]',
+      name_encrypted: encName.ciphertext,
+      name_nonce: encName.nonce,
+      calories: Number(calories),
+      protein: protein ? Number(protein) : null,
+      carbs: carbs ? Number(carbs) : null,
+      fat: fat ? Number(fat) : null,
+      meal_type: mealType,
+      notes: encNotes ? '[encrypted]' : null,
+      notes_encrypted: encNotes?.ciphertext ?? null,
+      notes_nonce: encNotes?.nonce ?? null,
     });
 
     setSaving(false);

@@ -11,6 +11,7 @@ import { useState, useCallback } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { decryptOrFallback } from '../../lib/crypto';
 import { LoadingState } from '../../components/LoadingState';
 import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
@@ -44,7 +45,7 @@ export default function DiarioScreen() {
 
     const { data, error } = await supabase
       .from('diario_entries')
-      .select('*')
+      .select('id, user_id, content, content_encrypted, content_nonce, mood, tags, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -54,16 +55,18 @@ export default function DiarioScreen() {
       return;
     }
 
-    setEntries(
-      (data || []).map((entry: any) => ({
+    const decrypted = await Promise.all(
+      (data || []).map(async (entry: any) => ({
         id: entry.id,
         user_id: entry.user_id,
-        content: entry.content,
+        content: await decryptOrFallback(entry.content_encrypted, entry.content_nonce, entry.content),
         mood: entry.mood,
         tags: entry.tags || [],
         created_at: entry.created_at,
       }))
     );
+
+    setEntries(decrypted);
     setLoading(false);
   };
 
