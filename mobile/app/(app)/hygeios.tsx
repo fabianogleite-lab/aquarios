@@ -121,9 +121,9 @@ export default function HygeiOSScreen() {
     const [mealsToday, mealsWeek, diaryWeek, wonderMonth, diaryDates, mealDates] = await Promise.all([
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', todayStart.toISOString()),
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
-      supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
-      supabase.from('wonder_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
-      supabase.from('diary_entries').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
+      supabase.from('diario_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
+      supabase.from('wonder_night_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
+      supabase.from('diario_entries').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
       supabase.from('meals').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
     ]);
 

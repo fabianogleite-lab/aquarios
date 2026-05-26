@@ -55,7 +55,7 @@ INSERT INTO public.aquarios_modules (slug, name, icon, category, status, descrip
   ('comunidades', 'Comunidades', '👥', 'native_tool', 'active',   'Coração do AquariOS. 130 personas AI. Círculos por arquétipo.',     'app/(app)/comunidades.tsx',          ARRAY['community_posts','community_replies','community_ratings','community_members','communities'], ARRAY['hygeios']),
   ('diario',      'Diário do Ser','✎', 'native_tool', 'active',   'Reflexões diárias e autoconhecimento (E2E criptografado)',          'app/(app)/diario.tsx',               ARRAY['diario_entries'], NULL),
   ('nutricao',    'Nutrição',    '🥗', 'native_tool', 'active',   'Tracking nutricional inteligente (E2E criptografado)',              'app/(app)/nutricao.tsx',             ARRAY['meals','nutrition_goals'], NULL),
-  ('wonder',      'Wonder Night','🌙', 'native_tool', 'active',   'Rituais noturnos de transformação',                                 'app/(app)/wonder-night.tsx',         ARRAY['wonder_night_logs','wonder_purchases'], NULL),
+  ('wonder',      'Wonder Night','🌙', 'native_tool', 'active',   'Rituais noturnos de transformação',                                 'app/(app)/wonder-night.tsx',         ARRAY['wonder_night_logs','wonder_night_purchases'], NULL),
   ('tokens',      'Token Economy','🪙', 'native_tool', 'built',   '4 tipos: AI, Sync, Insight, Community',                             'hooks/useTokens.ts',                ARRAY['user_tokens','purchases'], ARRAY['aeropagos']),
   ('beckoffice',  'Beck Office', '🏢', 'native_tool', 'coming_soon','B2B para clínicas, empresas, white-label',                        'app/(app)/coming-soon.tsx',          NULL, ARRAY['hygeios'])
 ON CONFLICT (slug) DO NOTHING;

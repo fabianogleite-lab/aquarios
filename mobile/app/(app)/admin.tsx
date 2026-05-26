@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface DbStats {
   meals: number;
@@ -32,9 +33,9 @@ export default function AdminScreen() {
     setLoading(true);
     const [meals, diary, chat, wonder] = await Promise.all([
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
-      supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('diario_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
       supabase.from('chat_messages').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
-      supabase.from('wonder_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('wonder_night_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
     ]);
     setStats({
       meals: meals.count ?? 0,
@@ -94,7 +95,7 @@ export default function AdminScreen() {
           <Row label="User ID" value={user?.id ? user.id.substring(0, 18) + '...' : '—'} />
           <Row label="Email" value={user?.email ?? '—'} />
           <Row label="Display Name" value={user?.user_metadata?.display_name ?? '—'} />
-          <Row label="Criado em" value={user?.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : '—'} />
+          <Row label="Criado em" value={user?.created_at ? formatDate(user.created_at) : '—'} />
         </View>
       </FadeInView>
 

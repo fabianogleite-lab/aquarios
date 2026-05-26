@@ -17,6 +17,7 @@ import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface DiarioEntry {
   id: string;
@@ -80,8 +81,8 @@ export default function DiarioScreen() {
 
   const shareEntry = async (entry: DiarioEntry) => {
     if (!user?.id) return;
-    const { error } = await supabase.from('shares').insert({
-      user_id: user.id, diario_id: entry.id, content: entry.content, is_public: true,
+    const { error } = await supabase.from('community_posts').insert({
+      user_id: user.id, content: entry.content, category: 'reflections',
     });
     if (error) Alert.alert('Erro', 'Não foi possível compartilhar');
     else Alert.alert('Compartilhado!', 'Sua reflexão foi publicada no Feed.');
@@ -102,7 +103,7 @@ export default function DiarioScreen() {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    return formatDate(dateStr, { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
   const getPreview = (content: string, length = 100) => {

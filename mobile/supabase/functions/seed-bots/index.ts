@@ -263,7 +263,7 @@ Deno.serve(async (req) => {
       });
 
       const { error: postsError } = await adminClient
-        .from("shares")
+        .from("community_posts")
         .insert(postsToInsert);
 
       if (postsError) {

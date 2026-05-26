@@ -46,7 +46,7 @@ export default function SettingsScreen() {
     try {
       const [meals, diary, chat] = await Promise.all([
         supabase.from('meals').select('*').eq('user_id', user.id),
-        supabase.from('diary_entries').select('*').eq('user_id', user.id),
+        supabase.from('diario_entries').select('*').eq('user_id', user.id),
         supabase.from('chat_messages').select('*').eq('user_id', user.id),
       ]);
 
@@ -110,12 +110,10 @@ export default function SettingsScreen() {
       await Promise.all([
         supabase.from('meals').delete().eq('user_id', user.id),
         supabase.from('nutrition_goals').delete().eq('user_id', user.id),
-        supabase.from('diary_entries').delete().eq('user_id', user.id),
+        supabase.from('diario_entries').delete().eq('user_id', user.id),
         supabase.from('chat_messages').delete().eq('user_id', user.id),
-        supabase.from('wonder_purchases').delete().eq('user_id', user.id),
-        supabase.from('user_follows').delete().eq('follower_id', user.id),
-        supabase.from('user_follows').delete().eq('following_id', user.id),
-        supabase.from('timeline_posts').delete().eq('user_id', user.id),
+        supabase.from('wonder_night_purchases').delete().eq('user_id', user.id),
+        supabase.from('community_posts').delete().eq('user_id', user.id),
       ]);
 
       await signOut();
