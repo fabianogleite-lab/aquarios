@@ -174,16 +174,50 @@ WEEK 2-3 (Jun 1 - Jun 14): Core Security
   └─ Task 1.5: Audit Logging Expansion (10h)
       └─ Cobrir 100% de ações sensíveis em audit_logs
 
-WEEK 4-6 (Jun 15 - Jul 8): Testing + Deployment
-  └─ Task 1.6: Testing & Hardening (60h)
-      ├─ Unit + integration tests
-      ├─ Penetration testing
-      ├─ Load testing (1000 usuários simultâneos)
-      └─ S16 security audit
+WEEK 4 (Jun 15-21): Config Admin Dashboard + Tiers Comerciais
+  ├─ Task 1.6a: config-admin.tsx Dashboard (50h, Mobile + Backend) ← NEW
+  │   ├─ 9 seções configuráveis (Personas, Tiers, Tri-Cloud, etc.)
+  │   ├─ AsyncStorage local + Supabase sync
+  │   ├─ Acesso via aquarios_admin_grants
+  │   └─ Mesmas 4 camadas de proteção
+  │
+  └─ Task 1.6b: Migration 13 (10h, Backend)
+      ├─ commercial_tiers (4 tiers + Free)
+      ├─ aquarios_persona_test_scripts
+      ├─ panaceia_currencies + offering_categories ativação
+      └─ Helper functions: generate_persona_post, etc.
+
+WEEK 5 (Jun 22-28): personas-orchestrator + Seed Massivo
+  ├─ Task 1.7: Edge Function personas-orchestrator (30h) ← NEW
+  │   ├─ Cron 30min · lê persona_management
+  │   ├─ Gera 2-3 posts/dia por persona
+  │   ├─ Direciona perguntas: "@Maria, como X funciona?"
+  │   ├─ Respostas com base em arquétipo + tradição
+  │   └─ Excluir PanaceIA tokens/comércio (decisão Fabiano)
+  │
+  └─ Task 1.8: Persona Testing Matrix (20h) ← NEW
+      ├─ 14 scripts de teste (1 por função core)
+      ├─ Distribuir entre 130 personas conforme matriz
+      ├─ Executar 1x por dia via cron
+      └─ Reportar bugs em aquarios_persona_test_scripts.result
+
+WEEK 6 (Jun 29 - Jul 8): Testing + Hardening
+  ├─ Task 1.9: Testing & Hardening (60h)
+  │   ├─ Unit + integration tests
+  │   ├─ Penetration testing
+  │   ├─ Load testing (1000 usuários simultâneos)
+  │   └─ S16 security audit
+  │
+  └─ Task 1.10: Massa Crítica Validation (10h) ← NEW
+      ├─ Verificar 3640 posts seed gerados
+      ├─ Verificar 5000 replies + 2000 likes
+      ├─ Garantir comunidades "vivas" no dia 1
+      └─ Smoke test de UX como usuário novo
 ```
 
 **Risk mitigado em S16 v2:** R$212.4M / R$264M total (**80%**)
 **Compliance:** LGPD Art. 9, 10 · HIPAA ready · ISO 27001 ready
+**Esforço total S16 v2:** 133h base + 50h (config-admin) + 30h (orchestrator) + 20h (test matrix) + 10h (massa crítica) + 10h (migration 13) = **253h**
 
 ### 🔵 S17 — PERÍMETRO CERBEROS (Jul 9 - Aug 19 · 285h)
 
@@ -302,13 +336,42 @@ WEEK 2 (Aug 27 - Sep 2): Testing + Triplex Sync
           ├─ Data consistency cross-cloud verificada
           └─ Cost analysis: confirmar ano 1 < $0 (free tiers)
 
-WEEK 3 (Sep 3-9): Audit + Launch
+WEEK 3 (Sep 3-9): Audit + APK Field Test + Launch
   ├─ Architecture Security Audit (50h, Security Team)
   │   ├─ Code security audit (deps, secrets, SQLi, XSS)
   │   ├─ Broken link detection (todos endpoints/CDNs)
   │   ├─ Database integrity check (3 clouds consistentes)
   │   ├─ Infrastructure security audit (todas 3 clouds)
   │   └─ Compliance verification (LGPD + ISO 27001 + MTCS)
+  │
+  ├─ 📱 APK FINAL FIELD TEST (15h, Mobile + QA) ← NEW · era gap entre audit e launch
+  │   ├─ Build AAB final assinado (com TODAS correções da audit) (3h)
+  │   │   ├─ Keystore production · certificate validation
+  │   │   ├─ Expo SDK 56 · target Android 14
+  │   │   └─ ProGuard/R8 minify · APK size < 50MB
+  │   ├─ Instalação em celulares físicos reais (4h)
+  │   │   ├─ Samsung Galaxy (mid-range BR)
+  │   │   ├─ Xiaomi/Realme (low-end Asia)
+  │   │   ├─ iPhone via TestFlight (cross-validation)
+  │   │   └─ 3 versions Android: 11, 13, 14
+  │   ├─ Smoke test sequencial por região (4h)
+  │   │   ├─ Conectar via VPN de cada região do plano
+  │   │   ├─ Validar roteamento Tri-Cloud (AWS/Oracle/Alibaba)
+  │   │   ├─ Cold start ≤ 2.5s · transitions ≤ 300ms
+  │   │   ├─ Cultural Voice ativo no locale correto
+  │   │   └─ 14 locales: pt-BR, en-US, pt-PT, fa-IR, he-IL, es-VE,
+  │   │       th-TH, ko-KR, zh-HK, nb-NO, en-NG, de-CH, fr-CH, es-PE
+  │   ├─ Critical path real-user testing (3h)
+  │   │   ├─ Onboarding completo (signup → first chat)
+  │   │   ├─ Diário com voz (quando disponível)
+  │   │   ├─ Comunidade: ver posts seed das 130 personas
+  │   │   ├─ Wonder Night: ritual completo
+  │   │   ├─ HygeiOS Data Gate: tentar acessar com plano errado
+  │   │   └─ CerberOS: tentar acionar ETERNAL MAZE
+  │   └─ Go/No-Go decision com Fabiano (1h)
+  │       ├─ Bugs P0/P1: bloqueiam launch (rollback p/ fix)
+  │       ├─ Bugs P2: fix em hotfix pós-launch
+  │       └─ Aprovação formal para Play Store submit
   │
   └─ Play Store Launch (25h)
       ├─ Listing em 13 línguas
@@ -318,7 +381,203 @@ WEEK 3 (Sep 3-9): Audit + Launch
 
 🎯 TARGET: LIVE ON PLAY STORE — September 9, 2026
 🌏 ATENDIMENTO: 14 países / 13 locales / latência ≤ 200ms global
+📱 APK VALIDADO: 3 modelos físicos · 3 versões Android · todas 14 locales
 ```
+
+---
+
+## 🤖 POPULAÇÃO PRE-LAUNCH — 130 Personas Interagindo
+
+> **Princípio inviolável:** Antes do launch, AquariOS precisa parecer **VIVO**. Usuário ao se cadastrar deve encontrar Comunidades ativas, perguntas sendo feitas e respondidas, conteúdo orgânico. Sem isso, a primeira impressão é de "ghost town".
+
+### Edge Function: `personas-orchestrator` (S16 Week 5 · 30h)
+
+```typescript
+// supabase/functions/personas-orchestrator/index.ts
+// Cron: a cada 30 minutos
+// Lê 130 personas em persona_management + scripts de teste por módulo
+
+INTERAÇÕES POR DIA:
+  - 2-3 posts orgânicos por persona ativa
+  - Perguntas direcionadas a outras personas ("@Maria, como você usa Nutrição?")
+  - Respostas com base no arquétipo + tradição
+  - Reactions, likes, ratings (LGPD: nunca dados reais)
+
+CONTEÚDO SEED MASSIVO PRE-LAUNCH:
+  130 personas × 2 posts/dia × 14 dias = 3.640 posts seed
+  + 5.000 replies + 2.000 likes = AquariOS "vivo" no dia 1
+```
+
+### Cenários de teste por persona (exceto PanaceIA)
+
+| Função | Quem testa | O que faz | Output esperado |
+|---|---|---|---|
+| **ProteOS chat** | TODAS as 130 personas | Conversam em locale nativo · Cultural Voice ativo | 13 culturas validadas |
+| **Diário do Ser** | 30 personas | E2E encryption · mood tagging | Posts criptografados OK |
+| **Nutrição** | 25 personas | 6 refeições/dia + análise foto | IVI Bio calculado |
+| **Wonder Night** | 20 personas | Ritual noturno + reflexão | wonder_night_logs populado |
+| **Comunidades** | TODAS 130 | Posts + replies + ratings | 3640 posts + 5000 replies |
+| **Achievements/XP** | TODAS 130 | Ganham XP por atividade | 7 níveis Semente→Mestre exercitados |
+| **Leaderboard** | TODAS 130 | Ranking IVI Spirit | Top 10 visível |
+| **HygeiOS Data Gate** | 20 personas (5 por plano) | Tentam acessar layers | Free bloqueado, paid passa |
+| **CerberOS ETERNAL MAZE** | 10 personas marcadas "atacante" | Comportamento malicioso | Aprisionamento ativa |
+| **AlexandriOS FAQ** | 50 personas | Consultam 42 FAQs | Respostas contextuais |
+| **EcumenicOS 13 tradições** | TODAS 130 | Filtradas por tradição | Oráculo oculto injeta |
+| **SandeirOS modo oculto** | TODAS 130 | Arcanos temperam respostas | 22 arcanos exercitados |
+| **EteriOS wearables** | 15 personas | Mock data biometria | telemetry_vitality_logs OK |
+| **❌ PanaceIA tokens** | NENHUMA | Excluído por decisão Fabiano 27/05 | Pagamento real só pós-launch |
+| **❌ PanaceIA comércio exterior** | NENHUMA | Excluído (Stripe live só pós-launch) | — |
+
+### SQL pendente (migration 13 ou edge function direto)
+
+```sql
+-- aquarios_persona_test_scripts: o que cada persona testa
+CREATE TABLE aquarios_persona_test_scripts (
+  id              UUID PRIMARY KEY,
+  persona_id      UUID REFERENCES persona_management(id),
+  test_target     TEXT NOT NULL,    -- 'chat', 'diario', 'comunidades', etc.
+  test_scenario   TEXT NOT NULL,
+  expected_output TEXT,
+  exclude_panaceia BOOLEAN DEFAULT true,
+  executed_at     TIMESTAMPTZ,
+  result          JSONB
+);
+
+-- Helper para gerar interações
+CREATE FUNCTION generate_persona_post(p_persona_id UUID, p_target_module TEXT)
+  RETURNS UUID AS $$ ... $$;
+```
+
+---
+
+## 💰 4 TIERS COMERCIAIS SEPARADOS (Manual §19)
+
+> **Decisão 27/05:** os 6 planos da migration 12 agrupam-se em **4 tiers comerciais** por público-alvo. Cada tier tem persona-âncora + faixa de preço.
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│  TIER 0 — FREE (entry funnel)                                      │
+│  ├─ Free Anônimo     R$0       Google Agenda + ProteOS básico     │
+│  └─ Free Comunidade  R$0       + Comunidades + IVI Spirit parcial │
+│  Persona-âncora: usuário curioso/explorador                       │
+└────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────┐
+│  TIER 1 — SOBREVIVÊNCIA / VULNERÁVEIS                              │
+│  R$ 24,90 — R$ 49,90 /mês                                          │
+│  Persona-âncora: Roberto Santos (Zé do Aperto)                    │
+│  • Plano: Starter R$19,90-39,90                                    │
+│  • Acessibilidade: estudante 50% · PcD 90% · 80+ vitalício        │
+│  • Foco: SUS · low-cost · orçamento apertado                       │
+└────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────┐
+│  TIER 2 — FAMÍLIAS                                                  │
+│  R$ 39,90 — R$ 149,90 /mês                                          │
+│  Persona-âncora: Maria da Silva (Dona Maria)                       │
+│  • Plano: Premium R$79,90-149,90                                   │
+│  • Foco: prevenção · diabetes · medicação · família central        │
+│  • Suporte: 1 wearable EteriOS · IVI completo                      │
+└────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────┐
+│  TIER 3 — ALTA PERFORMANCE                                          │
+│  R$ 89,90 — R$ 399,90 /mês                                          │
+│  Personas-âncora: Carlos Mendes + Lucas Oliveira                  │
+│  • Plano: Premium → Professional                                   │
+│  • Foco: risco cardíaco · biohacking · data-driven                 │
+│  • Wearables ilimitados · IA contextual avançada · Beck Office     │
+└────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────┐
+│  TIER 4 — PROFISSIONAIS B2B                                         │
+│  R$ 149,90 — R$ 899 /profissional/mês                              │
+│  Persona-âncora: Fernanda Rocha (Clinical Evidence Based)         │
+│  • Plano: Professional → Beck Office B2B                           │
+│  • Dashboard pacientes · alertas AsclepiOS · Rapidoc telemedicina  │
+│  • Foco: clínicas · hospitais · empresas (Employee Wellness)       │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+### Tabela SQL para tiers (pending migration 13)
+
+```sql
+CREATE TABLE commercial_tiers (
+  id              UUID PRIMARY KEY,
+  tier_number     SMALLINT UNIQUE,
+  tier_name       TEXT,        -- 'free' | 'sobrevivencia' | 'familias' | 'alta_performance' | 'profissionais_b2b'
+  display_name    TEXT,
+  price_min_brl   INT,         -- centavos
+  price_max_brl   INT,         -- centavos
+  persona_anchor  TEXT[],      -- ['ZE_DO_APERTO', 'DONA_MARIA', ...]
+  plan_slugs      TEXT[],      -- ['starter', 'premium', ...]
+  description     TEXT,
+  is_active       BOOLEAN DEFAULT true
+);
+```
+
+---
+
+## 🎛 DASHBOARD CONFIGURÁVEL ADMIN
+
+> **Princípio:** Fabiano (founder único) precisa poder reconfigurar TODAS as decisões da auditoria sem precisar editar SQL. Dashboard `config-admin.tsx` (próximo PR) consolida:
+
+```
+mobile/app/(app)/config-admin.tsx (criar em S16 Week 4)
+│
+├── 🎯 Decisões da Auditoria (vem de aquarios_decisions)
+│   └─ Já tem em app/(app)/divergencias.tsx ✅
+│
+├── 🤖 Personas
+│   ├─ Liga/desliga personas culturais (130 individualmente)
+│   ├─ Ajustar activity_level por persona
+│   ├─ Ver interactions_today · interactions_week
+│   └─ Forçar interação manual entre duas personas
+│
+├── 💰 Tiers Comerciais
+│   ├─ Editar faixas de preço (price_min/max)
+│   ├─ Ativar/desativar tier
+│   ├─ Mapear persona-âncora a tier
+│   └─ Configurar acessibilidade social (estudante/PcD/idoso)
+│
+├── 🌏 Tri-Cloud Routing
+│   ├─ DNS weights por região (AWS/Oracle/Alibaba)
+│   ├─ Forçar failover manual (testar)
+│   ├─ Ver latência atual por região
+│   └─ Estado dos health checks
+│
+├── 🔐 Segurança
+│   ├─ Aprovar/revogar JIT access grants
+│   ├─ Aquarios_admin_grants management
+│   ├─ Ver audit_logs filtrados
+│   └─ Trigger Crisis Plan (botão pânico)
+│
+├── 🧬 HygeiOS Configuração
+│   ├─ Threshold IVI bands (CRITICO/ALERTA/...)
+│   ├─ Pesos da fórmula IVI (Bio/Mental/Spirit)
+│   ├─ Pipeline ETL frequency (6h default)
+│   └─ Anomaly detection thresholds
+│
+├── 🛒 PanaceIA Marketplace
+│   ├─ Liga/desliga 9 categorias marketplace
+│   ├─ Revenue share por categoria
+│   ├─ BYOK config (Stripe keys validation)
+│   └─ Token packages pricing
+│
+├── 📚 ARKHE Documentação
+│   ├─ IP Registry (30 itens · editar status)
+│   ├─ Arcanos catalog (22 · não-editável: legal)
+│   └─ KB_Foundation (12 obras · adicionar mais)
+│
+└── 🎓 Modo Sandbox
+    ├─ Reset de dados de teste
+    ├─ Trigger personas-orchestrator manualmente
+    └─ Snapshot/restore configurações
+```
+
+**Acesso:** mesma chave do admin (`aquarios_admin_grants` · 4 camadas)
+**Implementação:** S16 Week 4 ou S17 Week 1 (50h estimado)
+**Persistência:** via mesma `aquarios_decisions` + novas tabelas configuráveis
 
 ---
 
@@ -357,15 +616,35 @@ WEEK 3 (Sep 3-9): Audit + Launch
 
 ---
 
-## 📊 STATUS GERAL
+## 📊 STATUS GERAL (atualizado 27/05)
 
 | Fase | Status | Risco Mitigado | Esforço | Conclusão |
 |---|---|---|---|---|
 | **Pré-S16** (M-01 a M-12 + audit) | ✅ **COMPLETO** | R$12M (RLS) + governança | ~100h | 27/05/2026 |
-| **S16 v2** Fundação Segurança | 🟡 Ready to start | R$212.4M (80%) | 133h | 08/07/2026 |
+| **S16 v2** Fundação + Config Admin + Orchestrator | 🟡 Ready to start | R$212.4M (80%) | **253h** | 08/07/2026 |
 | **S17** Perímetro CerberOS | 📋 Designed | +R$30M (91%) | 285h | 19/08/2026 |
-| **S18** Produção **TRI-CLOUD** + Launch | 📋 Roadmap | +R$15M (latência+resiliência) | **230h** | 09/09/2026 |
-| **TOTAL** | 🟢 **READY** | **R$257.4M (95%)** | **648h** | **09/09/2026** |
+| **S18** Tri-Cloud + APK Field Test + Launch | 📋 Roadmap | +R$15M (latência+resiliência) | **290h** | 09/09/2026 |
+| **TOTAL** | 🟢 **READY** | **R$257.4M (95%)** | **928h** | **09/09/2026** |
+
+### Breakdown detalhado por sprint
+
+**S16 v2 (253h):**
+- 133h base (E2E 15h + JIT 10h + Crisis 8h + RLS 20h + Audit 10h + Testing 60h + Wave2 10h)
+- +50h config-admin.tsx dashboard (Week 4)
+- +30h personas-orchestrator edge function (Week 5)
+- +20h persona testing matrix (14 scripts × 1h por persona-grupo)
+- +10h massa crítica validation (Week 6)
+- +10h migration 13 (commercial_tiers + scripts)
+
+**S18 (290h):**
+- AWS Setup 40h + Oracle Setup 40h + 🌏 Alibaba Setup 40h = **120h infrastructure tri-cloud**
+- APK build + initial testing 20h
+- Triplex CDC + Failover 60h
+- Architecture Audit 50h
+- 📱 **APK Field Test pós-audit 15h ← novo** (era gap entre audit e launch)
+- Play Store Launch 25h
+
+**Distribuição cronológica:** 928h em 3 teams paralelos (Backend / DevOps / Mobile+QA) + founder oversight = 14 semanas calendárias compactadas.
 
 **Cobertura geográfica garantida (post-S18):**
 
@@ -479,13 +758,17 @@ Para Legal:      Migration 12 PARTE 2 (intellectual_property_registry)
 | **Risco mitigado (segurança)** | R$12M (4.5%) | R$12M base · **R$257.4M planejado (95%)** |
 | **Arquitetura cloud** | single (Supabase) | **Tri-cloud (AWS + Oracle + 🌏 Alibaba)** |
 | **Cobertura geográfica** | global single-region | **3 regiões · latência ≤ 200ms global** |
-| **Roadmap formal até Play Store** | difuso | **648h · 14 semanas · 09/09/2026** |
-| **Status global** | Múltiplas linhas | **🟢 UNIFICADO TRI-CLOUD** |
+| **População pre-launch** | inexistente | **3640 posts seed + 5000 replies + 2000 likes** |
+| **Tiers comerciais separados** | difuso | **4 tiers (+Free) com persona-âncora** |
+| **Dashboard configurável** | inexistente | **9 seções editáveis pelo founder** |
+| **APK Field Test pós-audit** | gap não-mapeado | **15h com 3 modelos · 3 Android · 14 locales** |
+| **Roadmap formal até Play Store** | difuso | **928h · 14 semanas · 09/09/2026** |
+| **Status global** | Múltiplas linhas | **🟢 UNIFICADO TRI-CLOUD + PERSONAS + CONFIG** |
 
 ---
 
 **Documento criado em:** 27/05/2026
-**Última atualização:** 27/05/2026 (adicionado Alibaba Cloud Asia · S18 expandido a 230h · total 648h)
+**Última atualização:** 27/05/2026 (v3 — Alibaba Asia + APK Field Test + Personas Orchestrator + 4 Tiers Comerciais + Dashboard Configurável · S16=253h · S18=290h · total **928h**)
 **Autor da consolidação:** Claude Opus 4.7 (modo conciliação A↔B + tri-cloud)
 **Autoridade legal final:** Fabiano Gomes Leite · CPF 521.363.886-49 · Lei 9.610/1998
 **Próxima revisão:** Após merge do PR #7 ou início do S16 v2 Week 1
