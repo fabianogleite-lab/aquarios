@@ -2,7 +2,7 @@
   "expo": {
     "name": "AquariOS",
     "slug": "aquarios-274s3k",
-    "version": "4.6.0",
+    "version": "4.7.0",
     "orientation": "portrait",
     "scheme": "aquarios",
     "icon": "./assets/icon.png",
@@ -16,11 +16,21 @@
     ],
     "ios": {
       "supportsTabletMode": true,
-      "bundleIdentifier": "com.arkhe.aquarios"
+      "bundleIdentifier": "com.arkhe.aquarios",
+      "infoPlist": {
+        "NSCameraUsageDescription": "AquariOS usa a câmera para personalizar seu perfil e compartilhar momentos na comunidade.",
+        "NSMicrophoneUsageDescription": "AquariOS usa o microfone para suporte por voz com ProteOS.",
+        "NSLocationWhenInUseUsageDescription": "AquariOS usa sua localização para personalizar recomendações de saúde e bem-estar.",
+        "NSCalendarsUsageDescription": "AquariOS integra com seu calendário para lembretes de eventos Wonder Night.",
+        "NSCalendarsWriteOnlyAccessUsageDescription": "AquariOS adiciona eventos Wonder Night ao seu calendário.",
+        "NSPhotoLibraryUsageDescription": "AquariOS acessa sua galeria para personalizar seu perfil e compartilhar na comunidade.",
+        "NSPhotoLibraryAddUsageDescription": "AquariOS salva fotos de progresso na sua galeria.",
+        "NSFaceIDUsageDescription": "AquariOS usa Face ID para proteger seu acesso com biometria."
+      }
     },
     "android": {
       "package": "com.arkhe.aquarios",
-      "versionCode": 46,
+      "versionCode": 47,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#090c14"
@@ -32,31 +42,19 @@
         "android.permission.READ_MEDIA_IMAGES",
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_BACKGROUND_LOCATION",
         "android.permission.VIBRATE",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.USE_EXACT_ALARM",
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR",
-        "android.permission.GET_ACCOUNTS",
-        "android.permission.USE_CREDENTIALS",
-        "android.permission.READ_PHONE_STATE",
-        "android.permission.PROCESS_OUTGOING_CALLS",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MICROPHONE",
         "android.permission.FOREGROUND_SERVICE_LOCATION",
         "android.permission.FOREGROUND_SERVICE_CAMERA",
-        "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.PACKAGE_USAGE_STATS",
-        "android.permission.BIND_VOICE_INTERACTION",
-        "android.permission.BIND_ACCESSIBILITY_SERVICE",
         "android.permission.WAKE_LOCK",
-        "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT"
       ]
