@@ -8,6 +8,9 @@ import { OfflineNotice } from '../components/OfflineNotice';
 import { colors, fontSize } from '../lib/theme';
 import * as Localization from 'expo-localization';
 import { applyRTL } from '../i18n/rtl';
+import Constants from 'expo-constants';
+
+const APP_VERSION = Constants.expoConfig?.version ?? '4.7.0';
 
 const { width } = Dimensions.get('window');
 
@@ -44,7 +47,7 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
         Sistema Operacional Pessoal
       </Animated.Text>
       <Animated.Text style={[splash.version, { opacity: fadeSub }]}>
-        v4.2.0
+        v{APP_VERSION}
       </Animated.Text>
     </View>
   );
