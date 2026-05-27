@@ -15,6 +15,8 @@ export const colors = {
   error: '#e74c3c',
   errorBg: '#1a1a2e',
   success: '#2ecc71',
+  warning: '#f39c12',
+  surface: '#141c28',
   like: '#e05a5a',
   userBubble: '#1a3a4a',
   macro: {
@@ -46,6 +48,9 @@ export const fontSize = {
   hero: 24,
   display: 32,
   splash: 36,
+  caption: 11,
+  bodyLarge: 16,
+  heading: 20,
 } as const;
 
 export const radius = {

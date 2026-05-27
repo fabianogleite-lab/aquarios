@@ -102,7 +102,7 @@ export default function DiarioScreen() {
     ]);
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatEntryDate = (dateStr: string) => {
     return formatDate(dateStr, { day: '2-digit', month: 'short', year: 'numeric' });
   };
 
@@ -143,7 +143,7 @@ export default function DiarioScreen() {
                 onLongPress={() => deleteEntry(item.id)}
               >
                 <View style={s.cardHeader}>
-                  <Text style={s.cardDate}>{formatDate(item.created_at)}</Text>
+                  <Text style={s.cardDate}>{formatEntryDate(item.created_at)}</Text>
                   <Text style={s.cardMood}>{MOOD_EMOJI[item.mood] || '🤔'}</Text>
                 </View>
                 <Text style={s.cardContent}>{getPreview(item.content)}</Text>

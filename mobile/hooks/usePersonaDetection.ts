@@ -29,6 +29,8 @@ export interface UserProfile {
 }
 
 export function usePersonaDetection() {
+  const { calculateHealthScore } = useHealthScore();
+
   const calculateL1Score = (age?: number, gender?: string, location?: string): number => {
     let score = 0.5;
 
@@ -121,8 +123,8 @@ export function usePersonaDetection() {
 
     const l1Score = calculateL1Score(age, gender, location);
 
-    const healthScore = await useHealthScore();
-    const { healthLevel } = healthScore;
+    const scoreResult = await calculateHealthScore();
+    const healthLevel = scoreResult?.healthLevel ?? 50;
     const economicContext = detectEconomicContext(healthLevel, income, savingsRate);
     const persona = selectPersonaFromEconomic(economicContext);
 

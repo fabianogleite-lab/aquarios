@@ -32,7 +32,7 @@ export function useCommunityAPI() {
         return { success: false, error: 'Not authenticated' };
       }
 
-      const url = `${supabase.supabaseUrl}/functions/v1/community?action=${action}`;
+      const url = `${process.env.EXPO_PUBLIC_SUPABASE_URL}/functions/v1/community?action=${action}`;
 
       const response = await fetch(url, {
         method: 'POST',
@@ -52,7 +52,7 @@ export function useCommunityAPI() {
       return result as APIResponse<T>;
     } catch (err) {
       console.error('API call error:', err);
-      return { success: false, error: err.message };
+      return { success: false, error: (err as Error).message };
     }
   };
 

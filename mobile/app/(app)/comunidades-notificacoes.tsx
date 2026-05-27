@@ -77,7 +77,7 @@ export default function ComunidadesNotificacoes() {
     return '💬';
   };
 
-  const formatDate = (dateStr: string) => {
+  const formatRelativeDate = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const hours = Math.floor(diff / 3600000);
     if (hours < 1) return 'Agora';
@@ -114,7 +114,7 @@ export default function ComunidadesNotificacoes() {
                 <Text style={s.notifIcon}>{getNotifIcon(item.type)}</Text>
                 <View style={s.notifContent}>
                   <Text style={s.notifText}>{getNotifText(item)}</Text>
-                  <Text style={s.notifDate}>{formatDate(item.created_at)}</Text>
+                  <Text style={s.notifDate}>{formatRelativeDate(item.created_at)}</Text>
                 </View>
                 {!item.is_read && <View style={s.unreadDot} />}
               </TouchableOpacity>

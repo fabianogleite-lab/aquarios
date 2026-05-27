@@ -23,7 +23,7 @@ export default function AchievementsScreen() {
   const loadBadges = async () => {
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session?.user?.id) {
+      if (!session?.session?.user?.id) {
         setLoading(false);
         return;
       }
@@ -31,13 +31,13 @@ export default function AchievementsScreen() {
       const { data: userBadges } = await supabase
         .from('badges')
         .select('*')
-        .eq('user_id', session.user.id)
+        .eq('user_id', session.session!.user.id)
         .order('unlocked_at', { ascending: false });
 
       const { data: userXP } = await supabase
         .from('user_xp')
         .select('level')
-        .eq('user_id', session.user.id)
+        .eq('user_id', session.session!.user.id)
         .single();
 
       setBadges(userBadges || []);

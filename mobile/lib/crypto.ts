@@ -20,7 +20,7 @@ async function getKey(): Promise<CryptoKey> {
   if (stored) {
     return crypto.subtle.importKey(
       'raw',
-      base64ToUint8(stored),
+      base64ToUint8(stored).buffer as ArrayBuffer,
       { name: 'AES-GCM' },
       false,
       ['encrypt', 'decrypt']
@@ -54,8 +54,8 @@ export async function encryptField(plaintext: string): Promise<EncryptedField> {
 
 export async function decryptField(ciphertext: string, nonce: string): Promise<string> {
   const key = await getKey();
-  const iv = base64ToUint8(nonce);
-  const data = base64ToUint8(ciphertext);
+  const iv = base64ToUint8(nonce).buffer as ArrayBuffer;
+  const data = base64ToUint8(ciphertext).buffer as ArrayBuffer;
   const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
   return new TextDecoder().decode(decrypted);
 }
