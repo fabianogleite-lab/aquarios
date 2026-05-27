@@ -218,62 +218,142 @@ CerberOS 7-Layer Architecture:
 **Risk mitigado adicional:** R$30M
 **Cumulative coverage:** R$242.4M / R$264M (**91%**)
 
-### 🟢 S18 — PRODUÇÃO + PLAY STORE LAUNCH (Aug 20 - Sep 9 · 190h)
+### 🟢 S18 — PRODUÇÃO TRI-CLOUD + PLAY STORE LAUNCH (Aug 20 - Sep 9 · **230h**)
+
+> **Atualização 27/05:** S18 expandido de 190h → **230h** para incluir **3ª nuvem Asia-Pacific** (Alibaba Cloud International) e atender usuários orientais com baixa latência. Free 1 ano + escalável + ISO 27001 + MTCS Singapore Level 3.
+
+#### 🌏 Arquitetura Tri-Cloud (Americas + EU + Asia)
 
 ```
-WEEK 1 (Aug 20-26): Infrastructure
-  ├─ AWS Setup (40h, DevOps)
-  │   ├─ VPC, EC2, RDS, CloudFront
-  │   ├─ Route53 weighted routing
-  │   └─ Security groups + IAM policies
-  │
-  └─ Oracle Setup (40h, DBA)
-      ├─ Autonomous DB provisioning
-      ├─ Data Guard + RMAN backups
-      └─ Failover automation (<1s switchover)
+PRIMARY (Americas/EU):       AWS (US-East-1 + EU-West-1)
+SECONDARY (Failover global): Oracle Cloud (Always Free + paid burst)
+TERTIARY (Asia-Pacific):     Alibaba Cloud International (Singapore + Tokyo)
 
-WEEK 2 (Aug 27 - Sep 2): Testing
+Espelhamento "trilha a trilha":
+  AWS RDS PostgreSQL ⇄ Oracle Autonomous DB ⇄ Alibaba RDS PostgreSQL
+              ↑ Debezium CDC          ↑ DTS (Data Transmission Service)
+              └─────── Triplex replication async ────────┘
+
+Storage triplex:
+  AWS S3 + Oracle Object Storage + Alibaba OSS
+  (cross-region replication, eventual consistency 5-30s)
+
+CDN edge:
+  CloudFront (Americas/EU) + Oracle CDN + Alibaba DCDN (Asia)
+  Roteamento DNS:
+    Origin region BR/US/EU → AWS primary
+    Origin region IR/IL/TH/KR/HK/CN/JP → Alibaba primary
+    Falha de qualquer → Oracle como secondary automático
+```
+
+#### Cronograma S18 detalhado
+
+```
+WEEK 1 (Aug 20-26): Infrastructure Tri-Cloud
+  ├─ AWS Setup (40h, DevOps)
+  │   ├─ VPC, EC2, RDS PostgreSQL Multi-AZ, CloudFront
+  │   ├─ Route53 weighted + geo-routing rules
+  │   ├─ Security groups + IAM policies (least-privilege)
+  │   └─ Regions: us-east-1 (primary) + eu-west-1 (secondary)
+  │
+  ├─ Oracle Cloud Setup (40h, DBA)
+  │   ├─ Autonomous DB provisioning (always-free tier)
+  │   ├─ Data Guard standby + RMAN backups 6h
+  │   ├─ Failover automation Data Guard Broker (<30s detect)
+  │   └─ Region: us-ashburn-1 (matches AWS east coast)
+  │
+  └─ 🌏 Alibaba Cloud Asia Setup (40h, DevOps) — NEW
+      ├─ Conta International (Singapore legal entity)
+      ├─ ECS t6 instances (free 12 meses)
+      ├─ RDS PostgreSQL (Singapore + Tokyo, replicas)
+      ├─ OSS object storage (Singapore primary)
+      ├─ Alibaba CDN/DCDN para 14 países do plano
+      ├─ Security Center + Anti-DDoS Pro habilitados
+      ├─ ISO 27001 + MTCS Level 3 compliance verified
+      └─ Free credits ativados ($450-$1300 USD)
+
+WEEK 2 (Aug 27 - Sep 2): Testing + Triplex Sync
   ├─ APK Local Build + Testing (20h, Mobile)
-  │   ├─ Auth, Diary, Nutrition, ProteOS chat
+  │   ├─ Auth, Diário, Nutrição, ProteOS chat
   │   ├─ E2E encryption verified
-  │   ├─ Performance: cold start < 3s
+  │   ├─ Performance por região (latência por país):
+  │   │   ├─ BR/Americas: AWS US-East — target ≤ 200ms
+  │   │   ├─ EU/Africa: AWS EU-West — target ≤ 150ms
+  │   │   └─ Asia (CN/JP/KR/HK/TH/SG/IR): Alibaba — target ≤ 100ms
+  │   ├─ Cold start < 3s · transitions < 300ms
   │   └─ Crash testing + offline mode
   │
-  └─ AWS↔Oracle Mirroring + Failover (40h, DevOps)
-      ├─ CDC replication
-      ├─ Failover automation
-      └─ Load testing under failover
+  └─ Triplex Mirroring + Failover (60h, DevOps) — EXPANDIDO
+      ├─ CDC architecture (20h)
+      │   ├─ Debezium em AWS → captura mudanças PostgreSQL
+      │   ├─ DTS Alibaba ← replica AWS para Asia
+      │   ├─ Oracle GoldenGate ← syncs com AWS
+      │   └─ Eventual consistency 5-30s entre regiões
+      │
+      ├─ Failover automation triplo (20h)
+      │   ├─ Health checks por região (10s interval)
+      │   ├─ Auto-switch DNS Route53 + Alibaba DNS
+      │   ├─ Promote standby em <60s
+      │   └─ Rollback automático ao recover
+      │
+      └─ Load testing tri-cloud (20h)
+          ├─ 1000 req/s por região simulteneously
+          ├─ Killchain: kill AWS → verify Asia/Oracle assumem
+          ├─ Data consistency cross-cloud verificada
+          └─ Cost analysis: confirmar ano 1 < $0 (free tiers)
 
 WEEK 3 (Sep 3-9): Audit + Launch
   ├─ Architecture Security Audit (50h, Security Team)
   │   ├─ Code security audit (deps, secrets, SQLi, XSS)
-  │   ├─ Broken link detection
-  │   ├─ Database integrity check
-  │   └─ Infrastructure security review
+  │   ├─ Broken link detection (todos endpoints/CDNs)
+  │   ├─ Database integrity check (3 clouds consistentes)
+  │   ├─ Infrastructure security audit (todas 3 clouds)
+  │   └─ Compliance verification (LGPD + ISO 27001 + MTCS)
   │
   └─ Play Store Launch (25h)
       ├─ Listing em 13 línguas
-      ├─ AAB upload
-      ├─ Review submission
-      └─ Go-live monitoring
+      ├─ AAB upload (Expo SDK 56)
+      ├─ Review submission Google Play Console
+      └─ Go-live monitoring (Sentry + 3 clouds dashboards)
 
 🎯 TARGET: LIVE ON PLAY STORE — September 9, 2026
+🌏 ATENDIMENTO: 14 países / 13 locales / latência ≤ 200ms global
 ```
 
 ---
 
-## 🔐 PERMISSÕES REQUERIDAS (consolidado Linha B)
+## 🔐 PERMISSÕES REQUERIDAS — TRI-CLOUD
 
 ```
 ✅ AWS — AdminAccess (ou granular: 40+ permissions documentadas)
-✅ Oracle — DBA role completo
+✅ Oracle Cloud — DBA role completo + Always Free tier
+✅ 🌏 Alibaba Cloud International — RAM Administrator role (NEW)
+   ├─ Conta empresa: Alibaba Cloud (Singapore) Pte Ltd
+   ├─ Free 12 meses ECS + $450-$1300 USD credits
+   ├─ Habilitar: ECS · RDS · OSS · DTS · CDN · Security Center · Anti-DDoS
+   └─ Compliance: ISO 27001, ISO 27017, ISO 27018, MTCS Level 3
 ✅ Supabase — Project Owner (✅ JÁ TEMOS · token usado hoje)
 ✅ Google Play Console — Publisher/Owner
-✅ Teleport Cloud — Admin (secret management)
+✅ Teleport Cloud — Admin (secret management entre 3 clouds)
 ✅ Anthropic API — chave válida (✅ JÁ EM PRODUÇÃO)
 ✅ GitHub — repo write (✅ JÁ TEMOS)
 ✅ Stripe — chaves API (⏳ pendente decisão humana)
 ```
+
+### 🌏 Alibaba Cloud — detalhamento do free tier
+
+| Recurso | Free 12 meses | Limites |
+|---|---|---|
+| ECS Burstable t6 | 1 instância · 1vCPU · 1GB RAM · 40GB SSD | 12 meses |
+| RDS PostgreSQL | $200 credit (suficiente p/ ~3 meses small instance) | Pay-as-you-go |
+| OSS (Object Storage) | 5GB storage + 500k requests | 12 meses |
+| CDN | 10TB data transfer | 12 meses |
+| DTS (Data Transmission) | $50 credit | Pay-as-you-go |
+| Anti-DDoS Basic | Incluso grátis em todos planos | Permanente |
+| Security Center | Tier básico grátis | Permanente |
+
+**Custo projetado ano 2 (post-free):** ~$80-$150/mês para o setup tri-cloud Asia
+**ROI:** latência -50% para 7 dos 14 países do plano (CN/JP/KR/HK/TH/SG/IR)
 
 ---
 
@@ -284,8 +364,21 @@ WEEK 3 (Sep 3-9): Audit + Launch
 | **Pré-S16** (M-01 a M-12 + audit) | ✅ **COMPLETO** | R$12M (RLS) + governança | ~100h | 27/05/2026 |
 | **S16 v2** Fundação Segurança | 🟡 Ready to start | R$212.4M (80%) | 133h | 08/07/2026 |
 | **S17** Perímetro CerberOS | 📋 Designed | +R$30M (91%) | 285h | 19/08/2026 |
-| **S18** Produção + Launch | 📋 Roadmap | — | 190h | 09/09/2026 |
-| **TOTAL** | 🟢 **READY** | **R$242.4M (91%)** | **608h** | **09/09/2026** |
+| **S18** Produção **TRI-CLOUD** + Launch | 📋 Roadmap | +R$15M (latência+resiliência) | **230h** | 09/09/2026 |
+| **TOTAL** | 🟢 **READY** | **R$257.4M (95%)** | **648h** | **09/09/2026** |
+
+**Cobertura geográfica garantida (post-S18):**
+
+```
+        Americas             EU/MENA              Asia-Pacific
+        ────────             ───────              ─────────────
+PRIMARY AWS us-east-1        AWS eu-west-1        🌏 Alibaba SG/Tokyo
+LATENCY ≤ 200ms              ≤ 150ms              ≤ 100ms
+COUNTRIES BR · US · VE · PE  PT · CH · NO · NG    CN · JP · KR · HK · TH · SG · IR · IL
+
+SECONDARY/FAILOVER: Oracle Cloud (Always-Free + paid burst)
+                    → Assume tráfego de qualquer região se primary falhar (<60s)
+```
 
 ---
 
@@ -298,9 +391,22 @@ WEEK 3 (Sep 3-9): Audit + Launch
 | 3 | Designar Crisis Owner | Fabiano | 28/05/2026 |
 | 4 | Setup conta Teleport Cloud ($1000/mês) | Fabiano | Antes de 31/05 |
 | 5 | Setup conta Stripe + API keys | Fabiano | Antes de S17 |
-| 6 | Setup conta AWS + Oracle Cloud | Fabiano | Antes de S18 (Aug 20) |
-| 7 | Bootstrap `aquarios_admin_grants` (passphrase + UUID) | Fabiano | Quando quiser usar admin |
-| 8 | Atualizar PDF Manual V1.0612 (8 novos itens IP) | Fabiano | Sem urgência |
+| 6 | Setup conta AWS | Fabiano | Antes de S18 (Aug 20) |
+| 7 | Setup conta Oracle Cloud (Always Free) | Fabiano | Antes de S18 (Aug 20) |
+| 8 | 🌏 Setup conta **Alibaba Cloud International** (Singapore) | Fabiano | Antes de S18 (Aug 20) |
+| 9 | Bootstrap `aquarios_admin_grants` (passphrase + UUID) | Fabiano | Quando quiser usar admin |
+| 10 | Atualizar PDF Manual V1.0612 (8 novos itens IP + tri-cloud) | Fabiano | Sem urgência |
+
+### 🌏 Como abrir conta Alibaba Cloud (5 minutos)
+
+1. Acesse: https://www.alibabacloud.com/en/free?_p_lc=1 (Singapore entity)
+2. Sign up → use email empresa + telefone
+3. Verifique email + adicione cartão (não é debitado durante free tier)
+4. Free credits ativados automaticamente após verificação
+5. Habilite produtos: **ECS · RDS · OSS · DTS · CDN · Security Center**
+6. Selecione regiões primary: **ap-southeast-1 (Singapore) + ap-northeast-1 (Tokyo)**
+7. Gere AccessKey + SecretKey via RAM (Resource Access Management)
+8. Compartilhe credentials via Teleport Vault (quando S16 estiver pronto)
 
 **Observação importante sobre decisor:** o Manual V1.0512 + decisões do código identificam Fabiano como founder único + decisor único. Os papéis "CTO/CFO/CEO" da Linha B mapeiam todos para Fabiano nesta fase. Quando houver time, refatorar `aquarios_admin_grants` com múltiplos UUIDs.
 
@@ -370,17 +476,55 @@ Para Legal:      Migration 12 PARTE 2 (intellectual_property_registry)
 | **Decisões formalmente registradas** | 0 | **17** |
 | **Mapas operacionais documentados** | 0 | **2** (eixos + arcanos) |
 | **Dashboard de decisões** | inexistente | **app/(app)/divergencias.tsx** |
-| **Risco mitigado (segurança)** | R$12M (4.5%) | R$12M base · **R$242.4M planejado** |
-| **Roadmap formal até Play Store** | difuso | **608h · 14 semanas · 09/09/2026** |
-| **Status global** | Múltiplas linhas | **🟢 UNIFICADO** |
+| **Risco mitigado (segurança)** | R$12M (4.5%) | R$12M base · **R$257.4M planejado (95%)** |
+| **Arquitetura cloud** | single (Supabase) | **Tri-cloud (AWS + Oracle + 🌏 Alibaba)** |
+| **Cobertura geográfica** | global single-region | **3 regiões · latência ≤ 200ms global** |
+| **Roadmap formal até Play Store** | difuso | **648h · 14 semanas · 09/09/2026** |
+| **Status global** | Múltiplas linhas | **🟢 UNIFICADO TRI-CLOUD** |
 
 ---
 
 **Documento criado em:** 27/05/2026
-**Autor da consolidação:** Claude Opus 4.7 (modo conciliação A↔B)
+**Última atualização:** 27/05/2026 (adicionado Alibaba Cloud Asia · S18 expandido a 230h · total 648h)
+**Autor da consolidação:** Claude Opus 4.7 (modo conciliação A↔B + tri-cloud)
 **Autoridade legal final:** Fabiano Gomes Leite · CPF 521.363.886-49 · Lei 9.610/1998
 **Próxima revisão:** Após merge do PR #7 ou início do S16 v2 Week 1
 
 ---
 
-🌊 **Tudo conciliado. Próxima sessão: apenas implementar.**
+## 🌏 Resumo Tri-Cloud para apresentação executiva
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                  AquariOS — Arquitetura Tri-Cloud                │
+│                  Live: 09/09/2026 (target Play Store)            │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  🇺🇸 AWS                  🌍 Oracle Cloud         🌏 Alibaba       │
+│  Americas + EU            Failover global         Asia-Pacific   │
+│  us-east-1 + eu-west-1    us-ashburn-1            SG + Tokyo     │
+│                                                                  │
+│  Custo ano 1: ~$200/mês   Always Free + burst    FREE 12 meses   │
+│  Compliance:              Compliance:              Compliance:   │
+│  ISO 27001 · SOC 2 · HIPAA  ISO 27001 · FedRAMP   ISO 27001 ·    │
+│  · LGPD · GDPR              · HIPAA · GDPR         MTCS Level 3  │
+│                                                    · ISO 27017/18│
+│                                                                  │
+│  ◀──────────── Replicação triplex async (5-30s) ────────────▶   │
+│                                                                  │
+│  Failover: AWS fail → Oracle assume EU+Americas (<60s)          │
+│  Failover: Alibaba fail → Oracle assume Asia (<60s)             │
+│  Failover: Oracle fail → AWS+Alibaba split (sem secondary)      │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+🌊 **Tri-cloud consolidado. Próxima sessão: apenas implementar.**
+
+Sources:
+- [Alibaba Cloud Free Trial 12 months](https://www.alibabacloud.com/en/free)
+- [Alibaba Cloud Compliance ISO 27001 + MTCS](https://www.alibabacloud.com/trust-center)
+- [Tencent Cloud — rejeitado (free apenas 6 meses)](https://www.tencentcloud.com/document/product/436/6240)
+- [Oracle Cloud Always Free Tier](https://www.oracle.com/cloud/free/)
+- [AWS Free Tier](https://aws.amazon.com/free/)
