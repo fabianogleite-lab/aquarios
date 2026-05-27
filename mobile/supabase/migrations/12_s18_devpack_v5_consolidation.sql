@@ -197,7 +197,35 @@ ON CONFLICT (level_name) DO NOTHING;
 -- ============================================================
 -- PARTE 4: telemetry_vitality_logs — componentes IVI tridimensional
 -- ============================================================
+-- Garante a tabela base (referenciada em aquarios_modules.db_tables
+-- mas nunca criada formalmente em migrations anteriores)
 
+CREATE TABLE IF NOT EXISTS public.telemetry_vitality_logs (
+  id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id          UUID         REFERENCES auth.users(id) ON DELETE CASCADE,
+  metric_type      VARCHAR(30)  NOT NULL,
+  raw_payload      JSONB        NOT NULL DEFAULT '{}'::jsonb,
+  calculated_score NUMERIC(5,2) CHECK (calculated_score BETWEEN 0.00 AND 100.00),
+  persona_detected VARCHAR(30),
+  created_at       TIMESTAMPTZ  DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_tvl_user ON public.telemetry_vitality_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_tvl_metric ON public.telemetry_vitality_logs(metric_type);
+
+ALTER TABLE public.telemetry_vitality_logs ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  CREATE POLICY "Users see own vitality logs"
+    ON public.telemetry_vitality_logs FOR SELECT USING (auth.uid() = user_id);
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE POLICY "Service role manages vitality logs"
+    ON public.telemetry_vitality_logs FOR ALL WITH CHECK (auth.role() = 'service_role');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+-- Adiciona colunas dos componentes IVI tridimensional (Manual V1.0512 §04)
 ALTER TABLE public.telemetry_vitality_logs
   ADD COLUMN IF NOT EXISTS formula_version           TEXT          DEFAULT 'V1.0512',
   ADD COLUMN IF NOT EXISTS calculated_bio_component  NUMERIC(5,2),
