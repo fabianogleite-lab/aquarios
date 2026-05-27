@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s *)",
+      "Bash(curl -sS *)",
+      "Bash(adb devices)",
+      "Bash(adb shell getprop *)",
+      "Bash(supabase *)",
+      "mcp__ccd_session_mgmt__search_session_transcripts",
+      "mcp__Claude_in_Chrome__tabs_create_mcp",
+      "mcp__ccd_session__mark_chapter"
+    ]
+  }
+}
