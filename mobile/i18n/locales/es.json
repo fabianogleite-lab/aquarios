@@ -1,0 +1,231 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancelar",
+    "back": "Volver",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "error": "Error",
+    "loading": "Cargando...",
+    "retry": "Intentar de nuevo",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "send": "Enviar",
+    "close": "Cerrar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "new": "NUEVO",
+    "comingSoon": "PRÓXIMAMENTE",
+    "current": "ACTUAL"
+  },
+  "app": {
+    "name": "AquariOS",
+    "tagline": "Sistema Operativo Personal",
+    "footer": "Arkhe Labs · V1.0512 · 2026",
+    "footerSub": "Consciencia como tecnología"
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Inicia sesión en tu cuenta",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "loginButton": "Entrar",
+      "noAccount": "¿No tienes cuenta?",
+      "createAccount": "Crear cuenta",
+      "fillAllFields": "Por favor completa todos los campos"
+    },
+    "register": {
+      "subtitle": "Crear nueva cuenta",
+      "namePlaceholder": "Nombre",
+      "emailPlaceholder": "Correo electrónico",
+      "passwordPlaceholder": "Contraseña",
+      "confirmPasswordPlaceholder": "Confirmar contraseña",
+      "registerButton": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "loginLink": "Entrar",
+      "fillAllFields": "Por favor completa todos los campos",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "successTitle": "¡Cuenta creada!",
+      "successMessage": "Verifica tu correo para confirmar el registro, o inicia sesión directamente."
+    }
+  },
+  "home": {
+    "greeting": "Hola, {{name}}",
+    "activeModules": "Módulos Activos",
+    "newModules": "Nuevos Módulos",
+    "comingSoon": "Próximamente",
+    "plans": {
+      "freeAnonymous": {
+        "label": "Free Anónimo",
+        "desc": "ProteOS básico · Nutrición · Diario Google Calendar · 30 días de prueba"
+      },
+      "freeCommunity": {
+        "label": "Free Comunidad",
+        "desc": "+ Comunidades · XP Existencial · IVI Spirit · historial 30 días"
+      },
+      "upgradeHint": "Mejora a Starter $5,99/mes → IVI completo + wearable"
+    },
+    "modules": {
+      "proteos": { "desc": "Asistente IA personal con memoria" },
+      "hygeios": { "desc": "Índice de Vitalidad Integral" },
+      "diario": { "title": "Diario del Ser", "desc": "Reflexiones diarias y autoconocimiento" },
+      "nutricao": { "title": "Nutrición", "desc": "Seguimiento nutricional inteligente" },
+      "comunidades": { "desc": "Círculos de crecimiento colectivo" },
+      "wonderNight": { "title": "Wonder Night", "desc": "Rituales nocturnos de transformación" },
+      "aeropagos": { "desc": "Gamificación desbloqueable" },
+      "tokenEconomy": { "title": "Token Economy", "desc": "Sistema de economía interna" },
+      "panaceia": { "title": "PanaceIA", "desc": "Marketplace consciente de bienestar" },
+      "cerberos": { "desc": "Seguridad activa en 7 capas" },
+      "sandeiros": { "desc": "Motor simbólico de los 22 arcanos" },
+      "asclepios": { "desc": "Módulo médico inteligente" },
+      "hermeos": { "desc": "Inteligencia financiera personal" },
+      "eterios": { "desc": "Conexión con wearables e IoT" },
+      "ecumenicos": { "desc": "Sabiduría inter-religiosa" },
+      "beckOffice": { "title": "Beck Office", "desc": "Plataforma B2B para clínicas y empresas" }
+    }
+  },
+  "settings": {
+    "account": "Cuenta",
+    "preferences": "Preferencias",
+    "privacy": "Privacidad",
+    "about": "Acerca de",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "plan": "Plan",
+    "darkMode": "Modo Oscuro",
+    "notifications": "Notificaciones",
+    "version": "Versión",
+    "build": "Build",
+    "developer": "Desarrollador",
+    "contact": "Contacto",
+    "exportData": "Exportar mis datos",
+    "exportDataDesc": "Recibe todos tus datos en formato JSON",
+    "deleteAccount": "Eliminar mi cuenta",
+    "deleteAccountDesc": "Elimina permanentemente todos tus datos",
+    "logout": "Cerrar Sesión",
+    "upgradePlan": "Mejora tu plan",
+    "annualDiscount": "Planes anuales con descuento de 20–30%",
+    "deleteAlert": {
+      "title": "Eliminar Cuenta",
+      "message": "ADVERTENCIA: Esta acción es irreversible.\n\nTodos tus datos (diario, nutrición, conversaciones, comunidades) serán eliminados permanentemente.\n\n¿Deseas continuar?",
+      "confirm": "Sí, eliminar todo",
+      "finalTitle": "Confirmación Final",
+      "finalMessage": "Confirma que deseas eliminar permanentemente todos tus datos. Esta acción no se puede deshacer.",
+      "finalConfirm": "ELIMINAR PERMANENTEMENTE"
+    },
+    "logoutAlert": {
+      "title": "Cerrar Sesión",
+      "message": "¿Estás seguro de que deseas cerrar sesión?"
+    },
+    "exportError": "No se pudieron exportar tus datos. Inténtalo de nuevo.",
+    "deleteSuccess": "Cuenta Eliminada",
+    "deleteSuccessMessage": "Todos tus datos han sido eliminados. Gracias por usar AquariOS.",
+    "deleteError": "No se pudo eliminar tu cuenta. Inténtalo de nuevo o contacta: contato@podiumtec.com.br",
+    "plans": {
+      "freeAnonymous": { "label": "Free Anónimo", "price": "$0", "desc": "ProteOS básico · Nutrición · Diario Google Calendar" },
+      "freeCommunity": { "label": "Free Comunidad", "price": "$0", "desc": "Free + Comunidades · XP Existencial · IVI Spirit" },
+      "starter": { "label": "Starter", "price": "$5,99/mes", "desc": "ProteOS completo · Diario nativo · IVI completo · 1 wearable" },
+      "premium": { "label": "Premium", "price": "$19,99/mes", "desc": "Módulos a elegir · Comunidades plenas · IA contextual" },
+      "professional": { "label": "Professional", "price": "$39,99/mes", "desc": "Integración total · EteriOS completo · automatización predictiva" }
+    }
+  },
+  "diario": {
+    "title": "Diario del Ser",
+    "searchPlaceholder": "Buscar reflexiones...",
+    "newEntry": "Nueva Reflexión",
+    "emptyTitle": "Ninguna reflexión aún",
+    "emptyDesc": "Comienza a registrar tus pensamientos y sentimientos",
+    "loadError": "No se pudieron cargar tus reflexiones",
+    "deleteConfirm": "¿Eliminar esta reflexión?",
+    "deleteError": "No se pudo eliminar",
+    "moods": {
+      "happy": "Feliz",
+      "neutral": "Neutral",
+      "sad": "Triste",
+      "angry": "Enojado",
+      "thoughtful": "Pensativo",
+      "inspired": "Inspirado"
+    }
+  },
+  "diarioNew": {
+    "title": "Nueva Reflexión",
+    "contentPlaceholder": "¿Qué tienes en mente hoy?",
+    "mood": "Estado de ánimo",
+    "tags": "Etiquetas",
+    "tagsPlaceholder": "Ej: meditación, gratitud, trabajo",
+    "save": "Guardar Reflexión",
+    "saveError": "No se pudo guardar tu reflexión",
+    "encryptError": "Error al proteger tus datos. Reflexión no guardada."
+  },
+  "proteos": {
+    "title": "ProteOS",
+    "messagePlaceholder": "Escribe tu mensaje...",
+    "personas": {
+      "default": "ProteOS",
+      "pragmatico": "Directo",
+      "suporte": "Soporte",
+      "urgencia": "Clínico"
+    },
+    "loadError": "No se pudo cargar el historial de conversación",
+    "sendError": "No se pudo enviar tu mensaje"
+  },
+  "nutricao": {
+    "title": "Nutrición",
+    "newMeal": "Nuevo Alimento",
+    "searchPlaceholder": "Buscar alimentos...",
+    "emptyTitle": "Sin registros aún",
+    "emptyDesc": "Comienza a registrar tu alimentación",
+    "loadError": "No se pudieron cargar tus registros",
+    "calories": "kcal",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fat": "Grasa"
+  },
+  "nutricaoNovo": {
+    "title": "Nuevo Alimento",
+    "namePlaceholder": "Nombre del alimento",
+    "caloriesPlaceholder": "Calorías (kcal)",
+    "proteinPlaceholder": "Proteína (g)",
+    "carbsPlaceholder": "Carbohidratos (g)",
+    "fatPlaceholder": "Grasa (g)",
+    "notesPlaceholder": "Observaciones",
+    "save": "Guardar",
+    "saveError": "No se pudo guardar el alimento"
+  },
+  "comunidades": {
+    "title": "Comunidades",
+    "newPost": "Nueva Publicación",
+    "emptyTitle": "Sin comunidades aún",
+    "emptyDesc": "Explora y únete a círculos de crecimiento",
+    "loadError": "No se pudieron cargar las comunidades"
+  },
+  "wonderNight": {
+    "title": "Wonder Night",
+    "subtitle": "Ritual de cierre del día",
+    "reflection": "Reflexión nocturna",
+    "gratitude": "Gratitud del día",
+    "tomorrow": "Intención para mañana",
+    "save": "Completar Ritual",
+    "saveError": "No se pudo guardar el ritual"
+  },
+  "hygeios": {
+    "title": "HygeiOS",
+    "ivi": "Índice de Vitalidad Integral",
+    "dimensions": {
+      "physical": "Físico",
+      "mental": "Mental",
+      "emotional": "Emocional",
+      "social": "Social",
+      "spiritual": "Espiritual",
+      "nutritional": "Nutricional"
+    }
+  },
+  "comingSoon": {
+    "title": "Próximamente",
+    "subtitle": "Este módulo está en desarrollo",
+    "notify": "Avísame cuando esté disponible"
+  }
+}

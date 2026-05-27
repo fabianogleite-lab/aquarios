@@ -18,6 +18,7 @@ import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface CommunityPost {
   id: string;
@@ -176,7 +177,7 @@ export default function ComunidadesTimelineScreen() {
           <View style={s.replyMeta}>
             <Text style={s.replyAuthor}>Helper #{index + 1}</Text>
             <Text style={s.replyTime}>
-              {new Date(item.created_at).toLocaleDateString('pt-BR')}
+              {formatDate(item.created_at)}
             </Text>
           </View>
           {item.is_marked_solution && (

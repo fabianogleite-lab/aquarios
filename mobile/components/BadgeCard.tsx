@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { colors, fontSize } from '../lib/theme';
+import { formatDate } from '../lib/locale';
 
 interface Badge {
   key: string;
@@ -17,7 +18,7 @@ interface Props {
 }
 
 export function BadgeCard({ badge, unlocked, unlockedAt, onPress }: Props) {
-  const dateStr = unlockedAt ? new Date(unlockedAt).toLocaleDateString('pt-BR') : null;
+  const dateStr = unlockedAt ? formatDate(unlockedAt) : null;
 
   return (
     <Pressable

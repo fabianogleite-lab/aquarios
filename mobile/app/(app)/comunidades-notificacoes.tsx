@@ -13,6 +13,7 @@ import { useAuthStore } from '../../store/auth';
 import { EmptyState } from '../../components/EmptyState';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface Notification {
   id: string;
@@ -81,7 +82,7 @@ export default function ComunidadesNotificacoes() {
     const hours = Math.floor(diff / 3600000);
     if (hours < 1) return 'Agora';
     if (hours < 24) return `${hours}h atrás`;
-    return new Date(dateStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    return formatDate(dateStr, { day: '2-digit', month: 'short' });
   };
 
   const unreadCount = notifications.filter(n => !n.is_read).length;

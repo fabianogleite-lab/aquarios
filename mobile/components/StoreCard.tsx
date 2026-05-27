@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Linking from 'expo-linking';
+import { formatNumber } from '../lib/locale';
 
 interface Product {
   id: string;
@@ -67,7 +68,7 @@ export default function StoreCard({ product, onBuy, userTokens }: StoreCardProps
       </Text>
 
       <Text style={styles.price}>
-        {product.preco.toLocaleString('pt-BR')} TKN
+        {formatNumber(product.preco)} TKN
       </Text>
 
       <View style={styles.buttonRow}>

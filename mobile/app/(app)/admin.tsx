@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useState, useCallback } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface DbStats {
   meals: number;
@@ -22,6 +23,7 @@ interface SeedResult {
 
 export default function AdminScreen() {
   const { user } = useAuthStore();
+  const router = useRouter();
   const [stats, setStats] = useState<DbStats>({ meals: 0, diary: 0, chat: 0, wonder: 0 });
   const [loading, setLoading] = useState(false);
   const [seedLoading, setSeedLoading] = useState(false);
@@ -32,9 +34,9 @@ export default function AdminScreen() {
     setLoading(true);
     const [meals, diary, chat, wonder] = await Promise.all([
       supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
-      supabase.from('diary_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('diario_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
       supabase.from('chat_messages').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
-      supabase.from('wonder_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      supabase.from('wonder_night_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
     ]);
     setStats({
       meals: meals.count ?? 0,
@@ -94,7 +96,7 @@ export default function AdminScreen() {
           <Row label="User ID" value={user?.id ? user.id.substring(0, 18) + '...' : '—'} />
           <Row label="Email" value={user?.email ?? '—'} />
           <Row label="Display Name" value={user?.user_metadata?.display_name ?? '—'} />
-          <Row label="Criado em" value={user?.created_at ? new Date(user.created_at).toLocaleDateString('pt-BR') : '—'} />
+          <Row label="Criado em" value={user?.created_at ? formatDate(user.created_at) : '—'} />
         </View>
       </FadeInView>
 
@@ -133,6 +135,23 @@ export default function AdminScreen() {
               <Text style={s.personaDesc}>{p.desc}</Text>
             </View>
           ))}
+        </View>
+      </FadeInView>
+
+      <FadeInView delay={220}>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>Auditoria DEVPACK v4</Text>
+          <Text style={s.seedDesc}>
+            Matriz com 25 divergências entre o DEVPACK v4 e o código real.
+            Cada divergência apresenta opções (A/B/C/D) para decisão do operador.
+            Decisões persistem localmente.
+          </Text>
+          <TouchableOpacity
+            style={s.auditBtn}
+            onPress={() => router.push('/divergencias')}
+          >
+            <Text style={s.auditBtnText}>📊 Abrir Matriz de Divergências</Text>
+          </TouchableOpacity>
         </View>
       </FadeInView>
 
@@ -222,6 +241,21 @@ const s = StyleSheet.create({
   },
   seedBtnText: {
     color: colors.bg,
+    fontSize: fontSize.body,
+    fontWeight: '700',
+  },
+  auditBtn: {
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  auditBtnText: {
+    color: colors.primary,
     fontSize: fontSize.body,
     fontWeight: '700',
   },

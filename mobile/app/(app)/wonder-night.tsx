@@ -15,6 +15,7 @@ import { useAuthStore } from '../../store/auth';
 import { EmptyState } from '../../components/EmptyState';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatDate } from '../../lib/locale';
 
 interface WonderEvent {
   id: string;
@@ -95,8 +96,8 @@ export default function WonderNightScreen() {
     Linking.openURL(url);
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('pt-BR', {
+  const formatEventDate = (dateStr: string) => {
+    return formatDate(dateStr, {
       weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
     });
   };
@@ -127,7 +128,7 @@ export default function WonderNightScreen() {
                   {item.purchased && <View style={s.ownedBadge}><Text style={s.ownedBadgeText}>✓ Comprado</Text></View>}
                 </View>
 
-                <Text style={s.eventDate}>{formatDate(item.event_date)}</Text>
+                <Text style={s.eventDate}>{formatEventDate(item.event_date)}</Text>
                 <Text style={s.eventDescription}>{item.description}</Text>
 
                 {!isPast(item.event_date) && (

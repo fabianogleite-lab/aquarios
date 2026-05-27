@@ -13,6 +13,7 @@ import { useAuthStore } from '../../store/auth';
 import XPBar from '../../components/XPBar';
 import StoreCard from '../../components/StoreCard';
 import { useEconomyEngine } from '../../hooks/useEconomyEngine';
+import { formatNumber } from '../../lib/locale';
 import products from '../../data/products.json';
 
 interface Product {
@@ -119,7 +120,7 @@ export default function StoreScreen() {
         <XPBar currentXP={stats.totalXP} currentLevel={stats.level} />
         <View style={styles.tokensBox}>
           <Text style={styles.tokensLabel}>Seus tokens:</Text>
-          <Text style={styles.tokensValue}>{stats.tokens.toLocaleString('pt-BR')} TKN</Text>
+          <Text style={styles.tokensValue}>{formatNumber(stats.tokens)} TKN</Text>
         </View>
       </View>
 

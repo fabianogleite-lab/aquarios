@@ -9,11 +9,13 @@ import {
   ScrollView,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import { getDeviceLocale } from '../../lib/locale';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { encryptField, decryptOrFallback } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { formatTime } from '../../lib/locale';
 
 type PersonaKey = 'default' | 'pragmatico' | 'suporte' | 'urgencia';
 
@@ -105,8 +107,9 @@ export default function ProteosScreen() {
       let assistantContent = 'Desculpe, não consegui processar. Tente novamente.';
 
       try {
+        const locale = getDeviceLocale();
         const { data, error: fnError } = await supabase.functions.invoke('chat', {
-          body: { messages: apiMessages, persona },
+          body: { messages: apiMessages, persona, locale },
         });
 
         if (fnError) {
@@ -170,7 +173,7 @@ export default function ProteosScreen() {
                 {item.content}
               </Text>
               <Text style={s.timestamp}>
-                {new Date(item.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                {formatTime(item.created_at)}
               </Text>
             </View>
           </FadeInView>

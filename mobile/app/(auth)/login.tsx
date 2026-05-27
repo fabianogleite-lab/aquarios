@@ -1,11 +1,13 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { Link } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 export default function LoginScreen() {
+  const { t } = useTranslation();
   const { signIn } = useAuthStore();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +15,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) { setError('Preencha todos os campos'); return; }
+    if (!email.trim() || !password.trim()) { setError(t('auth.login.fillAllFields')); return; }
     setError('');
     setLoading(true);
     const result = await signIn(email.trim(), password);
@@ -26,23 +28,23 @@ export default function LoginScreen() {
       <View style={s.content}>
         <FadeInView>
           <Text style={s.logo}>{'⚗'}</Text>
-          <Text style={s.title}>AquariOS</Text>
-          <Text style={s.subtitle}>Entre na sua conta</Text>
+          <Text style={s.title}>{t('app.name')}</Text>
+          <Text style={s.subtitle}>{t('auth.login.subtitle')}</Text>
         </FadeInView>
 
         {error ? <Text style={s.error}>{error}</Text> : null}
 
         <FadeInView delay={200}>
-          <TextInput style={s.input} placeholder="Email" placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
-          <TextInput style={s.input} placeholder="Senha" placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput style={s.input} placeholder={t('auth.login.emailPlaceholder')} placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
+          <TextInput style={s.input} placeholder={t('auth.login.passwordPlaceholder')} placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
 
           <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading}>
-            {loading ? <ActivityIndicator color={colors.bg} /> : <Text style={s.buttonText}>Entrar</Text>}
+            {loading ? <ActivityIndicator color={colors.bg} /> : <Text style={s.buttonText}>{t('auth.login.loginButton')}</Text>}
           </TouchableOpacity>
 
           <Link href="/(auth)/register" asChild>
             <TouchableOpacity style={s.linkBtn}>
-              <Text style={s.linkText}>Não tem conta? <Text style={s.linkHighlight}>Criar conta</Text></Text>
+              <Text style={s.linkText}>{t('auth.login.noAccount')} <Text style={s.linkHighlight}>{t('auth.login.createAccount')}</Text></Text>
             </TouchableOpacity>
           </Link>
         </FadeInView>
