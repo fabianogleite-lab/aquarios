@@ -60,6 +60,7 @@ export default function AppLayout() {
       <Tabs.Screen name="hygeios" options={{ href: null, title: 'HygeiOS' }} />
       <Tabs.Screen name="coming-soon" options={{ href: null, title: 'Em Breve' }} />
       <Tabs.Screen name="admin" options={{ href: null, title: '⚙ Admin' }} />
+      <Tabs.Screen name="divergencias" options={{ href: null, title: '📊 Divergências DEVPACK v4' }} />
       <Tabs.Screen name="diario-new" options={{ href: null, title: 'Nova Reflexão' }} />
       <Tabs.Screen
         name="diario"

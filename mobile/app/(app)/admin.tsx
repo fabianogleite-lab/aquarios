@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useState, useCallback } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
@@ -23,6 +23,7 @@ interface SeedResult {
 
 export default function AdminScreen() {
   const { user } = useAuthStore();
+  const router = useRouter();
   const [stats, setStats] = useState<DbStats>({ meals: 0, diary: 0, chat: 0, wonder: 0 });
   const [loading, setLoading] = useState(false);
   const [seedLoading, setSeedLoading] = useState(false);
@@ -137,6 +138,23 @@ export default function AdminScreen() {
         </View>
       </FadeInView>
 
+      <FadeInView delay={220}>
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>Auditoria DEVPACK v4</Text>
+          <Text style={s.seedDesc}>
+            Matriz com 25 divergências entre o DEVPACK v4 e o código real.
+            Cada divergência apresenta opções (A/B/C/D) para decisão do operador.
+            Decisões persistem localmente.
+          </Text>
+          <TouchableOpacity
+            style={s.auditBtn}
+            onPress={() => router.push('/divergencias')}
+          >
+            <Text style={s.auditBtnText}>📊 Abrir Matriz de Divergências</Text>
+          </TouchableOpacity>
+        </View>
+      </FadeInView>
+
       <FadeInView delay={240}>
         <View style={s.section}>
           <Text style={s.sectionTitle}>Seed Demo</Text>
@@ -223,6 +241,21 @@ const s = StyleSheet.create({
   },
   seedBtnText: {
     color: colors.bg,
+    fontSize: fontSize.body,
+    fontWeight: '700',
+  },
+  auditBtn: {
+    backgroundColor: colors.card,
+    borderRadius: radius.md,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+  auditBtnText: {
+    color: colors.primary,
     fontSize: fontSize.body,
     fontWeight: '700',
   },
