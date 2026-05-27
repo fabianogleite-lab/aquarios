@@ -28,11 +28,13 @@
 
 **O QUE LER PRIMEIRO (ordem obrigatória):**
 1. `STATUS_FINAL_UNIFICADO_27MAY2026.md` (raiz · master doc)
-2. `memory/manual_v1_0512_authority.md` (fonte autoritativa Lei 9.610)
-3. `memory/devpack_v4_decisions.md` (D-01/D-09/D-10)
-4. `memory/status_unificado_27may2026.md` (reconciliação A+B)
-5. `mobile/docs/AUDIT_MATRIX_DEVPACK_V4.md` (25 divergências)
-6. `mobile/docs/44_EIXOS_DISTRIBUTION_MAP.md` (D-09 operacionalização)
+2. `HEROS_JOURNEY_CAMPAIGN_SPEC.md` (raiz · **TAREFA #1** do próximo chat)
+3. `HUMAN_TASKS_PARALLEL_WALKTHROUGH.md` (raiz · o que Fabiano faz em paralelo)
+4. `memory/manual_v1_0512_authority.md` (fonte autoritativa Lei 9.610)
+5. `memory/devpack_v4_decisions.md` (D-01/D-09/D-10)
+6. `memory/status_unificado_27may2026.md` (reconciliação A+B)
+7. `mobile/docs/AUDIT_MATRIX_DEVPACK_V4.md` (25 divergências)
+8. `mobile/docs/44_EIXOS_DISTRIBUTION_MAP.md` (D-09 operacionalização)
 
 **DECISÕES JÁ TOMADAS — NÃO RE-DISCUTIR:**
 - D-01 HermeOS: **híbrido** (integrador + financeiro)
@@ -48,7 +50,35 @@
 
 ---
 
-## 🚀 Objetivo desta sessão: S16 v2 Week 1 + Pipeline Multi-Skin
+## 🚀 Objetivo desta sessão: Hero's Journey + S16 v2 Week 1 + Multi-Skin
+
+### 🦸 PARTE 0 · Hero's Journey Campaign (PRIORIDADE #1 · NEW)
+
+**Diretiva Fabiano 27/05 EOD:** "Criar campanha de jornada do herói para cada país num pipeline da dashboard do founder. Começar com memorandos para imprensa + criação de redes sociais dentro da referência de cada país para otimizar aderência ao app."
+
+**Ler:** `HEROS_JOURNEY_CAMPAIGN_SPEC.md` (raiz, completa)
+
+**Tasks da sessão (paralelas com Parte A):**
+
+1. **Criar tabela SQL `heros_journey_campaigns` + `campaign_posts`** (migration 14 ou anexo M-12 corrigido) · 4h
+2. **Criar tela `mobile/app/(app)/founder-campaign.tsx`** (dashboard pipeline 14 países) · 12h
+3. **Gerar 14 press release templates A/B/C** (1 por país, locale nativo) · 8h
+   - Brasil: Folha/UOL/G1 angle
+   - EUA: NYT/WaPo/TechCrunch angle
+   - 12 outros (ver spec tabela mestre)
+4. **Setup matriz de plataformas sociais** (14 países × 2-3 plataformas)
+   - Instagram (BR/US/PT/VE/NG/CH) · WhatsApp (BR/IL/CH/NG/PE/VE)
+   - Telegram (IR/IL) · LINE (TH) · KakaoTalk (KR) · WeChat (HK)
+5. **Documentar opening hooks** (14 frases iniciais por persona-âncora) · 1h
+   - Carlos Mendes: "Reflexão profunda hoje: quem sou quando ninguém vê?"
+   - 13 outras em spec
+
+**Esforço esta sessão (Parte 0):** ~25h (cabe em 1 dia trabalho intenso paralelizado)
+
+**Decisões esperadas:**
+- Domínio web definitivo: aquarios.app vs aquarios.io vs panaceia.app
+- Press kit visual identity: cores + tipografia + logo finalizada
+- Cronograma sincronizado: T-6 sem do launch = 29/julho
 
 ### PARTE A · S16 v2 Week 1 (May 27 - May 31)
 
@@ -207,18 +237,28 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS skin_preference JSONB DEFAULT '{}'
 
 ---
 
-## 🔒 Pendências humanas (não-AI)
+## 🔒 Pendências humanas (não-AI) — Fabiano pode fazer em paralelo
 
-| # | Decisão | Status |
-|---|---|---|
-| 1 | Merge PR #7 (governança Linha A) | ⏳ aguardando review |
-| 2 | Setup conta Teleport Cloud ($1000/mês) | ⏳ até 31/05 |
-| 3 | Setup conta Stripe + API keys | ⏳ antes de S17 |
-| 4 | Setup conta AWS + Oracle Cloud + 🌏 Alibaba Cloud (free 12m) | ⏳ antes de S18 |
-| 5 | Bootstrap aquarios_admin_grants (passphrase + UUID) | ⏳ quando quiser usar admin |
-| 6 | Atualizar PDF Manual V1.0612 (8 novos itens IP + tri-cloud + Multi-Skin item 31) | ⏳ sem urgência |
-| 7 | **Revogar token Supabase usado em 27/05** (`sbp_ecd166...`) | ⏳ recomendado |
-| 8 | Decidir Opção A/B/C Multi-Skin | ⏳ primeira coisa na próxima sessão |
+**📖 Guia passo-a-passo:** `HUMAN_TASKS_PARALLEL_WALKTHROUGH.md` (raiz, com URLs + Claude-in-Chrome onde aplicável)
+
+| # | Tarefa | ETA | Bloqueia |
+|---|---|---|---|
+| 1 | Revogar token Supabase (`sbp_ecd166...`) | 2min | Segurança |
+| 2 | Bootstrap aquarios_admin_grants (passphrase + UUID) | 5min | Admin |
+| 3 | Setup Teleport Cloud (trial 14d grátis) | 15min | S16 JIT |
+| 4 | Setup Stripe + test keys + webhook | 15min | S17 BYOK |
+| 5 | Setup AWS + IAM user | 20min | S18 infra |
+| 6 | Setup Oracle Cloud Always Free + Autonomous DB | 25min | S18 failover |
+| 7 | 🌏 Setup Alibaba Cloud International (free 12m) | 30min | S18 Asia |
+| 8 | Google Play Console ($25 lifetime) | 15min | Play Store |
+| 9 | Decidir domínio web (aquarios.app vs aquarios.io vs panaceia.app) | 10min | Hero's Journey |
+| 10 | Decidir Opção A/B/C Multi-Skin cronograma | 5min | Multi-Skin |
+| 11 | Merge PR #7 (governança Linha A) | 10min | Roadmap |
+| 12 | Atualizar PDF Manual V1.0612 (8 novos itens IP + tri-cloud + Multi-Skin + Hero's Journey item 32) | 1h | Sem urgência |
+
+**TOTAL paralelizável:** ~2h30min · em chunks de 15-30min.
+
+**🤖 Claude-in-Chrome pode automatizar parcialmente** as tarefas 3, 4, 5, 6, 7, 8 (preencher forms · você só faz cartão+CAPTCHA+2FA). Ver walkthrough.
 
 ---
 
