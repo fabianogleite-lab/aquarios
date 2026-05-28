@@ -58,20 +58,13 @@ export default function DiarioNewScreen() {
     setLoading(true);
     const tags = tagsInput.split(',').map((t) => t.trim().toLowerCase()).filter((t) => t.length > 0);
 
-    let encryptedContent: { ciphertext: string; nonce: string } | null = null;
-    try {
-      encryptedContent = await encryptField(content.trim());
-    } catch (cryptoErr) {
-      setLoading(false);
-      Alert.alert('Erro de Segurança', 'Não foi possível criptografar sua reflexão. Tente novamente.');
-      return;
-    }
+    const encryptedContent = await encryptField(content.trim());
 
     const { error } = await supabase.from('diario_entries').insert([{
       user_id: user.id,
-      content: '[encrypted]',
-      content_encrypted: encryptedContent.ciphertext,
-      content_nonce: encryptedContent.nonce,
+      content: encryptedContent.ciphertext ? '[encrypted]' : content.trim(),
+      content_encrypted: encryptedContent.ciphertext || null,
+      content_nonce: encryptedContent.nonce || null,
       mood,
       tags,
       created_at: new Date().toISOString(),
