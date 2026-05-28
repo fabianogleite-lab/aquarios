@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/auth';
+import { getModuleConfig } from '../config/modules-registry';
 
 interface GateStatus {
   locked: boolean;
@@ -22,11 +23,10 @@ export function useGate(moduleId: string) {
     }
 
     try {
-      // Dynamic import to avoid circular dependency
-      const configModule = await import(`../config/modules/${moduleId}.json`);
-      const config = configModule.default;
+      // Use static registry (avoids dynamic import bundler issues)
+      const config = getModuleConfig(moduleId);
 
-      if (!config.gate) {
+      if (!config || !config.gate) {
         setStatus({ locked: false });
         setLoading(false);
         return;
@@ -40,7 +40,6 @@ export function useGate(moduleId: string) {
 
       switch (gate.type) {
         case 'xp': {
-          // Check total XP against minimum level
           const { data: xpData } = await supabase
             .from('xp_log')
             .select('xp_earned')
@@ -58,7 +57,6 @@ export function useGate(moduleId: string) {
         }
 
         case 'tokens': {
-          // Check token balance against minimum
           const { data: tokenData } = await supabase
             .from('user_tokens')
             .select('amount, expires_at')
@@ -77,7 +75,6 @@ export function useGate(moduleId: string) {
         }
 
         case 'plan': {
-          // Check user plan from profile
           const { data: profileData } = await supabase.from('profiles').select('plan').eq('id', user.id).single();
 
           const userPlan = profileData?.plan || 'free';
@@ -93,12 +90,7 @@ export function useGate(moduleId: string) {
         }
       }
 
-      setStatus({
-        locked: isLocked,
-        reason,
-        requirement,
-        currentValue,
-      });
+      setStatus({ locked: isLocked, reason, requirement, currentValue });
     } catch (err) {
       console.error('Failed to check gate', err);
       setStatus({ locked: true, reason: 'Error checking access' });
