@@ -57,6 +57,8 @@ export default function AppLayout() {
       />
       <Tabs.Screen name="comunidades-timeline" options={{ href: null }} />
       <Tabs.Screen name="comunidades-notificacoes" options={{ href: null }} />
+      <Tabs.Screen name="comunidades-post-form" options={{ href: null, title: 'Novo Post' }} />
+      <Tabs.Screen name="store" options={{ href: null, title: 'Loja AquariOS' }} />
       <Tabs.Screen name="hygeios" options={{ href: null, title: 'HygeiOS' }} />
       <Tabs.Screen name="coming-soon" options={{ href: null, title: 'Em Breve' }} />
       <Tabs.Screen name="admin" options={{ href: null, title: '⚙ Admin' }} />

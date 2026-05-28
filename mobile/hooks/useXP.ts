@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/auth';
 
@@ -15,6 +15,19 @@ const LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500];
 export function useXP() {
   const { user } = useAuthStore();
   const [totalXP, setTotalXP] = useState(0);
+
+  // Load current totalXP on mount so components can display it immediately
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase
+      .from('user_xp')
+      .select('total_xp')
+      .eq('user_id', user.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.total_xp) setTotalXP(data.total_xp);
+      });
+  }, [user?.id]);
 
   const logXP = useCallback(
     async (action: string, xpAmount: number, module?: string): Promise<XPResult> => {

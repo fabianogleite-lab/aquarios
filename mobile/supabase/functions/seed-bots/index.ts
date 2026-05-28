@@ -227,7 +227,7 @@ Deno.serve(async (req) => {
 
       // FIX #10: Audit logging
       const { error: auditError } = await adminClient
-        .from('audit_log')
+        .from('audit_logs')
         .insert({
           action: 'bot_created',
           bot_id: userId,

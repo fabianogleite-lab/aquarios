@@ -1,11 +1,13 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native';
 import { useState } from 'react';
 import { Link, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 export default function RegisterScreen() {
+  const { t } = useTranslation();
   const { signUp } = useAuthStore();
   const router = useRouter();
   const [displayName, setDisplayName] = useState('');
@@ -16,9 +18,9 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!displayName.trim() || !email.trim() || !password.trim()) { setError('Preencha todos os campos'); return; }
-    if (password !== confirmPassword) { setError('As senhas não coincidem'); return; }
-    if (password.length < 6) { setError('A senha deve ter no mínimo 6 caracteres'); return; }
+    if (!displayName.trim() || !email.trim() || !password.trim()) { setError(t('auth.register.fillAllFields')); return; }
+    if (password !== confirmPassword) { setError(t('auth.register.passwordMismatch')); return; }
+    if (password.length < 6) { setError(t('auth.register.passwordTooShort')); return; }
 
     setError('');
     setLoading(true);
@@ -28,7 +30,7 @@ export default function RegisterScreen() {
     if (result.error) {
       setError(result.error);
     } else {
-      Alert.alert('Conta criada!', 'Verifique seu email para confirmar o cadastro, ou faça login diretamente.', [
+      Alert.alert(t('auth.register.successTitle'), t('auth.register.successMessage'), [
         { text: 'OK', onPress: () => router.replace('/(auth)/login') },
       ]);
     }
@@ -39,25 +41,25 @@ export default function RegisterScreen() {
       <View style={s.content}>
         <FadeInView>
           <Text style={s.logo}>{'⚗'}</Text>
-          <Text style={s.title}>AquariOS</Text>
-          <Text style={s.subtitle}>Criar nova conta</Text>
+          <Text style={s.title}>{t('app.name')}</Text>
+          <Text style={s.subtitle}>{t('auth.register.subtitle')}</Text>
         </FadeInView>
 
         {error ? <Text style={s.error}>{error}</Text> : null}
 
         <FadeInView delay={200}>
-          <TextInput style={s.input} placeholder="Nome" placeholderTextColor={colors.textMuted} value={displayName} onChangeText={setDisplayName} autoCapitalize="words" />
-          <TextInput style={s.input} placeholder="Email" placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
-          <TextInput style={s.input} placeholder="Senha" placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
-          <TextInput style={s.input} placeholder="Confirmar senha" placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
+          <TextInput style={s.input} placeholder={t('auth.register.namePlaceholder')} placeholderTextColor={colors.textMuted} value={displayName} onChangeText={setDisplayName} autoCapitalize="words" />
+          <TextInput style={s.input} placeholder={t('auth.register.emailPlaceholder')} placeholderTextColor={colors.textMuted} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
+          <TextInput style={s.input} placeholder={t('auth.register.passwordPlaceholder')} placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
+          <TextInput style={s.input} placeholder={t('auth.register.confirmPasswordPlaceholder')} placeholderTextColor={colors.textMuted} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry />
 
           <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleRegister} disabled={loading}>
-            {loading ? <ActivityIndicator color={colors.bg} /> : <Text style={s.buttonText}>Criar Conta</Text>}
+            {loading ? <ActivityIndicator color={colors.bg} /> : <Text style={s.buttonText}>{t('auth.register.registerButton')}</Text>}
           </TouchableOpacity>
 
           <Link href="/(auth)/login" asChild>
             <TouchableOpacity style={s.linkBtn}>
-              <Text style={s.linkText}>Já tem conta? <Text style={s.linkHighlight}>Entrar</Text></Text>
+              <Text style={s.linkText}>{t('auth.register.hasAccount')} <Text style={s.linkHighlight}>{t('auth.register.loginLink')}</Text></Text>
             </TouchableOpacity>
           </Link>
         </FadeInView>

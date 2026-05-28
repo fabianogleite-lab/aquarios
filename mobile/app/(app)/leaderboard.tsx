@@ -23,7 +23,7 @@ export default function LeaderboardScreen() {
   const loadLeaderboard = async () => {
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session?.user?.id) {
+      if (!session?.session?.user?.id) {
         setLoading(false);
         return;
       }
@@ -40,7 +40,7 @@ export default function LeaderboardScreen() {
           userId: user.user_id,
           uviScore: Math.round(user.level * 9.2 + Math.random() * 5),
           change: Math.floor(Math.random() * 3) - 1,
-          isSelf: user.user_id === session.user.id
+          isSelf: user.user_id === session.session!.user.id
         }));
 
         setLeaderboard(entries);
@@ -51,7 +51,7 @@ export default function LeaderboardScreen() {
         } else {
           setUserRank({
             rank: 15,
-            userId: session.user.id,
+            userId: session.session!.user.id,
             uviScore: 72,
             change: 2,
             isSelf: true

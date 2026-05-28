@@ -8,7 +8,6 @@
  * HygeiOS monitors the `performance_summary` view for degradation.
  */
 import { Platform } from 'react-native';
-import * as Device from 'expo-device';
 import NetInfo from '@react-native-community/netinfo';
 import { supabase } from './supabase';
 import { getDeviceLocale } from './locale';
@@ -138,7 +137,7 @@ const reportMetric = async (
       user_id: userId ?? null,
       session_id: getSessionId(),
       platform: 'mobile' as const,
-      device_model: Device.modelName ?? 'unknown',
+      device_model: (Platform.constants as any)?.Model ?? Platform.OS,
       os_version: `${Platform.OS} ${Platform.Version}`,
       app_version: APP_VERSION,
       network_type: netState.type === 'wifi' ? 'wifi'

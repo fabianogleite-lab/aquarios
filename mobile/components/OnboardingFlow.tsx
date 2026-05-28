@@ -20,11 +20,11 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const markOnboardingComplete = async () => {
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (session?.user?.id) {
+      if (session?.session?.user?.id) {
         await supabase
           .from('user_profiles')
           .update({ onboarding_done: true })
-          .eq('user_id', session.user.id);
+          .eq('user_id', session.session.user.id);
       }
     } catch (err) {
       console.error('Error marking onboarding complete:', err);

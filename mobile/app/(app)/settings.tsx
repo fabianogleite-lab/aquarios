@@ -1,8 +1,12 @@
-import { View, Text, StyleSheet, Switch, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Share } from 'react-native';
+import { View, Text, StyleSheet, Switch, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Share, Linking } from 'react-native';
 import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import Constants from 'expo-constants';
+
+const APP_VERSION = Constants.expoConfig?.version ?? '4.7.0';
+const PRIVACY_POLICY_URL = 'https://fabianogleite-lab.github.io/aquarios/privacy-policy.html';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
@@ -190,6 +194,13 @@ export default function SettingsScreen() {
       <FadeInView delay={150}>
         <View style={s.section}>
           <Text style={s.sectionTitle}>Privacidade (LGPD)</Text>
+          <TouchableOpacity style={s.actionRow} onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}>
+            <View>
+              <Text style={s.actionLabel}>Política de Privacidade</Text>
+              <Text style={s.actionDesc}>Veja como seus dados são tratados (LGPD)</Text>
+            </View>
+            <Text style={s.actionArrow}>→</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={s.actionRow} onPress={handleExportData} disabled={exporting}>
             <View>
               <Text style={s.actionLabel}>Exportar meus dados</Text>
@@ -212,7 +223,7 @@ export default function SettingsScreen() {
           <Text style={s.sectionTitle}>Sobre</Text>
           <View style={s.row}>
             <Text style={s.label}>Versão</Text>
-            <Text style={s.value}>4.4.0</Text>
+            <Text style={s.value}>v{APP_VERSION}</Text>
           </View>
           <View style={s.row}>
             <Text style={s.label}>Build</Text>

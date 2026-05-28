@@ -82,11 +82,10 @@ export default function ModuleScreen() {
   return (
     <View style={s.container}>
       <GenericModule
-        config={config}
+        config={{ ...config, lotes: config.lotes ?? [] }}
         currentXP={totalXP}
         onSelectLot={(lot) => {
-          // Handle lot selection - can navigate to lot details or perform action
-          console.log('Selected lot:', lot);
+          // Lot selection handled by GenericModule internal navigation
         }}
       />
     </View>
