@@ -5,6 +5,28 @@ import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 const MODULE_INFO: Record<string, { icon: string; name: string; tagline: string; features: string[] }> = {
+  aeropagos: {
+    icon: '🏛',
+    name: 'AeropagOS',
+    tagline: 'Gamificação desbloqueável por lotes e conquistas',
+    features: [
+      'Sistema de lotes progressivos por módulo',
+      'Conquistas e badges de autoconhecimento',
+      'XP Existencial como moeda de crescimento',
+      'Ranking comunitário com impacto real',
+    ],
+  },
+  token_economy: {
+    icon: '💰',
+    name: 'Token Economy',
+    tagline: 'Tokens AquariOS · recompensas, acesso e pertencimento',
+    features: [
+      '4 tipos: AI, Sync, Insight e Community tokens',
+      'Ganho por engajamento, streak e contribuição',
+      'Acesso temporário (24h/30d) ou permanente',
+      'Mercado interno: troque tokens por módulos e conteúdo',
+    ],
+  },
   sandeiros: {
     icon: '🔮',
     name: 'SandeirOS',
