@@ -7,8 +7,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  Image,
+  Alert,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import * as ImagePicker from 'expo-image-picker';
 import { getDeviceLocale } from '../../lib/locale';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
@@ -34,6 +37,11 @@ interface Message {
   created_at: string;
 }
 
+interface SelectedImage {
+  base64: string;
+  mimeType: string;
+}
+
 function generateUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -47,6 +55,7 @@ export default function ProteosScreen() {
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string>('');
   const [persona, setPersona] = useState<PersonaKey>('default');
+  const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
   const { logXP } = useXP();
@@ -85,15 +94,55 @@ export default function ProteosScreen() {
     }
   };
 
+  const pickImage = () => {
+    Alert.alert('Adicionar imagem', 'Escolha a origem', [
+      { text: 'Câmera', onPress: openCamera },
+      { text: 'Galeria', onPress: openGallery },
+      { text: 'Cancelar', style: 'cancel' },
+    ]);
+  };
+
+  const openCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permissão negada', 'Permita acesso à câmera nas configurações.');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({ base64: true, quality: 0.4, allowsEditing: true });
+    if (!result.canceled && result.assets[0].base64) {
+      setSelectedImage({ base64: result.assets[0].base64, mimeType: 'image/jpeg' });
+    }
+  };
+
+  const openGallery = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      base64: true,
+      quality: 0.4,
+    });
+    if (!result.canceled && result.assets[0].base64) {
+      setSelectedImage({
+        base64: result.assets[0].base64,
+        mimeType: result.assets[0].mimeType || 'image/jpeg',
+      });
+    }
+  };
+
   const sendMessage = async () => {
-    if (!message.trim() || !user?.id) return;
+    if ((!message.trim() && !selectedImage) || !user?.id) return;
 
     setLoading(true);
     const userInput = message;
+    const capturedImage = selectedImage;
     setMessage('');
+    setSelectedImage(null);
 
     const now = new Date().toISOString();
-    const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', content: userInput, created_at: now };
+    const displayText = capturedImage
+      ? (userInput.trim() ? `📷 ${userInput.trim()}` : '📷 Analisar imagem')
+      : userInput;
+
+    const userMsg: Message = { id: `user-${Date.now()}`, role: 'user', content: displayText, created_at: now };
     setMessages((prev) => [...prev, userMsg]);
     setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
 
@@ -102,10 +151,21 @@ export default function ProteosScreen() {
       if (!conversationId) setConversationId(newConvId);
 
       const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
-      const apiMessages = [
-        ...history,
-        { role: 'user', content: userInput },
-      ];
+
+      const userApiContent = capturedImage
+        ? [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: capturedImage.mimeType, data: capturedImage.base64 },
+            },
+            {
+              type: 'text',
+              text: userInput.trim() || 'Extraia e transcreva todo o texto desta imagem. Se não houver texto, descreva o que vê.',
+            },
+          ]
+        : userInput;
+
+      const apiMessages = [...history, { role: 'user', content: userApiContent }];
 
       let assistantContent = 'Desculpe, não consegui processar. Tente novamente.';
 
@@ -130,14 +190,14 @@ export default function ProteosScreen() {
       const futureTime = new Date().toISOString();
 
       const [encUser, encAssistant] = await Promise.all([
-        encryptField(userInput),
+        encryptField(displayText),
         encryptField(assistantContent),
       ]);
 
       const { error: saveError } = await supabase.from('chat_messages').insert([
         {
           conversation_id: newConvId, user_id: user.id, role: 'user',
-          content: encUser.ciphertext ? '[encrypted]' : userInput,
+          content: encUser.ciphertext ? '[encrypted]' : displayText,
           content_encrypted: encUser.ciphertext || null,
           content_nonce: encUser.nonce || null,
           created_at: now,
@@ -209,12 +269,28 @@ export default function ProteosScreen() {
         ))}
       </ScrollView>
 
+      {selectedImage && (
+        <View style={s.imagePreview}>
+          <Image
+            source={{ uri: `data:${selectedImage.mimeType};base64,${selectedImage.base64}` }}
+            style={s.previewImg}
+          />
+          <TouchableOpacity style={s.removeImgBtn} onPress={() => setSelectedImage(null)}>
+            <Text style={s.removeImgText}>✕</Text>
+          </TouchableOpacity>
+          <Text style={s.previewLabel}>Imagem pronta — adicione um texto ou envie direto</Text>
+        </View>
+      )}
+
       <View style={s.inputRow}>
+        <TouchableOpacity style={s.cameraBtn} onPress={pickImage} disabled={loading}>
+          <Text style={s.cameraBtnText}>{selectedImage ? '🖼️' : '📷'}</Text>
+        </TouchableOpacity>
         <TextInput
           style={s.input}
           value={message}
           onChangeText={setMessage}
-          placeholder="Converse com ProteOS..."
+          placeholder={selectedImage ? 'Pergunta sobre a imagem (opcional)...' : 'Converse com ProteOS...'}
           placeholderTextColor={colors.textMuted}
           multiline
           maxLength={500}
@@ -223,7 +299,7 @@ export default function ProteosScreen() {
         <TouchableOpacity
           style={[s.sendBtn, loading && s.sendBtnDisabled]}
           onPress={sendMessage}
-          disabled={loading || !message.trim()}
+          disabled={loading || (!message.trim() && !selectedImage)}
         >
           <Text style={s.sendText}>→</Text>
         </TouchableOpacity>
@@ -234,7 +310,6 @@ export default function ProteosScreen() {
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  messageListContainer: { flex: 1 },
   messageList: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm },
   bubble: { padding: spacing.md, borderRadius: radius.lg, marginBottom: 10, maxWidth: '85%' },
   botBubble: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignSelf: 'flex-start' },
@@ -244,7 +319,21 @@ const s = StyleSheet.create({
   timestamp: { color: colors.textMuted, fontSize: fontSize.xs, marginTop: 6 },
   loadingContainer: { flexDirection: 'row', paddingHorizontal: spacing.lg, paddingVertical: spacing.md, alignItems: 'center' },
   loadingText: { color: colors.textMuted, marginLeft: spacing.sm, fontSize: fontSize.md },
+  imagePreview: {
+    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
+    paddingHorizontal: spacing.md, paddingVertical: spacing.sm,
+    borderTopWidth: 1, borderTopColor: colors.border,
+  },
+  previewImg: { width: 52, height: 52, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border },
+  removeImgBtn: {
+    width: 20, height: 20, borderRadius: 10, backgroundColor: colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  removeImgText: { color: colors.bg, fontSize: 10, fontWeight: '700' },
+  previewLabel: { flex: 1, color: colors.textMuted, fontSize: fontSize.xs },
   inputRow: { flexDirection: 'row', padding: spacing.md, borderTopWidth: 1, borderTopColor: colors.border, alignItems: 'flex-end' },
+  cameraBtn: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', marginRight: spacing.xs },
+  cameraBtnText: { fontSize: 22 },
   input: {
     flex: 1,
     backgroundColor: colors.card,
