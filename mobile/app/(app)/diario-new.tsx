@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { useXP } from '../../hooks/useXP';
 import { encryptField } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
@@ -48,6 +49,7 @@ export default function DiarioNewScreen() {
   );
   const router = useRouter();
   const { user } = useAuthStore();
+  const { logXP } = useXP();
 
   const saveEntry = async () => {
     if (!content.trim() || !user?.id) {
@@ -72,7 +74,10 @@ export default function DiarioNewScreen() {
 
     setLoading(false);
     if (error) Alert.alert('Erro', 'Não foi possível salvar sua reflexão');
-    else Alert.alert('Sucesso', 'Reflexão salva!', [{ text: 'OK', onPress: () => router.back() }]);
+    else {
+      logXP('diary_entry', 50, 'diario').catch(() => {});
+      Alert.alert('Sucesso', 'Reflexão salva!', [{ text: 'OK', onPress: () => router.back() }]);
+    }
   };
 
   return (

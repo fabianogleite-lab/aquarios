@@ -12,6 +12,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getDeviceLocale } from '../../lib/locale';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
+import { useXP } from '../../hooks/useXP';
 import { encryptField, decryptOrFallback } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
@@ -48,6 +49,7 @@ export default function ProteosScreen() {
   const [persona, setPersona] = useState<PersonaKey>('default');
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
+  const { logXP } = useXP();
 
   useEffect(() => {
     loadConversationHistory();
@@ -119,6 +121,7 @@ export default function ProteosScreen() {
           assistantContent = data.message;
         } else if (data?.text) {
           assistantContent = data.text;
+          logXP('chat_message', 25, 'proteos').catch(() => {});
         }
       } catch (apiErr) {
         console.error('ProteOS API error:', apiErr);
