@@ -14,6 +14,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { encryptField } from '../../lib/crypto';
 import { FadeInView } from '../../components/FadeInView';
+import { FoodPhotoButton, FoodVisionResult } from '../../components/FoodPhotoButton';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner';
@@ -34,8 +35,18 @@ export default function NutricaoNovoScreen() {
   const [notes, setNotes] = useState('');
   const [mealType, setMealType] = useState<MealType>('lunch');
   const [saving, setSaving] = useState(false);
+  const [aiTag, setAiTag] = useState('');
   const router = useRouter();
   const { user } = useAuthStore();
+
+  const handleFoodVision = (result: FoodVisionResult) => {
+    setName(result.name);
+    setCalories(String(Math.round(result.calories)));
+    setProtein(String(result.protein.toFixed(1)));
+    setCarbs(String(result.carbs.toFixed(1)));
+    setFat(String(result.fat.toFixed(1)));
+    setAiTag(`IA · confiança ${result.confidence}${result.notes ? ` · ${result.notes}` : ''}`);
+  };
 
   const save = async () => {
     if (!name.trim()) { Alert.alert('Erro', 'Informe o nome da refeição'); return; }
@@ -79,6 +90,8 @@ export default function NutricaoNovoScreen() {
       <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
         <FadeInView>
           <Text style={s.title}>Nova Refeição</Text>
+          <FoodPhotoButton onResult={handleFoodVision} disabled={saving} />
+          {aiTag ? <Text style={s.aiTag}>✨ {aiTag}</Text> : null}
         </FadeInView>
 
         <FadeInView delay={100}>
@@ -140,7 +153,8 @@ export default function NutricaoNovoScreen() {
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
   scroll: { padding: spacing.lg },
-  title: { fontSize: fontSize.title, fontWeight: '700', color: colors.primary, marginBottom: spacing.xl },
+  title: { fontSize: fontSize.title, fontWeight: '700', color: colors.primary, marginBottom: spacing.lg },
+  aiTag: { color: colors.textMuted, fontSize: fontSize.xs, marginBottom: spacing.md, textAlign: 'center' },
   label: { color: colors.text, fontSize: fontSize.md, fontWeight: '600', marginBottom: 6, marginTop: 14 },
   input: { backgroundColor: colors.card, borderRadius: radius.lg, paddingHorizontal: 14, paddingVertical: 12, color: colors.text, fontSize: fontSize.lg, borderWidth: 1, borderColor: colors.border },
   textArea: { height: 80, textAlignVertical: 'top' },
