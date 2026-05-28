@@ -7,15 +7,11 @@
     "scheme": "aquarios",
     "icon": "./assets/icon.png",
     "backgroundColor": "#090c14",
-    "splash": {
-      "backgroundColor": "#090c14",
-      "resizeMode": "contain"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTabletMode": true,
+      "supportsTablet": true,
       "bundleIdentifier": "com.arkhe.aquarios",
       "infoPlist": {
         "NSCameraUsageDescription": "AquariOS usa a câmera para personalizar seu perfil e compartilhar momentos na comunidade.",
@@ -67,9 +63,6 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "cli": {
-      "appVersionSource": "nativeVersion"
-    },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
@@ -82,7 +75,7 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-splash-screen",
+      ["expo-splash-screen", { "backgroundColor": "#090c14", "resizeMode": "contain" }],
       "expo-status-bar",
       "expo-camera",
       "expo-image-picker",
