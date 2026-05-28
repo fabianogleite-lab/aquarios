@@ -2,6 +2,14 @@ import * as SecureStore from 'expo-secure-store';
 
 const KEY_STORE_ID = 'aquarios_e2e_key_v1';
 
+function isCryptoAvailable(): boolean {
+  try {
+    return typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
+  } catch {
+    return false;
+  }
+}
+
 function uint8ToBase64(bytes: Uint8Array): string {
   let bin = '';
   for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
@@ -42,6 +50,9 @@ export interface EncryptedField {
 }
 
 export async function encryptField(plaintext: string): Promise<EncryptedField> {
+  if (!isCryptoAvailable()) {
+    return { ciphertext: '', nonce: '' };
+  }
   const key = await getKey();
   const nonce = crypto.getRandomValues(new Uint8Array(12));
   const encoded = new TextEncoder().encode(plaintext);

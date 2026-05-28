@@ -79,6 +79,7 @@ export default function ProteosScreen() {
       );
       setMessages(decrypted);
       setConversationId(data[0].conversation_id);
+      setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 400);
     }
   };
 
@@ -133,14 +134,16 @@ export default function ProteosScreen() {
       const { error: saveError } = await supabase.from('chat_messages').insert([
         {
           conversation_id: newConvId, user_id: user.id, role: 'user',
-          content: '[encrypted]',
-          content_encrypted: encUser.ciphertext, content_nonce: encUser.nonce,
+          content: encUser.ciphertext ? '[encrypted]' : userInput,
+          content_encrypted: encUser.ciphertext || null,
+          content_nonce: encUser.nonce || null,
           created_at: now,
         },
         {
           conversation_id: newConvId, user_id: user.id, role: 'assistant',
-          content: '[encrypted]',
-          content_encrypted: encAssistant.ciphertext, content_nonce: encAssistant.nonce,
+          content: encAssistant.ciphertext ? '[encrypted]' : assistantContent,
+          content_encrypted: encAssistant.ciphertext || null,
+          content_nonce: encAssistant.nonce || null,
           created_at: futureTime,
         },
       ]);
@@ -178,6 +181,7 @@ export default function ProteosScreen() {
             </View>
           </FadeInView>
         )}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
         onEndReachedThreshold={0.1}
         onEndReached={() => flatListRef.current?.scrollToEnd()}
       />
@@ -227,6 +231,7 @@ export default function ProteosScreen() {
 
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
+  messageListContainer: { flex: 1 },
   messageList: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm },
   bubble: { padding: spacing.md, borderRadius: radius.lg, marginBottom: 10, maxWidth: '85%' },
   botBubble: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, alignSelf: 'flex-start' },

@@ -23,12 +23,12 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
   useEffect(() => {
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(fadePhoto, { toValue: 1, duration: 1200, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 2000, useNativeDriver: true }),
+        Animated.timing(fadePhoto, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 1, duration: 900, useNativeDriver: true }),
       ]),
-      Animated.timing(fadeTitle, { toValue: 1, duration: 800, useNativeDriver: true }),
-      Animated.timing(fadeSub, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.delay(1200),
+      Animated.timing(fadeTitle, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.timing(fadeSub, { toValue: 1, duration: 300, useNativeDriver: true }),
+      Animated.delay(500),
     ]).start(() => onFinish());
   }, []);
 
