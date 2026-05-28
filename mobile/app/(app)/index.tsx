@@ -12,6 +12,7 @@ const MODULES = [
   { icon: '🥗', title: 'Nutrição', desc: 'Tracking nutricional inteligente', route: '/nutricao' as const },
   { icon: '👥', title: 'Comunidades', desc: 'Círculos de crescimento coletivo', route: '/comunidades' as const },
   { icon: '🌙', title: 'Wonder Night', desc: 'Rituais noturnos de transformação', route: '/wonder-night' as const },
+  { icon: '🛒', title: 'Loja AquariOS', desc: 'Produtos e recompensas do ecossistema', route: '/store' as const },
 ];
 
 const NEW_MODULES = [
