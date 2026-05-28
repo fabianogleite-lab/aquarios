@@ -101,6 +101,80 @@ const MODULE_REGISTRY: Record<string, ModuleConfig> = {
     },
   },
 
+  // Coming soon — home NEW_MODULES
+  aeropagos: {
+    id: 'aeropagos',
+    name: 'AeropagOS',
+    icon: '🏛',
+    description: 'Gamificação desbloqueável por lotes e conquistas',
+    status: 'coming_soon',
+  },
+  token_economy: {
+    id: 'token_economy',
+    name: 'Token Economy',
+    icon: '💰',
+    description: 'Sistema de economia interna',
+    status: 'coming_soon',
+  },
+  panaceia: {
+    id: 'panaceia',
+    name: 'PanaceIA',
+    icon: '🛒',
+    description: 'Marketplace consciente de bem-estar',
+    status: 'coming_soon',
+  },
+  cerberos: {
+    id: 'cerberos',
+    name: 'CerberOS',
+    icon: '🔐',
+    description: 'Segurança ativa em 7 camadas',
+    status: 'coming_soon',
+  },
+
+  // Coming soon — home COMING_SOON
+  sandeiros: {
+    id: 'sandeiros',
+    name: 'SandeirOS',
+    icon: '🔮',
+    description: 'Engine simbólica dos 22 arcanos',
+    status: 'coming_soon',
+  },
+  asclepios: {
+    id: 'asclepios',
+    name: 'AsclepiOS',
+    icon: '⚕',
+    description: 'Módulo médico inteligente',
+    status: 'coming_soon',
+  },
+  hermeos: {
+    id: 'hermeos',
+    name: 'HermeOS',
+    icon: '🏦',
+    description: 'Inteligência financeira pessoal',
+    status: 'coming_soon',
+  },
+  eterios: {
+    id: 'eterios',
+    name: 'EteriOS',
+    icon: '📡',
+    description: 'Conexão com wearables e IoT',
+    status: 'coming_soon',
+  },
+  ecumenicos: {
+    id: 'ecumenicos',
+    name: 'EcumenicOS',
+    icon: '☯',
+    description: 'Sabedoria inter-religiosa',
+    status: 'coming_soon',
+  },
+  'beck-office': {
+    id: 'beck-office',
+    name: 'Beck Office',
+    icon: '🏢',
+    description: 'Plataforma B2B para clínicas e empresas',
+    status: 'coming_soon',
+  },
+
   // Premium
   genomica: {
     id: 'genomica',
