@@ -25,7 +25,7 @@ interface CommunityPostFormProps {
   onSuccess: () => void;
 }
 
-export function CommunityPostForm({ visible, onClose, onSuccess }: CommunityPostFormProps) {
+export default function CommunityPostForm({ visible, onClose, onSuccess }: CommunityPostFormProps) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);

@@ -14,7 +14,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
 import { usePersonaDetection } from '../../hooks/usePersonaDetection';
 import { useCommunityScoring } from '../../hooks/useCommunityScoring';
-import { CommunityPostForm } from './comunidades-post-form';
+import CommunityPostForm from './comunidades-post-form';
 import { EmptyState } from '../../components/EmptyState';
 import { PressableScale } from '../../components/PressableScale';
 import { FadeInView } from '../../components/FadeInView';

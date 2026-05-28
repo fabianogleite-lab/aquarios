@@ -56,7 +56,6 @@ export default function StoreCard({ product, onBuy, userTokens }: StoreCardProps
       <Image
         source={{ uri: product.imagem_url }}
         style={styles.image}
-        defaultSource={require('../assets/placeholder.png')}
       />
 
       <View style={[styles.badge, { backgroundColor: categoryColors[product.categoria] || '#666' }]}>
