@@ -3,21 +3,729 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquariOS</title>
+    <title>AquariOS — Sistema Operacional Pessoal</title>
+    <meta name="description" content="Somos o que todos precisam e ninguém ofereceu, ainda. IA, saúde, comunidade e autocuidado em um único app.">
+    <meta property="og:title" content="AquariOS — Sistema Operacional Pessoal">
+    <meta property="og:description" content="Somos o que todos precisam e ninguém ofereceu, ainda.">
+    <meta property="og:type" content="website">
+
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #090c14; color: #e0e0e0; display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 2rem; }
-        h1 { color: #00d4aa; font-size: 2.5rem; margin-bottom: 1rem; }
-        p { font-size: 1.1rem; margin-bottom: 2rem; max-width: 500px; }
-        a { color: #00d4aa; text-decoration: none; border: 1px solid #00d4aa; padding: 0.7rem 1.5rem; border-radius: 8px; transition: all 0.3s; }
-        a:hover { background: #00d4aa; color: #090c14; }
+        :root {
+            --bg: #EDEAE4;
+            --hero: #1A1F2E;
+            --card: #FFFFFF;
+            --primary: #7C5CBF;
+            --primary-light: #9B7FD4;
+            --text: #1A1F2E;
+            --text-muted: #6B7280;
+            --border: rgba(26, 31, 46, 0.08);
+            --somatica: #E07B54;
+            --psicologica: #5B8DEF;
+            --existencial: #7C5CBF;
+            --social: #52C98A;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1.25rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(26, 31, 46, 0.88);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .nav-logo {
+            font-size: 1.125rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.02em;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #FFFFFF; }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--hero);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 7rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(124, 92, 191, 0.12) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(124, 92, 191, 0.18);
+            border: 1px solid rgba(124, 92, 191, 0.35);
+            color: var(--primary-light);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            max-width: 820px;
+            position: relative;
+        }
+        .hero h1 em {
+            font-style: normal;
+            color: var(--primary-light);
+        }
+        .hero-sub {
+            font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 520px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            line-height: 1.7;
+            position: relative;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--primary);
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.9rem 1.75rem;
+            border-radius: 12px;
+            border: none;
+            cursor: not-allowed;
+            opacity: 0.72;
+            text-decoration: none;
+            position: relative;
+        }
+        .btn-tag {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+        }
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+        }
+        .scroll-line {
+            width: 1px; height: 36px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
+        }
+
+        /* ── WHAT IS ── */
+        .what-is {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            padding: 7rem 2.5rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            margin-bottom: 1.25rem;
+        }
+        .section-desc {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+        .quote {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-style: italic;
+            line-height: 1.5;
+            border-left: 3px solid var(--primary);
+            padding-left: 1.25rem;
+            margin-top: 2rem;
+        }
+        .mini-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+        .mini-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.1rem 1.35rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .mini-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .mini-icon {
+            font-size: 1.25rem;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--bg);
+            border-radius: 9px;
+            flex-shrink: 0;
+        }
+        .mini-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .mini-desc { font-size: 0.775rem; color: var(--text-muted); line-height: 1.5; }
+
+        /* ── IVI ── */
+        .ivi-section {
+            background: var(--hero);
+            padding: 7rem 2.5rem;
+        }
+        .ivi-inner { max-width: 1100px; margin: 0 auto; }
+        .ivi-section .section-label { color: var(--primary-light); }
+        .ivi-section .section-title { color: #FFFFFF; }
+        .ivi-section .section-desc { color: rgba(255,255,255,0.45); }
+        .ivi-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 4.5rem;
+            align-items: center;
+            margin-top: 4rem;
+        }
+        .ivi-circle-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+        }
+        .ivi-circle {
+            position: relative;
+            width: 200px; height: 200px;
+        }
+        .ivi-circle svg {
+            width: 200px; height: 200px;
+            transform: rotate(-90deg);
+        }
+        .ivi-track {
+            fill: none;
+            stroke: rgba(255,255,255,0.07);
+            stroke-width: 10;
+        }
+        .ivi-arc {
+            fill: none;
+            stroke: var(--primary-light);
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-dasharray: 502.65;
+            stroke-dashoffset: 502.65;
+            transition: stroke-dashoffset 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ivi-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .ivi-number {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+        .ivi-band {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+        .ivi-formula {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.25);
+            text-align: center;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            line-height: 1.7;
+        }
+        .dim-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .dim-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: background 0.2s;
+        }
+        .dim-card:hover { background: rgba(255,255,255,0.07); }
+        .dim-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        .dim-tag {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 0.3rem;
+        }
+        .dim-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+        }
+        .dim-desc {
+            font-size: 0.775rem;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.65;
+        }
+        .dim-pct {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── MODULES ── */
+        .modules-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 7rem 2.5rem;
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 3.5rem;
+        }
+        .module-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .module-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+        }
+        .mod-icon { font-size: 1.75rem; margin-bottom: 1rem; }
+        .mod-name { font-size: 0.975rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+        .mod-desc { font-size: 0.775rem; color: var(--text-muted); line-height: 1.65; }
+
+        /* ── CTA FINAL ── */
+        .cta-section {
+            background: var(--hero);
+            padding: 7rem 2.5rem;
+            text-align: center;
+        }
+        .cta-inner { max-width: 580px; margin: 0 auto; }
+        .cta-section .section-label { color: var(--primary-light); }
+        .cta-title {
+            font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+            font-weight: 800;
+            color: #FFFFFF;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+            line-height: 1.15;
+        }
+        .cta-sub {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+        .cta-row {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: rgba(255,255,255,0.45);
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 0.875rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            cursor: default;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--hero);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem 2.5rem;
+        }
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-brand { font-size: 0.875rem; font-weight: 700; color: rgba(255,255,255,0.55); }
+        .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+        .footer-links a {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.775rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: rgba(255,255,255,0.65); }
+        .footer-copy { color: rgba(255,255,255,0.2); font-size: 0.725rem; }
+
+        /* ── FADE IN ── */
+        .fade {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.65s ease, transform 0.65s ease;
+        }
+        .fade.on { opacity: 1; transform: translateY(0); }
+        .fade-d1 { transition-delay: 0.1s; }
+        .fade-d2 { transition-delay: 0.2s; }
+        .fade-d3 { transition-delay: 0.3s; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .what-is { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
+            .ivi-grid { grid-template-columns: 1fr; }
+            .ivi-circle-wrap { margin: 0 auto; }
+            .dim-cards { grid-template-columns: 1fr; }
+            .modules-grid { grid-template-columns: 1fr 1fr; }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .footer-links { justify-content: center; }
+        }
+        @media (max-width: 480px) {
+            .modules-grid { grid-template-columns: 1fr; }
+            .what-is { padding: 4rem 1.25rem; }
+        }
     </style>
 </head>
 <body>
-    <div>
-        <h1>AquariOS</h1>
-        <p>Seu sistema operacional pessoal de autocuidado. IA, diario, nutricao e comunidade — tudo em um app.</p>
-        <a href="privacy-policy.html">Politica de Privacidade</a>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-logo">AquariOS</div>
+    <ul class="nav-links">
+        <li><a href="#o-que-e">O que é</a></li>
+        <li><a href="#ivi">IVI</a></li>
+        <li><a href="#modulos">Módulos</a></li>
+        <li><a href="#download">Download</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-badge fade">Sistema Operacional Pessoal</div>
+    <h1 class="fade fade-d1">Somos o que todos precisam<br>e <em>ninguém ofereceu,</em> ainda.</h1>
+    <p class="hero-sub fade fade-d2">IA filosófica, saúde integrativa, espiritualidade e comunidade — tudo medido, tudo conectado, tudo seu.</p>
+    <a class="btn-primary fade fade-d3" href="#" onclick="return false;">
+        Google Play
+        <span class="btn-tag">Em breve</span>
+    </a>
+    <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        Explorar
     </div>
+</div>
+
+<!-- O QUE É -->
+<div id="o-que-e" class="what-is">
+    <div class="fade">
+        <div class="section-label">O que é</div>
+        <h2 class="section-title">Não é um app de saúde.<br>É o app que cuida de você.</h2>
+        <p class="section-desc">AquariOS é um Sistema Operacional Pessoal — um núcleo de autocuidado com IA, dados clínicos reais, espiritualidade e comunidade, tudo integrado e medido pelo <strong>Índice de Vitalidade Integrada (IVI)</strong>.</p>
+        <blockquote class="quote">"Bilhões de pessoas precisam disso. Ninguém ofereceu, ainda."</blockquote>
+    </div>
+    <div class="mini-cards fade fade-d1">
+        <div class="mini-card">
+            <div class="mini-icon">🤖</div>
+            <div>
+                <div class="mini-title">IA que te conhece</div>
+                <div class="mini-desc">ProteOS aprende com você. Filosófico, direto, profundo — sem respostas genéricas.</div>
+            </div>
+        </div>
+        <div class="mini-card">
+            <div class="mini-icon">📊</div>
+            <div>
+                <div class="mini-title">Dados reais, não estimativas</div>
+                <div class="mini-desc">Exames clínicos, nutrição, diário e espiritualidade alimentando um único score.</div>
+            </div>
+        </div>
+        <div class="mini-card">
+            <div class="mini-icon">🔐</div>
+            <div>
+                <div class="mini-title">Privacidade absoluta</div>
+                <div class="mini-desc">Criptografia E2E. Diário cifrado. Seus dados nunca saem sem sua permissão.</div>
+            </div>
+        </div>
+        <div class="mini-card">
+            <div class="mini-icon">👥</div>
+            <div>
+                <div class="mini-title">Comunidade que importa</div>
+                <div class="mini-desc">Conexão real com pessoas na mesma jornada. Sem algoritmo de engajamento.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- IVI -->
+<div id="ivi" class="ivi-section">
+    <div class="ivi-inner">
+        <div class="fade">
+            <div class="section-label">Índice de Vitalidade Integrada</div>
+            <h2 class="section-title">Você tem um score.<br>Agora você pode melhorá-lo.</h2>
+            <p class="section-desc">O IVI mede sua vitalidade em 4 dimensões em tempo real — e mostra exatamente onde agir.</p>
+        </div>
+        <div class="ivi-grid">
+            <div class="ivi-circle-wrap fade">
+                <div class="ivi-circle" id="iviCircle">
+                    <svg viewBox="0 0 200 200">
+                        <circle class="ivi-track" cx="100" cy="100" r="80"/>
+                        <circle class="ivi-arc" id="iviArc" cx="100" cy="100" r="80"/>
+                    </svg>
+                    <div class="ivi-center">
+                        <div class="ivi-number" id="iviNumber">0</div>
+                        <div class="ivi-band">IVI · BOM</div>
+                    </div>
+                </div>
+                <div class="ivi-formula">
+                    Bio × 0.35 + Mental × 0.30<br>
+                    Spirit × 0.20 + Social × 0.15
+                </div>
+            </div>
+            <div class="dim-cards">
+                <div class="dim-card fade">
+                    <div class="dim-dot" style="background: var(--somatica);"></div>
+                    <div class="dim-tag">Dimensão 01</div>
+                    <div class="dim-name">Somática</div>
+                    <div class="dim-desc">Corpo, movimento, nutrição, exames clínicos e sinais vitais integrados.</div>
+                    <div class="dim-pct" style="color: var(--somatica);">35% do IVI</div>
+                </div>
+                <div class="dim-card fade fade-d1">
+                    <div class="dim-dot" style="background: var(--psicologica);"></div>
+                    <div class="dim-tag">Dimensão 02</div>
+                    <div class="dim-name">Psicológica</div>
+                    <div class="dim-desc">Mente, emoções, diário de reflexões e saúde mental com IA de suporte.</div>
+                    <div class="dim-pct" style="color: var(--psicologica);">30% do IVI</div>
+                </div>
+                <div class="dim-card fade fade-d2">
+                    <div class="dim-dot" style="background: var(--existencial);"></div>
+                    <div class="dim-tag">Dimensão 03</div>
+                    <div class="dim-name">Existencial</div>
+                    <div class="dim-desc">Propósito, espiritualidade, sabedoria das tradições e autoconhecimento profundo.</div>
+                    <div class="dim-pct" style="color: var(--existencial);">20% do IVI</div>
+                </div>
+                <div class="dim-card fade fade-d3">
+                    <div class="dim-dot" style="background: var(--social);"></div>
+                    <div class="dim-tag">Dimensão 04</div>
+                    <div class="dim-name">Social</div>
+                    <div class="dim-desc">Vínculos reais, comunidade, presença e conexão humana autêntica.</div>
+                    <div class="dim-pct" style="color: var(--social);">15% do IVI</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MÓDULOS -->
+<div id="modulos" class="modules-section">
+    <div class="fade">
+        <div class="section-label">9 módulos integrados</div>
+        <h2 class="section-title">Tudo que você precisa.<br>Em um só lugar.</h2>
+        <p class="section-desc">Cada módulo é independente e poderoso. Juntos, formam seu sistema operacional pessoal.</p>
+    </div>
+    <div class="modules-grid">
+        <div class="module-card fade">
+            <div class="mod-icon">🤖</div>
+            <div class="mod-name">ProteOS</div>
+            <div class="mod-desc">Sua IA pessoal — filosófica, direta e profunda. Aprende com você e nunca dá resposta genérica.</div>
+        </div>
+        <div class="module-card fade fade-d1">
+            <div class="mod-icon">🌙</div>
+            <div class="mod-name">SandeirOS</div>
+            <div class="mod-desc">Jornada pelos 22 arcanos do autoconhecimento. Descubra seu arquétipo e sua trilha evolutiva.</div>
+        </div>
+        <div class="module-card fade fade-d2">
+            <div class="mod-icon">🕊️</div>
+            <div class="mod-name">EcumenicOS</div>
+            <div class="mod-desc">Sabedoria de 13 tradições espirituais do mundo — sem dogma, com profundidade real.</div>
+        </div>
+        <div class="module-card fade">
+            <div class="mod-icon">🩺</div>
+            <div class="mod-name">AsclepiOS</div>
+            <div class="mod-desc">Saúde integrativa com exames clínicos reais, histórico e alertas baseados em dados seus.</div>
+        </div>
+        <div class="module-card fade fade-d1">
+            <div class="mod-icon">📊</div>
+            <div class="mod-name">HermeOS</div>
+            <div class="mod-desc">Dashboard executivo da sua vida e saúde financeira integrada. Tudo em uma visão.</div>
+        </div>
+        <div class="module-card fade fade-d2">
+            <div class="mod-icon">✨</div>
+            <div class="mod-name">EteriOS</div>
+            <div class="mod-desc">Bem-estar, qualidade de vida e harmonia — o espaço de respiro do seu dia.</div>
+        </div>
+        <div class="module-card fade">
+            <div class="mod-icon">👥</div>
+            <div class="mod-name">Comunidades</div>
+            <div class="mod-desc">O coração do AquariOS. Conexão real com pessoas na mesma jornada. Sem algoritmo de engajamento.</div>
+        </div>
+        <div class="module-card fade fade-d1">
+            <div class="mod-icon">📓</div>
+            <div class="mod-name">Diário do Ser</div>
+            <div class="mod-desc">Reflexões criptografadas. E2E — só você lê. A IA identifica padrões sem ver o conteúdo.</div>
+        </div>
+        <div class="module-card fade fade-d2">
+            <div class="mod-icon">🥗</div>
+            <div class="mod-name">Nutrição</div>
+            <div class="mod-desc">Alimentação inteligente com OCR de refeições, metas personalizadas e histórico real.</div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA FINAL -->
+<div id="download" class="cta-section">
+    <div class="cta-inner fade">
+        <div class="section-label">Pronto para começar?</div>
+        <h2 class="cta-title">Seu sistema operacional pessoal te aguarda.</h2>
+        <p class="cta-sub">AquariOS está chegando ao Google Play. Seja um dos primeiros a transformar como cuida de si mesmo.</p>
+        <div class="cta-row">
+            <a class="btn-primary" href="#" onclick="return false;">
+                Google Play
+                <span class="btn-tag">Em breve</span>
+            </a>
+            <div class="btn-ghost">🍎 App Store &mdash; Em breve</div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-brand">AquariOS &middot; ARKHE Labs</div>
+        <ul class="footer-links">
+            <li><a href="privacy-policy.html">Política de Privacidade</a></li>
+            <li><a href="backoffice.html">Backoffice</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 ARKHE Labs &middot; Fabiano Gomes Leite</div>
+    </div>
+</footer>
+
+<script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+
+    // IVI circle animation — triggers once on enter
+    const iviObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            iviObs.unobserve(e.target);
+            animateIVI(74);
+        });
+    }, { threshold: 0.4 });
+    iviObs.observe(document.getElementById('iviCircle'));
+
+    function animateIVI(target) {
+        const arc = document.getElementById('iviArc');
+        const num = document.getElementById('iviNumber');
+        const C = 2 * Math.PI * 80; // 502.65
+        const start = performance.now();
+        const duration = 1600;
+
+        function tick(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            const val = Math.round(target * ease);
+            num.textContent = val;
+            arc.style.strokeDashoffset = C - (C * val / 100);
+            if (t < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+    }
+</script>
 </body>
 </html>
