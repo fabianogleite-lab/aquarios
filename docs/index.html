@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquariOS — Sistema Operacional Pessoal</title>
-    <meta name="description" content="Somos o que todos precisam e ninguém ofereceu, ainda. IA, saúde, comunidade e autocuidado em um único app.">
+    <meta name="description" content="Somos o que todos precisam e ninguém ofereceu, ainda. Assistente pessoal de saúde integral com IA, quatro dimensões e iVi.">
     <meta property="og:title" content="AquariOS — Sistema Operacional Pessoal">
     <meta property="og:description" content="Somos o que todos precisam e ninguém ofereceu, ainda.">
     <meta property="og:type" content="website">
-
+    <meta property="og:url" content="https://podiumtec.com.br">
 
     <style>
         :root {
@@ -19,15 +19,15 @@
             --primary-light: #9B7FD4;
             --text: #1A1F2E;
             --text-muted: #6B7280;
-            --border: rgba(26, 31, 46, 0.08);
+            --border: rgba(26,31,46,0.08);
             --somatica: #E07B54;
             --psicologica: #5B8DEF;
             --existencial: #7C5CBF;
             --social: #52C98A;
         }
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: var(--bg);
@@ -38,446 +38,282 @@
 
         /* ── NAV ── */
         nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
+            position: fixed; top:0; left:0; right:0; z-index:100;
             padding: 1.25rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items:center; justify-content:space-between;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: rgba(26, 31, 46, 0.88);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(26,31,46,0.88);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .nav-logo {
-            font-size: 1.125rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            letter-spacing: -0.02em;
+        .nav-logo { font-size:1.125rem; font-weight:800; color:#fff; letter-spacing:-0.02em; }
+        .nav-links { display:flex; gap:2rem; list-style:none; }
+        .nav-links a { color:rgba(255,255,255,0.55); text-decoration:none; font-size:0.875rem; font-weight:500; transition:color 0.2s; }
+        .nav-links a:hover { color:#fff; }
+        .nav-cta {
+            background: var(--primary); color:#fff;
+            font-size:0.8rem; font-weight:700;
+            padding:0.5rem 1.1rem; border-radius:8px;
+            text-decoration:none; transition:opacity 0.2s;
         }
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.55);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: #FFFFFF; }
+        .nav-cta:hover { opacity:0.85; }
 
         /* ── HERO ── */
         .hero {
             background: var(--hero);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 8rem 2rem 7rem;
-            position: relative;
-            overflow: hidden;
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            text-align:center; padding:8rem 2rem 7rem;
+            position:relative; overflow:hidden;
         }
         .hero::before {
-            content: '';
-            position: absolute;
-            width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(124, 92, 191, 0.12) 0%, transparent 70%);
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            content:''; position:absolute;
+            width:700px; height:700px;
+            background: radial-gradient(circle, rgba(124,92,191,0.12) 0%, transparent 70%);
+            top:50%; left:50%; transform:translate(-50%,-50%);
+            pointer-events:none;
         }
         .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(124, 92, 191, 0.18);
-            border: 1px solid rgba(124, 92, 191, 0.35);
+            display:inline-flex; align-items:center; gap:0.5rem;
+            background: rgba(124,92,191,0.18);
+            border:1px solid rgba(124,92,191,0.35);
             color: var(--primary-light);
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            padding: 0.4rem 1rem;
-            border-radius: 100px;
-            margin-bottom: 2.5rem;
-            position: relative;
+            font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+            padding:0.4rem 1rem; border-radius:100px; margin-bottom:2.5rem;
+            position:relative;
         }
         .hero h1 {
             font-size: clamp(2.25rem, 5.5vw, 4.25rem);
-            font-weight: 800;
-            color: #FFFFFF;
-            letter-spacing: -0.03em;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            max-width: 820px;
-            position: relative;
+            font-weight:800; color:#fff;
+            letter-spacing:-0.03em; line-height:1.1;
+            margin-bottom:1.5rem; max-width:820px; position:relative;
         }
-        .hero h1 em {
-            font-style: normal;
-            color: var(--primary-light);
-        }
+        .hero h1 em { font-style:normal; color:var(--primary-light); }
         .hero-sub {
             font-size: clamp(0.95rem, 1.8vw, 1.15rem);
-            color: rgba(255, 255, 255, 0.5);
-            max-width: 520px;
-            margin-bottom: 3rem;
-            font-weight: 400;
-            line-height: 1.7;
-            position: relative;
+            color:rgba(255,255,255,0.5); max-width:520px;
+            margin-bottom:3rem; font-weight:400; line-height:1.7; position:relative;
         }
+        .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; position:relative; }
         .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--primary);
-            color: #FFFFFF;
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 0.9rem 1.75rem;
-            border-radius: 12px;
-            border: none;
-            cursor: not-allowed;
-            opacity: 0.72;
-            text-decoration: none;
-            position: relative;
+            display:inline-flex; align-items:center; gap:0.75rem;
+            background: var(--primary); color:#fff;
+            font-size:0.95rem; font-weight:700;
+            padding:0.9rem 1.75rem; border-radius:12px;
+            text-decoration:none; transition:opacity 0.2s;
+        }
+        .btn-primary:hover { opacity:0.9; }
+        .btn-ghost-hero {
+            display:inline-flex; align-items:center; gap:0.5rem;
+            background:transparent; color:rgba(255,255,255,0.55);
+            font-size:0.875rem; font-weight:500;
+            padding:0.9rem 1.5rem; border-radius:12px;
+            border:1px solid rgba(255,255,255,0.15);
+            cursor:not-allowed; opacity:0.7;
         }
         .btn-tag {
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            background: rgba(255, 255, 255, 0.18);
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
+            font-size:0.68rem; font-weight:600; letter-spacing:0.04em;
+            background:rgba(255,255,255,0.18); padding:0.2rem 0.5rem; border-radius:5px;
         }
         .hero-scroll {
-            position: absolute;
-            bottom: 2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: rgba(255, 255, 255, 0.25);
-            font-size: 0.7rem;
-            letter-spacing: 0.06em;
+            position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+            display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+            color:rgba(255,255,255,0.25); font-size:0.7rem; letter-spacing:0.06em;
         }
-        .scroll-line {
-            width: 1px; height: 36px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent);
-        }
+        .scroll-line { width:1px; height:36px; background:linear-gradient(to bottom, rgba(255,255,255,0.25), transparent); }
 
-        /* ── WHAT IS ── */
-        .what-is {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5rem;
-            align-items: center;
-            padding: 7rem 2.5rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        /* ── SHARED ── */
         .section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--primary);
-            margin-bottom: 1rem;
+            font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+            color:var(--primary); margin-bottom:1rem;
         }
         .section-title {
             font-size: clamp(1.6rem, 3vw, 2.5rem);
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            line-height: 1.15;
-            margin-bottom: 1.25rem;
+            font-weight:800; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1.25rem;
         }
-        .section-desc {
-            font-size: 1rem;
-            color: var(--text-muted);
-            line-height: 1.75;
+        .section-desc { font-size:1rem; color:var(--text-muted); line-height:1.75; max-width:560px; }
+        .fade { opacity:0; transform:translateY(20px); transition:opacity 0.65s ease, transform 0.65s ease; }
+        .fade.on { opacity:1; transform:translateY(0); }
+        .fade-d1 { transition-delay:0.1s; }
+        .fade-d2 { transition-delay:0.2s; }
+        .fade-d3 { transition-delay:0.3s; }
+
+        /* ── O QUE É ── */
+        .what-is {
+            display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center;
+            padding:7rem 2.5rem; max-width:1100px; margin:0 auto;
         }
         .quote {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-style: italic;
-            line-height: 1.5;
-            border-left: 3px solid var(--primary);
-            padding-left: 1.25rem;
-            margin-top: 2rem;
+            font-size:1.2rem; font-weight:700; color:var(--primary);
+            font-style:italic; line-height:1.5;
+            border-left:3px solid var(--primary); padding-left:1.25rem; margin-top:2rem;
         }
-        .mini-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 0.875rem;
-        }
+        .mini-cards { display:flex; flex-direction:column; gap:0.875rem; }
         .mini-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 1.1rem 1.35rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background:var(--card); border:1px solid var(--border); border-radius:14px;
+            padding:1.1rem 1.35rem; display:flex; align-items:flex-start; gap:1rem;
+            transition:transform 0.2s, box-shadow 0.2s;
         }
-        .mini-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-        }
+        .mini-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.06); }
         .mini-icon {
-            font-size: 1.25rem;
-            width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--bg);
-            border-radius: 9px;
-            flex-shrink: 0;
+            font-size:1.25rem; width:36px; height:36px;
+            display:flex; align-items:center; justify-content:center;
+            background:var(--bg); border-radius:9px; flex-shrink:0;
         }
-        .mini-title { font-size: 0.875rem; font-weight: 700; margin-bottom: 0.2rem; }
-        .mini-desc { font-size: 0.775rem; color: var(--text-muted); line-height: 1.5; }
+        .mini-title { font-size:0.875rem; font-weight:700; margin-bottom:0.2rem; }
+        .mini-desc { font-size:0.775rem; color:var(--text-muted); line-height:1.5; }
 
         /* ── IVI ── */
-        .ivi-section {
-            background: var(--hero);
-            padding: 7rem 2.5rem;
-        }
-        .ivi-inner { max-width: 1100px; margin: 0 auto; }
-        .ivi-section .section-label { color: var(--primary-light); }
-        .ivi-section .section-title { color: #FFFFFF; }
-        .ivi-section .section-desc { color: rgba(255,255,255,0.45); }
-        .ivi-grid {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            gap: 4.5rem;
-            align-items: center;
-            margin-top: 4rem;
-        }
-        .ivi-circle-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-        }
-        .ivi-circle {
-            position: relative;
-            width: 200px; height: 200px;
-        }
-        .ivi-circle svg {
-            width: 200px; height: 200px;
-            transform: rotate(-90deg);
-        }
-        .ivi-track {
-            fill: none;
-            stroke: rgba(255,255,255,0.07);
-            stroke-width: 10;
-        }
+        .ivi-section { background:var(--hero); padding:7rem 2.5rem; }
+        .ivi-inner { max-width:1100px; margin:0 auto; }
+        .ivi-section .section-label { color:var(--primary-light); }
+        .ivi-section .section-title { color:#fff; }
+        .ivi-section .section-desc { color:rgba(255,255,255,0.45); }
+        .ivi-grid { display:grid; grid-template-columns:220px 1fr; gap:4.5rem; align-items:center; margin-top:4rem; }
+        .ivi-circle-wrap { display:flex; flex-direction:column; align-items:center; gap:1.25rem; }
+        .ivi-circle { position:relative; width:200px; height:200px; }
+        .ivi-circle svg { width:200px; height:200px; transform:rotate(-90deg); }
+        .ivi-track { fill:none; stroke:rgba(255,255,255,0.07); stroke-width:10; }
         .ivi-arc {
-            fill: none;
-            stroke: var(--primary-light);
-            stroke-width: 10;
-            stroke-linecap: round;
-            stroke-dasharray: 502.65;
-            stroke-dashoffset: 502.65;
-            transition: stroke-dashoffset 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+            fill:none; stroke:var(--primary-light); stroke-width:10; stroke-linecap:round;
+            stroke-dasharray:502.65; stroke-dashoffset:502.65;
+            transition:stroke-dashoffset 1.6s cubic-bezier(0.4,0,0.2,1);
         }
-        .ivi-center {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .ivi-number {
-            font-size: 2.75rem;
-            font-weight: 800;
-            color: #FFFFFF;
-            line-height: 1;
-        }
-        .ivi-band {
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            color: rgba(255,255,255,0.4);
-            text-transform: uppercase;
-            margin-top: 0.25rem;
-        }
-        .ivi-formula {
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.25);
-            text-align: center;
-            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            line-height: 1.7;
-        }
-        .dim-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
+        .ivi-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; }
+        .ivi-number { font-size:2.75rem; font-weight:800; color:#fff; line-height:1; }
+        .ivi-band { font-size:0.65rem; font-weight:700; letter-spacing:0.12em; color:rgba(255,255,255,0.4); text-transform:uppercase; margin-top:0.25rem; }
+        .ivi-formula { font-size:0.68rem; color:rgba(255,255,255,0.25); text-align:center; font-family:'Fira Code','Consolas',monospace; line-height:1.7; }
+        .dim-cards { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
         .dim-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: background 0.2s;
+            background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07);
+            border-radius:16px; padding:1.5rem; transition:background 0.2s;
         }
-        .dim-card:hover { background: rgba(255,255,255,0.07); }
-        .dim-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
-        }
-        .dim-tag {
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.35);
-            margin-bottom: 0.3rem;
-        }
-        .dim-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 0.5rem;
-        }
-        .dim-desc {
-            font-size: 0.775rem;
-            color: rgba(255,255,255,0.4);
-            line-height: 1.65;
-        }
-        .dim-pct {
-            margin-top: 1rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
+        .dim-card:hover { background:rgba(255,255,255,0.07); }
+        .dim-dot { width:8px; height:8px; border-radius:50%; margin-bottom:1rem; }
+        .dim-tag { font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:0.3rem; }
+        .dim-name { font-size:1.05rem; font-weight:700; color:#fff; margin-bottom:0.5rem; }
+        .dim-desc { font-size:0.775rem; color:rgba(255,255,255,0.4); line-height:1.65; }
+        .dim-pct { margin-top:1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.04em; }
 
-        /* ── MODULES ── */
-        .modules-section {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 7rem 2.5rem;
+        /* ── COMO FUNCIONA — 5 AGENTES ── */
+        .agents-section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
+        .agents-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:3.5rem; }
+        .agent-card {
+            background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2rem;
+            transition:transform 0.2s, box-shadow 0.2s; position:relative; overflow:hidden;
         }
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-top: 3.5rem;
+        .agent-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.07); }
+        .agent-card.wide { grid-column:1 / -1; }
+        .agent-tag {
+            font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+            color:var(--primary); background:rgba(124,92,191,0.08);
+            padding:0.3rem 0.75rem; border-radius:100px;
+            display:inline-block; margin-bottom:1rem;
         }
+        .agent-icon { font-size:2rem; margin-bottom:1rem; }
+        .agent-name { font-size:1.1rem; font-weight:800; margin-bottom:0.4rem; letter-spacing:-0.01em; }
+        .agent-role { font-size:0.75rem; font-weight:600; color:var(--text-muted); margin-bottom:0.75rem; letter-spacing:0.04em; text-transform:uppercase; }
+        .agent-desc { font-size:0.825rem; color:var(--text-muted); line-height:1.7; }
+        .pipeline {
+            margin-top:3rem; background:var(--hero); border-radius:16px;
+            padding:2rem; font-family:'Fira Code','Consolas',monospace;
+            font-size:0.75rem; color:rgba(255,255,255,0.6); line-height:1.9;
+        }
+        .pipeline span.hi { color:var(--primary-light); font-weight:700; }
+        .pipeline span.ok { color:var(--social); }
+        .pipeline span.dim { color:rgba(255,255,255,0.3); }
+
+        /* ── MÓDULOS ── */
+        .modules-section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
+        .modules-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:3.5rem; }
         .module-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 1.75rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background:var(--card); border:1px solid var(--border); border-radius:20px; padding:1.75rem;
+            transition:transform 0.2s, box-shadow 0.2s;
         }
-        .module-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+        .module-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.07); }
+        .mod-icon { font-size:1.75rem; margin-bottom:1rem; }
+        .mod-name { font-size:0.975rem; font-weight:700; margin-bottom:0.4rem; letter-spacing:-0.01em; }
+        .mod-desc { font-size:0.775rem; color:var(--text-muted); line-height:1.65; }
+
+        /* ── PARCEIROS ── */
+        .partners-section { background:var(--hero); padding:7rem 2.5rem; }
+        .partners-inner { max-width:1100px; margin:0 auto; }
+        .partners-section .section-label { color:var(--primary-light); }
+        .partners-section .section-title { color:#fff; }
+        .partners-section .section-desc { color:rgba(255,255,255,0.45); }
+        .partners-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+        .partner-card {
+            background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+            border-radius:20px; padding:2rem; transition:background 0.2s;
         }
-        .mod-icon { font-size: 1.75rem; margin-bottom: 1rem; }
-        .mod-name { font-size: 0.975rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
-        .mod-desc { font-size: 0.775rem; color: var(--text-muted); line-height: 1.65; }
+        .partner-card:hover { background:rgba(255,255,255,0.07); }
+        .partner-icon { font-size:2.25rem; margin-bottom:1.25rem; }
+        .partner-name { font-size:1rem; font-weight:700; color:#fff; margin-bottom:0.5rem; }
+        .partner-desc { font-size:0.8rem; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:1.5rem; }
+        .partner-items { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+        .partner-items li { font-size:0.775rem; color:rgba(255,255,255,0.55); display:flex; align-items:center; gap:0.5rem; }
+        .partner-items li::before { content:'→'; color:var(--primary-light); font-weight:700; }
+
+        /* ── WAITLIST ── */
+        .waitlist-section { padding:7rem 2.5rem; max-width:680px; margin:0 auto; text-align:center; }
+        .waitlist-section .section-label { color:var(--primary); }
+        .waitlist-form {
+            background:var(--card); border:1px solid var(--border); border-radius:24px;
+            padding:2.5rem; margin-top:2.5rem; text-align:left;
+        }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+        .form-group { display:flex; flex-direction:column; gap:0.4rem; }
+        .form-group label { font-size:0.75rem; font-weight:600; letter-spacing:0.04em; color:var(--text-muted); text-transform:uppercase; }
+        .form-group input, .form-group select {
+            background:var(--bg); border:1px solid var(--border); border-radius:10px;
+            padding:0.75rem 1rem; font-size:0.9rem; color:var(--text);
+            font-family:inherit; outline:none; transition:border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color:var(--primary); }
+        .form-submit {
+            width:100%; background:var(--primary); color:#fff;
+            font-size:1rem; font-weight:700; padding:1rem;
+            border-radius:12px; border:none; cursor:pointer;
+            margin-top:1.25rem; transition:opacity 0.2s; font-family:inherit;
+        }
+        .form-submit:hover { opacity:0.9; }
+        .form-note { font-size:0.72rem; color:var(--text-muted); text-align:center; margin-top:1rem; }
 
         /* ── CTA FINAL ── */
-        .cta-section {
-            background: var(--hero);
-            padding: 7rem 2.5rem;
-            text-align: center;
-        }
-        .cta-inner { max-width: 580px; margin: 0 auto; }
-        .cta-section .section-label { color: var(--primary-light); }
-        .cta-title {
-            font-size: clamp(1.85rem, 3.5vw, 2.75rem);
-            font-weight: 800;
-            color: #FFFFFF;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.25rem;
-            line-height: 1.15;
-        }
-        .cta-sub {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.45);
-            margin-bottom: 2.5rem;
-            line-height: 1.7;
-        }
-        .cta-row {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .btn-ghost {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: transparent;
-            color: rgba(255,255,255,0.45);
-            font-size: 0.875rem;
-            font-weight: 500;
-            padding: 0.875rem 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.12);
-            cursor: default;
-        }
+        .cta-section { background:var(--hero); padding:7rem 2.5rem; text-align:center; }
+        .cta-inner { max-width:580px; margin:0 auto; }
+        .cta-section .section-label { color:var(--primary-light); }
+        .cta-title { font-size:clamp(1.85rem,3.5vw,2.75rem); font-weight:800; color:#fff; letter-spacing:-0.03em; margin-bottom:1.25rem; line-height:1.15; }
+        .cta-sub { font-size:1rem; color:rgba(255,255,255,0.45); margin-bottom:2.5rem; line-height:1.7; }
+        .cta-row { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .btn-ghost { display:inline-flex; align-items:center; gap:0.5rem; background:transparent; color:rgba(255,255,255,0.45); font-size:0.875rem; font-weight:500; padding:0.875rem 1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.12); cursor:default; }
 
         /* ── FOOTER ── */
-        footer {
-            background: var(--hero);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 2rem 2.5rem;
-        }
-        .footer-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .footer-brand { font-size: 0.875rem; font-weight: 700; color: rgba(255,255,255,0.55); }
-        .footer-links { display: flex; gap: 1.5rem; list-style: none; }
-        .footer-links a {
-            color: rgba(255,255,255,0.3);
-            font-size: 0.775rem;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-links a:hover { color: rgba(255,255,255,0.65); }
-        .footer-copy { color: rgba(255,255,255,0.2); font-size: 0.725rem; }
-
-        /* ── FADE IN ── */
-        .fade {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.65s ease, transform 0.65s ease;
-        }
-        .fade.on { opacity: 1; transform: translateY(0); }
-        .fade-d1 { transition-delay: 0.1s; }
-        .fade-d2 { transition-delay: 0.2s; }
-        .fade-d3 { transition-delay: 0.3s; }
+        footer { background:var(--hero); border-top:1px solid rgba(255,255,255,0.05); padding:2rem 2.5rem; }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+        .footer-brand { font-size:0.875rem; font-weight:700; color:rgba(255,255,255,0.55); }
+        .footer-links { display:flex; gap:1.5rem; list-style:none; }
+        .footer-links a { color:rgba(255,255,255,0.3); font-size:0.775rem; text-decoration:none; transition:color 0.2s; }
+        .footer-links a:hover { color:rgba(255,255,255,0.65); }
+        .footer-copy { color:rgba(255,255,255,0.2); font-size:0.725rem; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .what-is { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
-            .ivi-grid { grid-template-columns: 1fr; }
-            .ivi-circle-wrap { margin: 0 auto; }
-            .dim-cards { grid-template-columns: 1fr; }
-            .modules-grid { grid-template-columns: 1fr 1fr; }
-            .footer-inner { flex-direction: column; text-align: center; }
-            .footer-links { justify-content: center; }
+        @media (max-width:768px) {
+            .nav-links { display:none; }
+            .what-is { grid-template-columns:1fr; gap:3rem; padding:5rem 1.5rem; }
+            .ivi-grid { grid-template-columns:1fr; }
+            .ivi-circle-wrap { margin:0 auto; }
+            .dim-cards { grid-template-columns:1fr; }
+            .agents-grid { grid-template-columns:1fr; }
+            .agent-card.wide { grid-column:1; }
+            .modules-grid { grid-template-columns:1fr 1fr; }
+            .partners-grid { grid-template-columns:1fr; }
+            .form-row { grid-template-columns:1fr; }
+            .footer-inner { flex-direction:column; text-align:center; }
+            .footer-links { justify-content:center; }
         }
-        @media (max-width: 480px) {
-            .modules-grid { grid-template-columns: 1fr; }
-            .what-is { padding: 4rem 1.25rem; }
+        @media (max-width:480px) {
+            .modules-grid { grid-template-columns:1fr; }
         }
     </style>
 </head>
@@ -488,25 +324,24 @@
     <div class="nav-logo">AquariOS</div>
     <ul class="nav-links">
         <li><a href="#o-que-e">O que é</a></li>
-        <li><a href="#ivi">IVI</a></li>
+        <li><a href="#ivi">iVi</a></li>
+        <li><a href="#agentes">Arquitetura</a></li>
         <li><a href="#modulos">Módulos</a></li>
-        <li><a href="#download">Download</a></li>
+        <li><a href="#parceiros">Parceiros</a></li>
     </ul>
+    <a class="nav-cta" href="#waitlist">Quero ser beta tester</a>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
     <div class="hero-badge fade">Sistema Operacional Pessoal</div>
     <h1 class="fade fade-d1">Somos o que todos precisam<br>e <em>ninguém ofereceu,</em> ainda.</h1>
-    <p class="hero-sub fade fade-d2">IA filosófica, saúde integrativa, espiritualidade e comunidade — tudo medido, tudo conectado, tudo seu.</p>
-    <a class="btn-primary fade fade-d3" href="#" onclick="return false;">
-        Google Play
-        <span class="btn-tag">Em breve</span>
-    </a>
-    <div class="hero-scroll">
-        <div class="scroll-line"></div>
-        Explorar
+    <p class="hero-sub fade fade-d2">Um assistente pessoal de saúde que integra corpo, mente, vínculo e sentido — e devolve consciência em vez de ruído.</p>
+    <div class="hero-btns fade fade-d3">
+        <a class="btn-primary" href="#waitlist">Quero ser beta tester</a>
+        <div class="btn-ghost-hero">Google Play <span class="btn-tag">Em breve</span></div>
     </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>Explorar</div>
 </div>
 
 <!-- O QUE É -->
@@ -514,36 +349,36 @@
     <div class="fade">
         <div class="section-label">O que é</div>
         <h2 class="section-title">Não é um app de saúde.<br>É o app que cuida de você.</h2>
-        <p class="section-desc">AquariOS é um Sistema Operacional Pessoal — um núcleo de autocuidado com IA, dados clínicos reais, espiritualidade e comunidade, tudo integrado e medido pelo <strong>Índice de Vitalidade Integrada (IVI)</strong>.</p>
+        <p class="section-desc">AquariOS nasceu de uma crise real — um pré-infarto que fez seu criador perguntar: <em>onde foi que eu me perdi de mim?</em> A resposta não veio de um aplicativo. Veio do silêncio. E do silêncio nasceu um sistema que ouve antes de falar, que entende antes de agir, que cuida sem vigiar.</p>
         <blockquote class="quote">"Bilhões de pessoas precisam disso. Ninguém ofereceu, ainda."</blockquote>
     </div>
     <div class="mini-cards fade fade-d1">
         <div class="mini-card">
             <div class="mini-icon">🤖</div>
             <div>
-                <div class="mini-title">IA que te conhece</div>
-                <div class="mini-desc">ProteOS aprende com você. Filosófico, direto, profundo — sem respostas genéricas.</div>
+                <div class="mini-title">IA que te conhece de verdade</div>
+                <div class="mini-desc">ProteOS aprende com você. Fala quando tem algo verdadeiro a dizer — e cala quando não tem.</div>
             </div>
         </div>
         <div class="mini-card">
             <div class="mini-icon">📊</div>
             <div>
-                <div class="mini-title">Dados reais, não estimativas</div>
-                <div class="mini-desc">Exames clínicos, nutrição, diário e espiritualidade alimentando um único score.</div>
+                <div class="mini-title">Dado verificado, não estimativa</div>
+                <div class="mini-desc">Cada insight passa por verificação ética antes de chegar até você. Sem ruído. Sem chute.</div>
             </div>
         </div>
         <div class="mini-card">
             <div class="mini-icon">🔐</div>
             <div>
                 <div class="mini-title">Privacidade absoluta</div>
-                <div class="mini-desc">Criptografia E2E. Diário cifrado. Seus dados nunca saem sem sua permissão.</div>
+                <div class="mini-desc">Criptografia E2E. Diário cifrado. Log auditável acessível só por você. Sem venda de dados.</div>
             </div>
         </div>
         <div class="mini-card">
             <div class="mini-icon">👥</div>
             <div>
-                <div class="mini-title">Comunidade que importa</div>
-                <div class="mini-desc">Conexão real com pessoas na mesma jornada. Sem algoritmo de engajamento.</div>
+                <div class="mini-title">Comunidade sem algoritmo de engajamento</div>
+                <div class="mini-desc">Não é palco — é testemunho. Presença real. Sem trending, sem ranking, sem comparação.</div>
             </div>
         </div>
     </div>
@@ -553,9 +388,9 @@
 <div id="ivi" class="ivi-section">
     <div class="ivi-inner">
         <div class="fade">
-            <div class="section-label">Índice de Vitalidade Integrada</div>
+            <div class="section-label">Índice de Vitalidade Individual</div>
             <h2 class="section-title">Você tem um score.<br>Agora você pode melhorá-lo.</h2>
-            <p class="section-desc">O IVI mede sua vitalidade em 4 dimensões em tempo real — e mostra exatamente onde agir.</p>
+            <p class="section-desc">O iVi mede sua vitalidade em 4 dimensões em tempo real — e mostra exatamente onde agir.</p>
         </div>
         <div class="ivi-grid">
             <div class="ivi-circle-wrap fade">
@@ -566,45 +401,102 @@
                     </svg>
                     <div class="ivi-center">
                         <div class="ivi-number" id="iviNumber">0</div>
-                        <div class="ivi-band">IVI · BOM</div>
+                        <div class="ivi-band">iVi · BOM</div>
                     </div>
                 </div>
-                <div class="ivi-formula">
-                    Bio × 0.35 + Mental × 0.30<br>
-                    Spirit × 0.20 + Social × 0.15
-                </div>
+                <div class="ivi-formula">Bio × 0.35 + Mental × 0.30<br>Spirit × 0.20 + Social × 0.15</div>
             </div>
             <div class="dim-cards">
                 <div class="dim-card fade">
-                    <div class="dim-dot" style="background: var(--somatica);"></div>
+                    <div class="dim-dot" style="background:var(--somatica)"></div>
                     <div class="dim-tag">Dimensão 01</div>
                     <div class="dim-name">Somática</div>
                     <div class="dim-desc">Corpo, movimento, nutrição, exames clínicos e sinais vitais integrados.</div>
-                    <div class="dim-pct" style="color: var(--somatica);">35% do IVI</div>
+                    <div class="dim-pct" style="color:var(--somatica)">35% do iVi</div>
                 </div>
                 <div class="dim-card fade fade-d1">
-                    <div class="dim-dot" style="background: var(--psicologica);"></div>
+                    <div class="dim-dot" style="background:var(--psicologica)"></div>
                     <div class="dim-tag">Dimensão 02</div>
                     <div class="dim-name">Psicológica</div>
                     <div class="dim-desc">Mente, emoções, diário de reflexões e saúde mental com IA de suporte.</div>
-                    <div class="dim-pct" style="color: var(--psicologica);">30% do IVI</div>
+                    <div class="dim-pct" style="color:var(--psicologica)">30% do iVi</div>
                 </div>
                 <div class="dim-card fade fade-d2">
-                    <div class="dim-dot" style="background: var(--existencial);"></div>
+                    <div class="dim-dot" style="background:var(--existencial)"></div>
                     <div class="dim-tag">Dimensão 03</div>
                     <div class="dim-name">Existencial</div>
                     <div class="dim-desc">Propósito, espiritualidade, sabedoria das tradições e autoconhecimento profundo.</div>
-                    <div class="dim-pct" style="color: var(--existencial);">20% do IVI</div>
+                    <div class="dim-pct" style="color:var(--existencial)">20% do iVi</div>
                 </div>
                 <div class="dim-card fade fade-d3">
-                    <div class="dim-dot" style="background: var(--social);"></div>
+                    <div class="dim-dot" style="background:var(--social)"></div>
                     <div class="dim-tag">Dimensão 04</div>
                     <div class="dim-name">Social</div>
                     <div class="dim-desc">Vínculos reais, comunidade, presença e conexão humana autêntica.</div>
-                    <div class="dim-pct" style="color: var(--social);">15% do IVI</div>
+                    <div class="dim-pct" style="color:var(--social)">15% do iVi</div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- 5 AGENTES -->
+<div id="agentes" class="agents-section">
+    <div class="fade">
+        <div class="section-label">Arquitetura interna</div>
+        <h2 class="section-title">5 agentes.<br>Um organismo.</h2>
+        <p class="section-desc">Por dentro do AquariOS, cinco agentes operam em concerto. Cada um sabe o que pode e o que não pode. Nenhum dado circula sem ser verificado.</p>
+    </div>
+    <div class="agents-grid">
+        <div class="agent-card fade">
+            <div class="agent-tag">Agent.Interface</div>
+            <div class="agent-icon">🤖</div>
+            <div class="agent-name">ProteOS</div>
+            <div class="agent-role">Única voz que toca o usuário</div>
+            <div class="agent-desc">Interpreta, formata e entrega. Contém SandeirOS — a camada de identidade que define tom, persona e conduta. Só fala com dado verificado. Nunca fala por falar.</div>
+        </div>
+        <div class="agent-card fade fade-d1">
+            <div class="agent-tag">Agent.Data</div>
+            <div class="agent-icon">🧠</div>
+            <div class="agent-name">HygeiOS</div>
+            <div class="agent-role">A mente que organiza e guarda</div>
+            <div class="agent-desc">Opera o data lake individual. Único canal entre ProteOS e CerberOS. Pratica o Silêncio Inteligente — não fala antes do padrão amadurecer. Guarda o que você já esqueceu de você.</div>
+        </div>
+        <div class="agent-card fade fade-d2">
+            <div class="agent-tag">Agent.Core</div>
+            <div class="agent-icon">⚖️</div>
+            <div class="agent-name">CerberOS</div>
+            <div class="agent-role">O núcleo que verifica e protege</div>
+            <div class="agent-desc">Verifica, valida e carimba todo pacote de dado. Aplica as 7 leis éticas, o controle LGPD, o raciocínio clínico de alto risco. Nunca fala com o usuário. Nunca decide sem registrar.</div>
+        </div>
+        <div class="agent-card fade fade-d3">
+            <div class="agent-tag">Agent.Corp</div>
+            <div class="agent-icon">🔗</div>
+            <div class="agent-name">PanaceIA</div>
+            <div class="agent-role">A ponte para o mundo externo</div>
+            <div class="agent-desc">Integração corporativa opcional. Exporta dado verificado para ferramentas de trabalho. Abriga a economia de tokens do sistema. Nunca ativo por padrão — sempre sob consentimento explícito.</div>
+        </div>
+        <div class="agent-card wide fade">
+            <div class="agent-tag">Camada interna de ProteOS</div>
+            <div class="agent-icon">🎭</div>
+            <div class="agent-name">SandeirOS</div>
+            <div class="agent-role">A identidade que mora dentro da voz</div>
+            <div class="agent-desc">Não é agente independente. É a alma da voz — o conjunto de regras de persona, tom e conduta que molda cada palavra de ProteOS. Gere as 10 vozes de cuidado. Aplica os limites éticos de forma invisível. Nunca se anuncia.</div>
+        </div>
+    </div>
+
+    <div class="pipeline fade">
+        <span class="hi">Usuário</span> → <span class="dim">foto, voz, texto, wearable</span><br>
+        &nbsp;&nbsp;↓<br>
+        <span class="hi">ProteOS</span> <span class="dim">interpreta intenção → aciona SandeirOS</span><br>
+        &nbsp;&nbsp;↓<br>
+        <span class="hi">HygeiOS</span> <span class="dim">normaliza, registra, verifica carimbo</span><br>
+        &nbsp;&nbsp;├── dado carimbado → <span class="ok">entrega direta</span> <span class="dim">(CerberOS não é chamado)</span><br>
+        &nbsp;&nbsp;└── dado novo/alterado →<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="hi">CerberOS</span> <span class="dim">verifica · valida · carimba · loga</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br>
+        <span class="hi">ProteOS</span> <span class="dim">formata com voz →</span> <span class="ok">Usuário</span>
     </div>
 </div>
 
@@ -613,7 +505,7 @@
     <div class="fade">
         <div class="section-label">9 módulos integrados</div>
         <h2 class="section-title">Tudo que você precisa.<br>Em um só lugar.</h2>
-        <p class="section-desc">Cada módulo é independente e poderoso. Juntos, formam seu sistema operacional pessoal.</p>
+        <p class="section-desc">Cada módulo é uma porta de entrada para o cuidado. Todos alimentam o iVi. Todos passam pelo mesmo pipeline de verificação.</p>
     </div>
     <div class="modules-grid">
         <div class="module-card fade">
@@ -664,17 +556,95 @@
     </div>
 </div>
 
+<!-- PARCEIROS -->
+<div id="parceiros" class="partners-section">
+    <div class="partners-inner">
+        <div class="fade">
+            <div class="section-label">Para parceiros</div>
+            <h2 class="section-title">AquariOS é plataforma.<br>Não só produto.</h2>
+            <p class="section-desc">Clínicas, empresas e investidores encontram aqui uma infraestrutura de saúde digital única — ética, verificada e pronta para integração.</p>
+        </div>
+        <div class="partners-grid">
+            <div class="partner-card fade">
+                <div class="partner-icon">🏥</div>
+                <div class="partner-name">Clínicas e Profissionais</div>
+                <div class="partner-desc">Acesso a dados de saúde verificados e prontos para consulta. Integração com telemedicina Rapidoc.</div>
+                <ul class="partner-items">
+                    <li>Relatório clínico gerado automaticamente</li>
+                    <li>Encaminhamento inteligente por risco</li>
+                    <li>Dados LGPD-compliant com consentimento explícito</li>
+                    <li>API parceiro disponível (Fase 2)</li>
+                </ul>
+            </div>
+            <div class="partner-card fade fade-d1">
+                <div class="partner-icon">🏢</div>
+                <div class="partner-name">Empresas e RH</div>
+                <div class="partner-desc">Saúde corporativa com privacidade real. CerberOS garante que dados individuais nunca vazem para o empregador.</div>
+                <ul class="partner-items">
+                    <li>Dashboards agregados (sem dado individual)</li>
+                    <li>Compatível com Samsung Knox enterprise</li>
+                    <li>Relatórios de bem-estar sem panóptico</li>
+                    <li>Tokenomics para incentivo de saúde</li>
+                </ul>
+            </div>
+            <div class="partner-card fade fade-d2">
+                <div class="partner-icon">📈</div>
+                <div class="partner-name">Investidores</div>
+                <div class="partner-desc">Mercado de saúde digital com modelo ético e diferencial técnico real. Roadmap de 3 fases até 100k+ usuários.</div>
+                <ul class="partner-items">
+                    <li>Fase 1: MVP beta 100-200 usuários</li>
+                    <li>Fase 2: Play Store + 1k-10k usuários</li>
+                    <li>Fase 3: Assistente padrão Android</li>
+                    <li>13 países e culturas no roadmap</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WAITLIST -->
+<div id="waitlist" class="waitlist-section">
+    <div class="fade">
+        <div class="section-label">Beta testers</div>
+        <h2 class="section-title">Seja um dos primeiros.</h2>
+        <p class="section-desc" style="margin:0 auto">AquariOS está em fase de validação. Queremos pessoas reais — não usuários. Se você quer transformar como cuida de si mesmo, este é o lugar.</p>
+    </div>
+    <!-- Substitua YOUR_FORMSPREE_ID pelo seu ID em formspree.io -->
+    <form class="waitlist-form fade fade-d1" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="perfil">Você é</label>
+            <select id="perfil" name="perfil" required>
+                <option value="" disabled selected>Selecione seu perfil</option>
+                <option value="usuario">Usuário — quero cuidar da minha saúde</option>
+                <option value="profissional">Profissional de saúde</option>
+                <option value="empresa">Empresa / RH</option>
+                <option value="investidor">Investidor / parceiro</option>
+                <option value="dev">Desenvolvedor</option>
+            </select>
+        </div>
+        <button type="submit" class="form-submit">Quero entrar na lista →</button>
+        <p class="form-note">Sem spam. Sem venda de dados. Você pode sair quando quiser.</p>
+    </form>
+</div>
+
 <!-- CTA FINAL -->
-<div id="download" class="cta-section">
+<div class="cta-section">
     <div class="cta-inner fade">
         <div class="section-label">Pronto para começar?</div>
         <h2 class="cta-title">Seu sistema operacional pessoal te aguarda.</h2>
         <p class="cta-sub">AquariOS está chegando ao Google Play. Seja um dos primeiros a transformar como cuida de si mesmo.</p>
         <div class="cta-row">
-            <a class="btn-primary" href="#" onclick="return false;">
-                Google Play
-                <span class="btn-tag">Em breve</span>
-            </a>
+            <a class="btn-primary" href="#waitlist">Entrar na lista beta</a>
             <div class="btn-ghost">🍎 App Store &mdash; Em breve</div>
         </div>
     </div>
@@ -686,7 +656,7 @@
         <div class="footer-brand">AquariOS &middot; ARKHE Labs</div>
         <ul class="footer-links">
             <li><a href="privacy-policy.html">Política de Privacidade</a></li>
-            <li><a href="backoffice.html">Backoffice</a></li>
+            <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
         </ul>
         <div class="footer-copy">&copy; 2026 ARKHE Labs &middot; Fabiano Gomes Leite</div>
     </div>
@@ -696,10 +666,10 @@
     // Fade-in on scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.08 });
     document.querySelectorAll('.fade').forEach(el => observer.observe(el));
 
-    // IVI circle animation — triggers once on enter
+    // iVi animation
     const iviObs = new IntersectionObserver((entries) => {
         entries.forEach(e => {
             if (!e.isIntersecting) return;
@@ -712,10 +682,9 @@
     function animateIVI(target) {
         const arc = document.getElementById('iviArc');
         const num = document.getElementById('iviNumber');
-        const C = 2 * Math.PI * 80; // 502.65
+        const C = 2 * Math.PI * 80;
         const start = performance.now();
         const duration = 1600;
-
         function tick(now) {
             const t = Math.min((now - start) / duration, 1);
             const ease = 1 - Math.pow(1 - t, 3);
