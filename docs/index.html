@@ -288,14 +288,57 @@
         .cta-row { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
         .btn-ghost { display:inline-flex; align-items:center; gap:0.5rem; background:transparent; color:rgba(255,255,255,0.45); font-size:0.875rem; font-weight:500; padding:0.875rem 1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.12); cursor:default; }
 
-        /* ── FOOTER ── */
-        footer { background:var(--hero); border-top:1px solid rgba(255,255,255,0.05); padding:2rem 2.5rem; }
-        .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
-        .footer-brand { font-size:0.875rem; font-weight:700; color:rgba(255,255,255,0.55); }
-        .footer-links { display:flex; gap:1.5rem; list-style:none; }
-        .footer-links a { color:rgba(255,255,255,0.3); font-size:0.775rem; text-decoration:none; transition:color 0.2s; }
-        .footer-links a:hover { color:rgba(255,255,255,0.65); }
-        .footer-copy { color:rgba(255,255,255,0.2); font-size:0.725rem; }
+        /* ── FOOTER INSTITUCIONAL ── */
+        footer { background:var(--hero); border-top:1px solid rgba(255,255,255,0.05); padding:4rem 2.5rem 2rem; }
+        .footer-inner { max-width:1100px; margin:0 auto; }
+        .footer-top { display:grid; grid-template-columns:200px 1fr; gap:4rem; margin-bottom:3rem; }
+        .footer-logo { font-size:1.2rem; font-weight:800; color:#fff; letter-spacing:-0.02em; margin-bottom:0.4rem; }
+        .footer-tagline { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-bottom:0.25rem; }
+        .footer-sub { font-size:0.7rem; color:rgba(255,255,255,0.2); }
+        .footer-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; }
+        .footer-col-title { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:1rem; }
+        .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+        .footer-col ul li a { color:rgba(255,255,255,0.45); font-size:0.8rem; text-decoration:none; transition:color 0.2s; }
+        .footer-col ul li a:hover { color:#fff; }
+        .footer-bottom { border-top:1px solid rgba(255,255,255,0.06); padding-top:1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; }
+        .footer-bottom span { font-size:0.7rem; color:rgba(255,255,255,0.2); }
+
+        /* ── PROFILE CARDS (waitlist) ── */
+        .profile-step { margin-bottom:1.5rem; }
+        .profile-step-label { font-size:0.75rem; font-weight:600; letter-spacing:0.04em; color:var(--text-muted); text-transform:uppercase; margin-bottom:0.75rem; }
+        .profile-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:0.625rem; }
+        .profile-card { cursor:pointer; }
+        .profile-card input[type=radio] { position:absolute; opacity:0; pointer-events:none; }
+        .pcard-inner {
+            border:1.5px solid var(--border); border-radius:14px;
+            padding:1rem 0.875rem; text-align:center;
+            background:var(--bg); transition:all 0.18s;
+            display:flex; flex-direction:column; align-items:center; gap:0.4rem;
+        }
+        .pcard-inner:hover { border-color:var(--primary); background:#fff; }
+        .profile-card input:checked + .pcard-inner {
+            border-color:var(--primary); background:#fff;
+            box-shadow:0 0 0 3px rgba(124,92,191,0.14);
+        }
+        .pcard-icon { font-size:1.4rem; }
+        .pcard-label { font-size:0.8rem; font-weight:700; color:var(--text); line-height:1.3; }
+        .pcard-desc { font-size:0.68rem; color:var(--text-muted); line-height:1.4; }
+
+        /* ── MÓDULOS v2 ── */
+        .mod-card-inner {
+            background:var(--card); border:1px solid var(--border); border-radius:20px;
+            padding:2rem 1.5rem; text-align:center;
+            transition:transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            display:flex; flex-direction:column; align-items:center; gap:0.6rem; height:100%;
+        }
+        .mod-card-inner:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,0.07); border-color:rgba(124,92,191,0.25); }
+        .mod-icon-wrap {
+            width:52px; height:52px; border-radius:14px;
+            background:var(--bg); display:flex; align-items:center; justify-content:center;
+            font-size:1.5rem; margin-bottom:0.4rem;
+        }
+        .mod-name { font-size:0.95rem; font-weight:700; letter-spacing:-0.01em; }
+        .mod-desc { font-size:0.775rem; color:var(--text-muted); line-height:1.6; }
 
         /* ── RESPONSIVE ── */
         @media (max-width:768px) {
@@ -309,11 +352,15 @@
             .modules-grid { grid-template-columns:1fr 1fr; }
             .partners-grid { grid-template-columns:1fr; }
             .form-row { grid-template-columns:1fr; }
-            .footer-inner { flex-direction:column; text-align:center; }
-            .footer-links { justify-content:center; }
+            .profile-cards { grid-template-columns:1fr 1fr; }
+            .footer-top { grid-template-columns:1fr; gap:2.5rem; }
+            .footer-cols { grid-template-columns:1fr 1fr; gap:1.5rem; }
+            .footer-bottom { flex-direction:column; align-items:flex-start; }
         }
         @media (max-width:480px) {
             .modules-grid { grid-template-columns:1fr; }
+            .profile-cards { grid-template-columns:1fr 1fr; }
+            .footer-cols { grid-template-columns:1fr 1fr; }
         }
     </style>
 </head>
@@ -323,11 +370,11 @@
 <nav>
     <div class="nav-logo">AquariOS</div>
     <ul class="nav-links">
-        <li><a href="#o-que-e">O que é</a></li>
+        <li><a href="#o-que-e">Produto</a></li>
         <li><a href="#ivi">iVi</a></li>
-        <li><a href="#agentes">Arquitetura</a></li>
         <li><a href="#modulos">Módulos</a></li>
-        <li><a href="#parceiros">Parceiros</a></li>
+        <li><a href="#parceiros">Para quem</a></li>
+        <li><a href="#agentes">Arquitetura</a></li>
     </ul>
     <a class="nav-cta" href="#waitlist">Quero ser beta tester</a>
 </nav>
@@ -509,49 +556,67 @@
     </div>
     <div class="modules-grid">
         <div class="module-card fade">
-            <div class="mod-icon">🤖</div>
-            <div class="mod-name">ProteOS</div>
-            <div class="mod-desc">Sua IA pessoal — filosófica, direta e profunda. Aprende com você e nunca dá resposta genérica.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">🤖</div>
+                <div class="mod-name">ProteOS</div>
+                <div class="mod-desc">Sua IA pessoal — filosófica, direta e profunda. Aprende com você e nunca dá resposta genérica.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d1">
-            <div class="mod-icon">🌙</div>
-            <div class="mod-name">SandeirOS</div>
-            <div class="mod-desc">Jornada pelos 22 arcanos do autoconhecimento. Descubra seu arquétipo e sua trilha evolutiva.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">🌙</div>
+                <div class="mod-name">SandeirOS</div>
+                <div class="mod-desc">Jornada pelos 22 arcanos do autoconhecimento. Descubra seu arquétipo e trilha evolutiva.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d2">
-            <div class="mod-icon">🕊️</div>
-            <div class="mod-name">EcumenicOS</div>
-            <div class="mod-desc">Sabedoria de 13 tradições espirituais do mundo — sem dogma, com profundidade real.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">🕊️</div>
+                <div class="mod-name">EcumenicOS</div>
+                <div class="mod-desc">Sabedoria de 13 tradições espirituais do mundo — sem dogma, com profundidade real.</div>
+            </div>
         </div>
         <div class="module-card fade">
-            <div class="mod-icon">🩺</div>
-            <div class="mod-name">AsclepiOS</div>
-            <div class="mod-desc">Saúde integrativa com exames clínicos reais, histórico e alertas baseados em dados seus.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">🩺</div>
+                <div class="mod-name">AsclepiOS</div>
+                <div class="mod-desc">Saúde clínica com exames, histórico e alertas baseados em dados verificados.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d1">
-            <div class="mod-icon">📊</div>
-            <div class="mod-name">HermeOS</div>
-            <div class="mod-desc">Dashboard executivo da sua vida e saúde financeira integrada. Tudo em uma visão.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">📊</div>
+                <div class="mod-name">HermeOS</div>
+                <div class="mod-desc">Saúde financeira integrada. Educação, controle de fluxo e impacto no bem-estar.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d2">
-            <div class="mod-icon">✨</div>
-            <div class="mod-name">EteriOS</div>
-            <div class="mod-desc">Bem-estar, qualidade de vida e harmonia — o espaço de respiro do seu dia.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">✨</div>
+                <div class="mod-name">EteriOS</div>
+                <div class="mod-desc">Sono, sonhos e recuperação. O módulo da noite que alimenta o dia seguinte.</div>
+            </div>
         </div>
         <div class="module-card fade">
-            <div class="mod-icon">👥</div>
-            <div class="mod-name">Comunidades</div>
-            <div class="mod-desc">O coração do AquariOS. Conexão real com pessoas na mesma jornada. Sem algoritmo de engajamento.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">👥</div>
+                <div class="mod-name">Comunidades</div>
+                <div class="mod-desc">Conexão real com pessoas na mesma jornada. Sem algoritmo de engajamento.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d1">
-            <div class="mod-icon">📓</div>
-            <div class="mod-name">Diário do Ser</div>
-            <div class="mod-desc">Reflexões criptografadas. E2E — só você lê. A IA identifica padrões sem ver o conteúdo.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">📓</div>
+                <div class="mod-name">Diário do Ser</div>
+                <div class="mod-desc">Reflexões criptografadas. E2E — só você lê. A IA identifica padrões sem ver o conteúdo.</div>
+            </div>
         </div>
         <div class="module-card fade fade-d2">
-            <div class="mod-icon">🥗</div>
-            <div class="mod-name">Nutrição</div>
-            <div class="mod-desc">Alimentação inteligente com OCR de refeições, metas personalizadas e histórico real.</div>
+            <div class="mod-card-inner">
+                <div class="mod-icon-wrap">🥗</div>
+                <div class="mod-name">Nutrição</div>
+                <div class="mod-desc">Alimentação inteligente com OCR de refeições, metas personalizadas e histórico real.</div>
+            </div>
         </div>
     </div>
 </div>
@@ -611,6 +676,61 @@
     </div>
     <!-- Substitua YOUR_FORMSPREE_ID pelo seu ID em formspree.io -->
     <form class="waitlist-form fade fade-d1" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+        <!-- Etapa 1: Perfil -->
+        <div class="profile-step">
+            <div class="profile-step-label">Como você se relaciona com o AquariOS?</div>
+            <div class="profile-cards">
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="usuario" required>
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">🏃</div>
+                        <div class="pcard-label">Usuário</div>
+                        <div class="pcard-desc">Quero cuidar da minha saúde</div>
+                    </div>
+                </label>
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="profissional">
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">🩺</div>
+                        <div class="pcard-label">Profissional</div>
+                        <div class="pcard-desc">Saúde ou terapia</div>
+                    </div>
+                </label>
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="empresa">
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">🏢</div>
+                        <div class="pcard-label">Empresa</div>
+                        <div class="pcard-desc">RH ou benefícios</div>
+                    </div>
+                </label>
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="investidor">
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">📈</div>
+                        <div class="pcard-label">Investidor</div>
+                        <div class="pcard-desc">Oportunidade de mercado</div>
+                    </div>
+                </label>
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="dev">
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">⌨️</div>
+                        <div class="pcard-label">Dev</div>
+                        <div class="pcard-desc">Quero integrar ou contribuir</div>
+                    </div>
+                </label>
+                <label class="profile-card">
+                    <input type="radio" name="perfil" value="parceiro">
+                    <div class="pcard-inner">
+                        <div class="pcard-icon">🤝</div>
+                        <div class="pcard-label">Parceiro</div>
+                        <div class="pcard-desc">Clínica, lab ou plano</div>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- Etapa 2: Dados -->
         <div class="form-row">
             <div class="form-group">
                 <label for="nome">Nome</label>
@@ -620,17 +740,6 @@
                 <label for="email">E-mail</label>
                 <input type="email" id="email" name="email" placeholder="seu@email.com" required>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="perfil">Você é</label>
-            <select id="perfil" name="perfil" required>
-                <option value="" disabled selected>Selecione seu perfil</option>
-                <option value="usuario">Usuário — quero cuidar da minha saúde</option>
-                <option value="profissional">Profissional de saúde</option>
-                <option value="empresa">Empresa / RH</option>
-                <option value="investidor">Investidor / parceiro</option>
-                <option value="dev">Desenvolvedor</option>
-            </select>
         </div>
         <button type="submit" class="form-submit">Quero entrar na lista →</button>
         <p class="form-note">Sem spam. Sem venda de dados. Você pode sair quando quiser.</p>
@@ -653,12 +762,56 @@
 <!-- FOOTER -->
 <footer>
     <div class="footer-inner">
-        <div class="footer-brand">AquariOS &middot; ARKHE Labs</div>
-        <ul class="footer-links">
-            <li><a href="privacy-policy.html">Política de Privacidade</a></li>
-            <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
-        </ul>
-        <div class="footer-copy">&copy; 2026 ARKHE Labs &middot; Fabiano Gomes Leite</div>
+        <div class="footer-top">
+            <div>
+                <div class="footer-logo">AquariOS</div>
+                <div class="footer-tagline">Sistema Operacional Pessoal</div>
+                <div class="footer-sub">Por ARKHE Labs</div>
+            </div>
+            <div class="footer-cols">
+                <div>
+                    <div class="footer-col-title">Produto</div>
+                    <ul>
+                        <li><a href="#modulos">9 Módulos</a></li>
+                        <li><a href="#ivi">iVi Score</a></li>
+                        <li><a href="#agentes">Arquitetura</a></li>
+                        <li><a href="#parceiros">Integrações</a></li>
+                        <li><a href="#waitlist">Beta</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Para quem</div>
+                    <ul>
+                        <li><a href="#waitlist">Usuário final</a></li>
+                        <li><a href="#parceiros">Profissional de saúde</a></li>
+                        <li><a href="#parceiros">Empresa e RH</a></li>
+                        <li><a href="#parceiros">Investidor</a></li>
+                        <li><a href="#waitlist">Desenvolvedor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Empresa</div>
+                    <ul>
+                        <li><a href="#o-que-e">Sobre</a></li>
+                        <li><a href="#o-que-e">Manifesto</a></li>
+                        <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
+                        <li><a href="#parceiros">Parceria</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Legal</div>
+                    <ul>
+                        <li><a href="privacy-policy.html">Privacidade</a></li>
+                        <li><a href="privacy-policy.html">LGPD</a></li>
+                        <li><a href="terms.html">Termos de uso</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 ARKHE Labs &middot; Fabiano Gomes Leite</span>
+            <span>Lei 9.610/1998 &middot; LGPD Lei 13.709/2018</span>
+        </div>
     </div>
 </footer>
 
