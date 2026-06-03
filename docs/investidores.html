@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquariOS — Material do Investidor</title>
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+        :root {
+            --bg: #EDEAE4; --hero: #1A1F2E; --card: #FFFFFF;
+            --primary: #7C5CBF; --primary-light: #9B7FD4;
+            --text: #1A1F2E; --text-muted: #6B7280;
+            --border: rgba(26,31,46,0.09);
+            --green: #16A34A; --amber: #D97706; --blue: #2563EB;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+        /* GATE */
+        #gate {
+            position:fixed; inset:0; background:var(--hero);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            z-index:999; gap:1.5rem; padding:2rem;
+        }
+        #gate.hidden { display:none; }
+        .gate-logo { font-size:1.5rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin-bottom:0.5rem; }
+        .gate-sub { font-size:0.85rem; color:rgba(255,255,255,0.35); margin-bottom:1rem; text-align:center; }
+        .gate-form { display:flex; flex-direction:column; gap:0.75rem; width:100%; max-width:340px; }
+        .gate-input {
+            background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+            border-radius:12px; padding:0.9rem 1.1rem; font-size:0.9rem; color:#fff;
+            font-family:inherit; outline:none; transition:border-color 0.2s;
+        }
+        .gate-input:focus { border-color:var(--primary-light); }
+        .gate-btn {
+            background:var(--primary); color:#fff; border:none; border-radius:12px;
+            padding:0.9rem; font-size:0.9rem; font-weight:700; cursor:pointer; font-family:inherit;
+            transition:opacity 0.2s;
+        }
+        .gate-btn:hover { opacity:0.9; }
+        .gate-err { font-size:0.78rem; color:#F87171; text-align:center; min-height:1.2em; }
+        .gate-note { font-size:0.7rem; color:rgba(255,255,255,0.2); text-align:center; }
+
+        /* NAV */
+        nav {
+            position:fixed; top:0; left:0; right:0; z-index:100;
+            padding:1.1rem 2.5rem; display:flex; align-items:center; justify-content:space-between;
+            backdrop-filter:blur(20px); background:rgba(26,31,46,0.92);
+            border-bottom:1px solid rgba(255,255,255,0.06);
+        }
+        .nav-logo { font-size:1rem; font-weight:800; color:#fff; }
+        .nav-badge { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:rgba(124,92,191,0.25); color:var(--primary-light); padding:0.3rem 0.75rem; border-radius:100px; }
+        .nav-back { color:rgba(255,255,255,0.4); font-size:0.8rem; text-decoration:none; transition:color 0.2s; }
+        .nav-back:hover { color:#fff; }
+
+        /* HERO */
+        .hero { background:var(--hero); padding:8rem 2.5rem 5rem; text-align:center; }
+        .hero-label { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--primary-light); margin-bottom:1.25rem; }
+        .hero h1 { font-size:clamp(1.75rem,4vw,3rem); font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1rem; max-width:700px; margin-left:auto; margin-right:auto; }
+        .hero-sub { font-size:1rem; color:rgba(255,255,255,0.4); max-width:520px; margin:0 auto 2.5rem; line-height:1.75; }
+        .hero-stats { display:flex; gap:3rem; justify-content:center; flex-wrap:wrap; margin-top:3rem; padding-top:2.5rem; border-top:1px solid rgba(255,255,255,0.06); }
+        .stat-item { text-align:center; }
+        .stat-num { font-size:2rem; font-weight:800; color:#fff; letter-spacing:-0.04em; }
+        .stat-label { font-size:0.72rem; color:rgba(255,255,255,0.3); font-weight:500; letter-spacing:0.04em; margin-top:0.2rem; }
+
+        /* SECTION */
+        .section { padding:5rem 2.5rem; max-width:1000px; margin:0 auto; }
+        .section-label { font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--primary); margin-bottom:0.75rem; }
+        .section-title { font-size:clamp(1.4rem,2.5vw,2rem); font-weight:800; letter-spacing:-0.03em; margin-bottom:1rem; }
+        .section-desc { font-size:0.95rem; color:var(--text-muted); line-height:1.75; max-width:620px; }
+
+        /* PHASES */
+        .phases { display:flex; flex-direction:column; gap:0; margin-top:3rem; position:relative; }
+        .phases::before { content:''; position:absolute; left:28px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom, var(--green), var(--primary), rgba(124,92,191,0.2)); }
+        .phase { display:flex; gap:2rem; align-items:flex-start; padding-bottom:3rem; position:relative; }
+        .phase:last-child { padding-bottom:0; }
+        .phase-marker {
+            width:58px; height:58px; border-radius:50%; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center;
+            font-size:0.8rem; font-weight:800; position:relative; z-index:1;
+        }
+        .phase-marker.done { background:var(--green); color:#fff; }
+        .phase-marker.active { background:var(--primary); color:#fff; box-shadow:0 0 0 6px rgba(124,92,191,0.15); }
+        .phase-marker.future { background:var(--card); border:2px solid var(--border); color:var(--text-muted); }
+        .phase-marker.ipo { background:linear-gradient(135deg,#F59E0B,#EF4444); color:#fff; }
+        .phase-body { flex:1; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:1.75rem 2rem; }
+        .phase-body.done { border-left:3px solid var(--green); }
+        .phase-body.active { border-left:3px solid var(--primary); }
+        .phase-body.ipo { border-left:3px solid #F59E0B; }
+        .phase-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem; }
+        .phase-name { font-size:1rem; font-weight:800; letter-spacing:-0.01em; }
+        .phase-tag { font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.3rem 0.75rem; border-radius:100px; }
+        .phase-tag.done { background:rgba(22,163,74,0.12); color:var(--green); }
+        .phase-tag.active { background:rgba(124,92,191,0.12); color:var(--primary); }
+        .phase-tag.future { background:rgba(107,114,128,0.1); color:var(--text-muted); }
+        .phase-tag.ipo { background:rgba(245,158,11,0.12); color:#D97706; }
+        .phase-period { font-size:0.75rem; color:var(--text-muted); margin-bottom:0.75rem; }
+        .phase-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1.25rem 0; }
+        .metric { background:var(--bg); border-radius:12px; padding:0.875rem; }
+        .metric-val { font-size:1.1rem; font-weight:800; letter-spacing:-0.02em; margin-bottom:0.15rem; }
+        .metric-label { font-size:0.68rem; color:var(--text-muted); font-weight:500; }
+        .phase-list { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+        .phase-list li { font-size:0.825rem; color:var(--text-muted); display:flex; align-items:flex-start; gap:0.5rem; }
+        .phase-list li::before { content:'→'; color:var(--primary); font-weight:700; flex-shrink:0; }
+        .phase-list li.done-item::before { content:'✓'; color:var(--green); }
+
+        /* MARKET */
+        .market-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:2.5rem; }
+        .market-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:1.5rem; }
+        .market-val { font-size:1.75rem; font-weight:800; letter-spacing:-0.04em; color:var(--primary); margin-bottom:0.25rem; }
+        .market-label { font-size:0.75rem; font-weight:600; color:var(--text-muted); }
+        .market-desc { font-size:0.78rem; color:var(--text-muted); margin-top:0.5rem; line-height:1.6; }
+
+        /* MODEL */
+        .model-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:2.5rem; }
+        .model-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:1.5rem; }
+        .model-name { font-size:0.875rem; font-weight:700; margin-bottom:0.5rem; }
+        .model-desc { font-size:0.8rem; color:var(--text-muted); line-height:1.65; }
+        .model-range { font-size:1rem; font-weight:800; color:var(--primary); margin-top:0.75rem; }
+
+        /* DISCLAIMER */
+        .disclaimer { background:var(--hero); padding:3rem 2.5rem; margin-top:4rem; }
+        .disclaimer-inner { max-width:760px; margin:0 auto; font-size:0.75rem; color:rgba(255,255,255,0.25); line-height:1.75; text-align:center; }
+
+        /* FOOTER */
+        footer { background:var(--hero); border-top:1px solid rgba(255,255,255,0.05); padding:1.5rem 2.5rem; }
+        .footer-inner { max-width:1000px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; }
+        .footer-inner span { font-size:0.72rem; color:rgba(255,255,255,0.2); }
+
+        @media (max-width:768px) {
+            .hero-stats { gap:1.5rem; }
+            .phase-metrics { grid-template-columns:1fr 1fr; }
+            .market-grid { grid-template-columns:1fr; }
+            .model-grid { grid-template-columns:1fr; }
+            .phases::before { left:22px; }
+            .phase-marker { width:46px; height:46px; font-size:0.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+    <div class="gate-logo">AquariOS</div>
+    <div class="gate-sub">Área restrita — Material do Investidor<br>Acesso mediante credencial</div>
+    <div class="gate-form">
+        <input class="gate-input" type="password" id="gateInput" placeholder="Senha de acesso" autocomplete="off">
+        <button class="gate-btn" onclick="checkGate()">Acessar →</button>
+        <div class="gate-err" id="gateErr"></div>
+    </div>
+    <div class="gate-note">Para solicitar acesso: contato@podiumtec.com.br</div>
+</div>
+
+<!-- NAV -->
+<nav>
+    <div class="nav-logo">AquariOS</div>
+    <div class="nav-badge">Investidores</div>
+    <a class="nav-back" href="index.html">← Voltar ao site</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-label">Material Confidencial · Investidores</div>
+    <h1>AquariOS — Tese de Investimento</h1>
+    <p class="hero-sub">Assistente pessoal de saúde integral com IA. Modelo SaaS + B2B + White Label. Roadmap faseado com métricas auditáveis e caminho estruturado para liquidez.</p>
+    <div class="hero-stats">
+        <div class="stat-item">
+            <div class="stat-num">R$50B+</div>
+            <div class="stat-label">Mercado endereçável Brasil/LATAM</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">5</div>
+            <div class="stat-label">Agentes de IA proprietários</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">9</div>
+            <div class="stat-label">Módulos integrados</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Fases até assistente padrão</div>
+        </div>
+    </div>
+</div>
+
+<!-- ROADMAP -->
+<div class="section">
+    <div class="section-label">Roadmap faseado</div>
+    <h2 class="section-title">Do MVP ao IPO.</h2>
+    <p class="section-desc">Cinco fases com objetivos, métricas e marcos definidos. As fases concluídas são auditáveis. As fases futuras são projeções baseadas em benchmarks do mercado de saúde digital.</p>
+
+    <div class="phases">
+
+        <!-- FASE 0 — CONCLUÍDA -->
+        <div class="phase">
+            <div class="phase-marker done">✓</div>
+            <div class="phase-body done">
+                <div class="phase-header">
+                    <div class="phase-name">Fase 0 — Fundação</div>
+                    <div class="phase-tag done">Concluída</div>
+                </div>
+                <div class="phase-period">Jan – Jun 2026</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val" style="color:var(--green)">✓</div><div class="metric-label">Arquitetura definida</div></div>
+                    <div class="metric"><div class="metric-val" style="color:var(--green)">✓</div><div class="metric-label">App mobile React Native</div></div>
+                    <div class="metric"><div class="metric-val" style="color:var(--green)">✓</div><div class="metric-label">Backend Supabase</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li class="done-item">5 agentes de IA proprietários definidos e implementados</li>
+                    <li class="done-item">ProteOS (assistente IA com Claude) funcionando</li>
+                    <li class="done-item">HygeiOS (data lake individual) operacional</li>
+                    <li class="done-item">CerberOS (verificação e proteção) deployado</li>
+                    <li class="done-item">iVi — scorecard de saúde integral implementado</li>
+                    <li class="done-item">Site institucional no ar (podiumtec.com.br)</li>
+                    <li class="done-item">APK beta distribuível publicado (GitHub Releases)</li>
+                    <li class="done-item">Integração telemedicina Rapidoc / Odontolar</li>
+                    <li class="done-item">LGPD compliance: E2E, log auditável, RLS</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 1 — ATUAL -->
+        <div class="phase">
+            <div class="phase-marker active">1</div>
+            <div class="phase-body active">
+                <div class="phase-header">
+                    <div class="phase-name">Fase 1 — Validação Beta</div>
+                    <div class="phase-tag active">Em andamento</div>
+                </div>
+                <div class="phase-period">Jun – Set 2026</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val">100–200</div><div class="metric-label">Usuários beta</div></div>
+                    <div class="metric"><div class="metric-val">≥ 50%</div><div class="metric-label">Retenção 30d (meta)</div></div>
+                    <div class="metric"><div class="metric-val">R$0</div><div class="metric-label">MRR (fase gratuita)</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li>Validação da hipótese: IA de saúde melhora retenção e consciência</li>
+                    <li>Coleta de feedback estruturado com beta testers reais</li>
+                    <li>Ajuste fino de personas e tom de voz (SandeirOS)</li>
+                    <li>Parceria OdontolarPlus — primeiros usuários via planos odontológicos</li>
+                    <li>Métricas qualitativas: NPS, sessões/semana, módulos mais usados</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 2 -->
+        <div class="phase">
+            <div class="phase-marker future">2</div>
+            <div class="phase-body">
+                <div class="phase-header">
+                    <div class="phase-name">Fase 2 — App Publicável</div>
+                    <div class="phase-tag future">Out – Dez 2026</div>
+                </div>
+                <div class="phase-period">Outubro – Dezembro 2026</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val">1k–10k</div><div class="metric-label">Usuários ativos</div></div>
+                    <div class="metric"><div class="metric-val">R$29–99</div><div class="metric-label">Ticket mensal</div></div>
+                    <div class="metric"><div class="metric-val">R$30k–500k</div><div class="metric-label">MRR projetado</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li>Publicação Google Play Store</li>
+                    <li>PanaceIA: integração corporativa (RH, planos de saúde)</li>
+                    <li>Planos pagos: Essencial / Integral / Família</li>
+                    <li>White Label para clínicas e operadoras (B2B)</li>
+                    <li>Samsung Knox enterprise (gestão corporativa de dispositivos)</li>
+                    <li>CAC/LTV positivo como condição de avanço</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 3 -->
+        <div class="phase">
+            <div class="phase-marker future">3</div>
+            <div class="phase-body">
+                <div class="phase-header">
+                    <div class="phase-name">Fase 3 — Assistente Padrão</div>
+                    <div class="phase-tag future">Jan – Jun 2027</div>
+                </div>
+                <div class="phase-period">Janeiro – Junho 2027</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val">100k+</div><div class="metric-label">Usuários ativos</div></div>
+                    <div class="metric"><div class="metric-val">R$5M+</div><div class="metric-label">MRR projetado</div></div>
+                    <div class="metric"><div class="metric-val">LATAM</div><div class="metric-label">Expansão geográfica</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li>Integração como assistente padrão Android (VoiceInteractionService)</li>
+                    <li>Competição direta: Google Assistant, Alexa, ChatGPT mobile</li>
+                    <li>Expansão LATAM: Argentina, México, Colômbia</li>
+                    <li>API pública para desenvolvedores e parceiros</li>
+                    <li>Receita recorrente consolidada · Margem líquida positiva</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FASE 4 -->
+        <div class="phase">
+            <div class="phase-marker future">4</div>
+            <div class="phase-body">
+                <div class="phase-header">
+                    <div class="phase-name">Fase 4 — Institucionalização</div>
+                    <div class="phase-tag future">2028–2029</div>
+                </div>
+                <div class="phase-period">2028 – 2029</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val">1M+</div><div class="metric-label">Usuários</div></div>
+                    <div class="metric"><div class="metric-val">R$50M+</div><div class="metric-label">ARR projetado</div></div>
+                    <div class="metric"><div class="metric-val">5+</div><div class="metric-label">Países ativos</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li>Operação multi-país com infraestrutura localizada</li>
+                    <li>Parcerias estratégicas com operadoras de saúde</li>
+                    <li>Linha de produtos White Label consolidada</li>
+                    <li>Governança corporativa preparada para IPO</li>
+                    <li>Auditoria independente de dados e conformidade</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- IPO -->
+        <div class="phase">
+            <div class="phase-marker ipo">IPO</div>
+            <div class="phase-body ipo">
+                <div class="phase-header">
+                    <div class="phase-name">Liquidez — IPO ou M&amp;A Estratégico</div>
+                    <div class="phase-tag ipo">2029–2030</div>
+                </div>
+                <div class="phase-period">Projeção: 2029 – 2030</div>
+                <div class="phase-metrics">
+                    <div class="metric"><div class="metric-val" style="color:#D97706">R$500M–R$1B</div><div class="metric-label">Valuation alvo</div></div>
+                    <div class="metric"><div class="metric-val" style="color:#D97706">10–20×</div><div class="metric-label">Múltiplo de receita</div></div>
+                    <div class="metric"><div class="metric-val" style="color:#D97706">B3 / NYSE</div><div class="metric-label">Mercado alvo</div></div>
+                </div>
+                <ul class="phase-list">
+                    <li>IPO na B3 (Brasil) ou NYSE (mercado internacional)</li>
+                    <li>Alternativa: M&A estratégico com operadora ou big tech saúde</li>
+                    <li>Múltiplo baseado em benchmarks: Noom 3.7B, Calm 2B, Headspace 3B</li>
+                    <li>Diferencial: único player com IA ética + 4 dimensões + privacidade real</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MERCADO -->
+<div style="background:var(--hero); padding:5rem 2.5rem;">
+    <div class="section" style="padding:0; color:#fff; max-width:1000px; margin:0 auto;">
+        <div class="section-label" style="color:var(--primary-light);">Mercado</div>
+        <h2 class="section-title" style="color:#fff;">O mercado que ninguém ainda dominou.</h2>
+        <p class="section-desc" style="color:rgba(255,255,255,0.45);">Saúde digital é o maior mercado não resolvido da próxima década. AquariOS entra pela única porta que ninguém abriu: integração real das quatro dimensões da saúde com IA ética.</p>
+        <div class="market-grid" style="margin-top:2.5rem;">
+            <div class="market-card">
+                <div class="market-val">R$50B+</div>
+                <div class="market-label">TAM — Saúde digital Brasil/LATAM</div>
+                <div class="market-desc">Mercado total endereçável para plataformas de saúde digital na América Latina até 2030.</div>
+            </div>
+            <div class="market-card">
+                <div class="market-val">R$5B+</div>
+                <div class="market-label">SAM — Assistentes de saúde por IA</div>
+                <div class="market-desc">Segmento endereçável de assistentes pessoais de saúde com IA no Brasil e primeiros países LATAM.</div>
+            </div>
+            <div class="market-card">
+                <div class="market-val">R$500M+</div>
+                <div class="market-label">SOM — Captura realista (5 anos)</div>
+                <div class="market-desc">Participação de mercado capturável com o modelo faseado e diferencial técnico atual.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODELO DE NEGÓCIO -->
+<div class="section">
+    <div class="section-label">Modelo de negócio</div>
+    <h2 class="section-title">Três fontes de receita. Um ecossistema.</h2>
+    <p class="section-desc">Receita recorrente com crescimento orgânico, B2B de alta margem e White Label escalável.</p>
+    <div class="model-grid">
+        <div class="model-card">
+            <div class="model-name">B2C — Assinaturas individuais</div>
+            <div class="model-desc">Planos mensais: Essencial, Integral e Família. Modelo freemium na fase beta evoluindo para pago com alta conversão via valor percebido.</div>
+            <div class="model-range">R$29 – R$99 / mês</div>
+        </div>
+        <div class="model-card">
+            <div class="model-name">B2B — Empresas e RH</div>
+            <div class="model-desc">Licenças corporativas para planos de saúde, RH e benefícios. Alta margem, contratos anuais, expansão natural por funcionário.</div>
+            <div class="model-range">R$15 – R$40 / colaborador / mês</div>
+        </div>
+        <div class="model-card">
+            <div class="model-name">White Label — Clínicas e parceiros</div>
+            <div class="model-desc">Licença da plataforma AquariOS para clínicas, operadoras e planos de saúde. Setup + mensalidade. Caso OdontolarPlus como primeiro piloto.</div>
+            <div class="model-range">R$2k – R$20k / mês</div>
+        </div>
+        <div class="model-card">
+            <div class="model-name">API &amp; Integrações (Fase 2+)</div>
+            <div class="model-desc">Acesso programático aos agentes do AquariOS para desenvolvedores e plataformas de saúde. Modelo pay-per-use com volume commitments.</div>
+            <div class="model-range">Por chamada · volume pricing</div>
+        </div>
+    </div>
+</div>
+
+<!-- CONTATO -->
+<div style="background:var(--hero); padding:4rem 2.5rem; text-align:center;">
+    <div style="max-width:560px; margin:0 auto;">
+        <div style="font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--primary-light); margin-bottom:1rem;">Próximos passos</div>
+        <h2 style="font-size:1.75rem; font-weight:800; color:#fff; letter-spacing:-0.03em; margin-bottom:1rem;">Pronto para conversar?</h2>
+        <p style="font-size:0.95rem; color:rgba(255,255,255,0.4); margin-bottom:2rem; line-height:1.75;">Documentação técnica, modelo financeiro detalhado e demonstração ao vivo disponíveis para investidores qualificados.</p>
+        <a href="mailto:contato@podiumtec.com.br?subject=AquariOS — Interesse de investimento"
+           style="display:inline-flex; align-items:center; gap:0.75rem; background:var(--primary); color:#fff; font-size:0.95rem; font-weight:700; padding:1rem 2rem; border-radius:14px; text-decoration:none;">
+            Agendar conversa →
+        </a>
+    </div>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="disclaimer">
+    <div class="disclaimer-inner">
+        <strong style="color:rgba(255,255,255,0.4);">Aviso importante.</strong> Este documento contém projeções financeiras e de mercado baseadas em estimativas e benchmarks do setor. Não constitui oferta de valores mobiliários. Projeções futuras envolvem riscos e incertezas que podem causar resultados materialmente diferentes dos projetados. Informações confidenciais — não distribuir sem autorização expressa de Fabiano Gomes Leite / ARKHE Labs.
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <span>AquariOS · ARKHE Labs · Fabiano Gomes Leite</span>
+        <span>Confidencial · Não distribuir · Lei 9.610/1998</span>
+    </div>
+</footer>
+
+<script>
+    // Senha simples — troque aqui para a senha real
+    const SENHA = 'aquarios2026';
+
+    function checkGate() {
+        const val = document.getElementById('gateInput').value;
+        const err = document.getElementById('gateErr');
+        if (val === SENHA) {
+            document.getElementById('gate').classList.add('hidden');
+            sessionStorage.setItem('inv_auth', '1');
+        } else {
+            err.textContent = 'Senha incorreta. Tente novamente.';
+            document.getElementById('gateInput').value = '';
+            document.getElementById('gateInput').focus();
+        }
+    }
+
+    // Manter autenticado na sessão
+    if (sessionStorage.getItem('inv_auth') === '1') {
+        document.getElementById('gate').classList.add('hidden');
+    }
+
+    // Enter key no campo de senha
+    document.getElementById('gateInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') checkGate();
+    });
+</script>
+</body>
+</html>
