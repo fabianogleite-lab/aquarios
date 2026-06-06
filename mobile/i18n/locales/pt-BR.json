@@ -87,6 +87,51 @@
       "beckOffice": { "title": "Beck Office", "desc": "Plataforma B2B para clínicas e empresas" }
     }
   },
+  "homeUI": {
+    "morning": "BOM DIA, {{name}}",
+    "afternoon": "BOA TARDE, {{name}}",
+    "evening": "BOA NOITE, {{name}}",
+    "heroTitle": "Integridade hoje",
+    "integral": "INTEGRAL",
+    "calculating": "Calculando...",
+    "dimensionsActive": "DIMENSÕES ATIVAS",
+    "signalsActive": "SINAIS ATIVOS",
+    "modulesLabel": "MÓDULOS",
+    "footer": "Arkhe Labs · V2.0604 · 2026",
+    "footerSub": "Consciência como tecnologia",
+    "bands": { "excellent": "Excelente", "good": "Bom", "attention": "Atenção", "alert": "Alerta", "critical": "Crítico" },
+    "allStable": "Todas as dimensões estáveis.",
+    "strongIn": "Forte em {{dim}}. ",
+    "attentionIn": "Atenção em {{dims}}.",
+    "dims": {
+      "fisico":     { "label": "Física",     "sub": "Refeições, sono" },
+      "mental":     { "label": "Mental",     "sub": "Diário, humor" },
+      "social":     { "label": "Social",     "sub": "Vínculos, suporte" },
+      "espiritual": { "label": "Espiritual", "sub": "Propósito, valores" }
+    },
+    "sig": {
+      "mentalLow": "Score mental em {{score}} — abaixo da média",
+      "physicalStable": "Física estável · sequência de {{streak}}",
+      "joinCommunity": "Participe das Comunidades para elevar o Social",
+      "spiritHigh": "Dimensão Espiritual em alta",
+      "allStable": "Todas as dimensões estáveis — continue assim"
+    },
+    "mods": {
+      "proteos": "Assistente IA pessoal com memória", "ivi": "Índice de Vitalidade Integral",
+      "humor": "Como você está agora — 5 segundos", "gratidao": "Três coisas boas do seu dia",
+      "diario": "Reflexões diárias e autoconhecimento", "nutricao": "Tracking nutricional inteligente",
+      "comunidades": "Círculos de crescimento coletivo", "descanso": "Rituais noturnos de transformação",
+      "hidratacao": "Água do dia — meta diária", "relacionamentos": "Conexões reais que importam",
+      "jornada": "Arcano do dia · autoconhecimento", "saude": "Consultas · Odontolar · Rapidoc",
+      "loja": "Produtos e recompensas do ecossistema"
+    },
+    "modTitles": {
+      "proteos": "ProteOS", "ivi": "iVi", "humor": "Check-in de Humor", "gratidao": "Gratidão",
+      "diario": "Diário do Ser", "nutricao": "Nutrição", "comunidades": "Comunidades",
+      "descanso": "Descanso", "hidratacao": "Hidratação", "relacionamentos": "Relacionamentos",
+      "jornada": "Jornada", "saude": "Saúde", "loja": "Loja"
+    }
+  },
   "settings": {
     "account": "Conta",
     "preferences": "Preferências",

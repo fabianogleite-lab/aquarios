@@ -87,6 +87,51 @@
       "beckOffice": { "title": "Beck Office", "desc": "B2B platform for clinics and companies" }
     }
   },
+  "homeUI": {
+    "morning": "GOOD MORNING, {{name}}",
+    "afternoon": "GOOD AFTERNOON, {{name}}",
+    "evening": "GOOD EVENING, {{name}}",
+    "heroTitle": "Integrity today",
+    "integral": "INTEGRAL",
+    "calculating": "Calculating...",
+    "dimensionsActive": "ACTIVE DIMENSIONS",
+    "signalsActive": "ACTIVE SIGNALS",
+    "modulesLabel": "MODULES",
+    "footer": "Arkhe Labs · V2.0604 · 2026",
+    "footerSub": "Consciousness as technology",
+    "bands": { "excellent": "Excellent", "good": "Good", "attention": "Attention", "alert": "Alert", "critical": "Critical" },
+    "allStable": "All dimensions stable.",
+    "strongIn": "Strong in {{dim}}. ",
+    "attentionIn": "Attention on {{dims}}.",
+    "dims": {
+      "fisico":     { "label": "Physical",  "sub": "Meals, sleep" },
+      "mental":     { "label": "Mental",    "sub": "Journal, mood" },
+      "social":     { "label": "Social",    "sub": "Bonds, support" },
+      "espiritual": { "label": "Spiritual", "sub": "Purpose, values" }
+    },
+    "sig": {
+      "mentalLow": "Mental score at {{score}} — below average",
+      "physicalStable": "Physical stable · streak of {{streak}}",
+      "joinCommunity": "Join Communities to raise your Social",
+      "spiritHigh": "Spiritual dimension is high",
+      "allStable": "All dimensions stable — keep it up"
+    },
+    "mods": {
+      "proteos": "Personal AI assistant with memory", "ivi": "Integral Vitality Index",
+      "humor": "How you are right now — 5 seconds", "gratidao": "Three good things from your day",
+      "diario": "Daily reflections and self-knowledge", "nutricao": "Smart nutritional tracking",
+      "comunidades": "Circles of collective growth", "descanso": "Nightly transformation rituals",
+      "hidratacao": "Water of the day — daily goal", "relacionamentos": "Real connections that matter",
+      "jornada": "Arcanum of the day · self-knowledge", "saude": "Appointments · Odontolar · Rapidoc",
+      "loja": "Products and ecosystem rewards"
+    },
+    "modTitles": {
+      "proteos": "ProteOS", "ivi": "iVi", "humor": "Mood Check-in", "gratidao": "Gratitude",
+      "diario": "Being Journal", "nutricao": "Nutrition", "comunidades": "Communities",
+      "descanso": "Rest", "hidratacao": "Hydration", "relacionamentos": "Relationships",
+      "jornada": "Journey", "saude": "Health", "loja": "Shop"
+    }
+  },
   "settings": {
     "account": "Account",
     "preferences": "Preferences",

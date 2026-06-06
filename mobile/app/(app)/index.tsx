@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -24,41 +25,38 @@ function calcIVI(mealsToday: number, mealsWeek: number, diaryWeek: number, diary
   return { bio, mental, spirit, social, overall };
 }
 
-function greeting(name: string): string {
+function greeting(name: string, t: any): string {
   const h = new Date().getHours();
-  if (h < 12) return `BOM DIA, ${name.toUpperCase()}`;
-  if (h < 18) return `BOA TARDE, ${name.toUpperCase()}`;
-  return `BOA NOITE, ${name.toUpperCase()}`;
+  const n = name.toUpperCase();
+  if (h < 12) return t('homeUI.morning', { name: n });
+  if (h < 18) return t('homeUI.afternoon', { name: n });
+  return t('homeUI.evening', { name: n });
 }
 
 function iviLabel(s: number) {
-  if (s >= 81) return { text: 'Excelente', color: colors.existencial };
-  if (s >= 61) return { text: 'Bom',       color: colors.primary };
-  if (s >= 41) return { text: 'Atenção',   color: colors.warning };
-  if (s >= 21) return { text: 'Alerta',    color: colors.social };
-  return           { text: 'Crítico',      color: colors.error };
+  if (s >= 81) return { key: 'excellent', color: colors.existencial };
+  if (s >= 61) return { key: 'good',       color: colors.primary };
+  if (s >= 41) return { key: 'attention',  color: colors.warning };
+  if (s >= 21) return { key: 'alert',      color: colors.social };
+  return           { key: 'critical',      color: colors.error };
 }
 
-function iviDescription(scores: Scores): string {
-  const weak = [
-    scores.bio    < 50 && 'Física',
-    scores.mental < 50 && 'Mental',
-    scores.social < 50 && 'Social',
-    scores.spirit < 50 && 'Espiritual',
-  ].filter(Boolean) as string[];
-  if (weak.length === 0) return 'Todas as dimensões estáveis.';
-  const strong = (['Física','Mental','Social','Espiritual'] as const).find(
-    d => !weak.includes(d) && scores[d === 'Física' ? 'bio' : d === 'Mental' ? 'mental' : d === 'Social' ? 'social' : 'spirit'] > 65
-  );
-  return `${strong ? `Forte em ${strong}. ` : ''}Atenção em ${weak.join(' e ')}.`;
+function iviDescription(scores: Scores, t: any): string {
+  const dn = (k: string) => t(`homeUI.dims.${k}.label`);
+  const map: Array<[keyof Scores, string]> = [['bio','fisico'],['mental','mental'],['social','social'],['spirit','espiritual']];
+  const weak = map.filter(([sk]) => (scores[sk] as number) < 50).map(([, dk]) => dn(dk));
+  if (weak.length === 0) return t('homeUI.allStable');
+  const strongEntry = map.find(([sk, dk]) => !weak.includes(dn(dk)) && (scores[sk] as number) > 65);
+  const strong = strongEntry ? dn(strongEntry[1]) : null;
+  return `${strong ? t('homeUI.strongIn', { dim: strong }) : ''}${t('homeUI.attentionIn', { dims: weak.join(' · ') })}`;
 }
 
 // ─── Dimensões IVI 4D — V2.0604 ──────────────────────────────────────────────
 const DIMS = [
-  { key: 'bio'    as const, label: 'Física',      sub: 'Refeições, sono',     color: colors.somatica,    icon: '🫀' },
-  { key: 'mental' as const, label: 'Mental',      sub: 'Diário, estresse',    color: colors.psicologica, icon: '🧠' },
-  { key: 'social' as const, label: 'Social',      sub: 'Vínculos, suporte',   color: colors.social,      icon: '👥' },
-  { key: 'spirit' as const, label: 'Espiritual',  sub: 'Propósito, valores',  color: colors.existencial, icon: '✦' },
+  { key: 'bio'    as const, i18n: 'fisico',     color: colors.somatica,    icon: '🫀' },
+  { key: 'mental' as const, i18n: 'mental',     color: colors.psicologica, icon: '🧠' },
+  { key: 'social' as const, i18n: 'social',     color: colors.social,      icon: '👥' },
+  { key: 'spirit' as const, i18n: 'espiritual', color: colors.existencial, icon: '✦' },
 ];
 
 // ─── Módulos (dashboard-driven: status vem da tabela aquarios_modules) ─────────
@@ -92,6 +90,7 @@ const FALLBACK_MODULES: HomeModule[] = [
 // ─── Componente ───────────────────────────────────────────────────────────────
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Aquariano';
 
@@ -155,11 +154,11 @@ export default function HomeScreen() {
   // Sinais ativos
   const signals: { color: string; text: string }[] = [];
   if (!loading) {
-    if (scores.mental < 50) signals.push({ color: colors.error,      text: `Score mental em ${scores.mental} — abaixo da média` });
-    if (scores.bio    > 70) signals.push({ color: colors.somatica,   text: `Física estável — ${streak} dia${streak !== 1 ? 's' : ''} consecutivo${streak !== 1 ? 's' : ''}` });
-    if (scores.social < 40) signals.push({ color: colors.social,     text: 'Participe das Comunidades para elevar o Social' });
-    if (scores.spirit > 75) signals.push({ color: colors.existencial,text: 'Dimensão Espiritual em alta' });
-    if (signals.length === 0) signals.push({ color: colors.existencial, text: 'Todas as dimensões estáveis — continue assim' });
+    if (scores.mental < 50) signals.push({ color: colors.error,      text: t('homeUI.sig.mentalLow', { score: scores.mental }) });
+    if (scores.bio    > 70) signals.push({ color: colors.somatica,   text: t('homeUI.sig.physicalStable', { streak }) });
+    if (scores.social < 40) signals.push({ color: colors.social,     text: t('homeUI.sig.joinCommunity') });
+    if (scores.spirit > 75) signals.push({ color: colors.existencial,text: t('homeUI.sig.spiritHigh') });
+    if (signals.length === 0) signals.push({ color: colors.existencial, text: t('homeUI.sig.allStable') });
   }
 
   return (
@@ -170,8 +169,8 @@ export default function HomeScreen() {
         <View style={s.hero}>
           <View style={s.heroTop}>
             <View>
-              <Text style={s.heroGreeting}>{greeting(displayName)}</Text>
-              <Text style={s.heroTitle}>Integridade hoje</Text>
+              <Text style={s.heroGreeting}>{greeting(displayName, t)}</Text>
+              <Text style={s.heroTitle}>{t('homeUI.heroTitle')}</Text>
             </View>
             <View style={s.shieldBadge}>
               <Text style={s.shieldIcon}>🛡</Text>
@@ -184,15 +183,15 @@ export default function HomeScreen() {
                 ? <ActivityIndicator color={colors.textLight} size="small" />
                 : <>
                     <Text style={s.iviScore}>{scores.overall}</Text>
-                    <Text style={s.iviLabel}>INTEGRAL</Text>
+                    <Text style={s.iviLabel}>{t('homeUI.integral')}</Text>
                   </>
               }
             </View>
             <View style={s.iviMeta}>
               <View style={[s.iviBadge, { backgroundColor: level.color + '33', borderColor: level.color + '66' }]}>
-                <Text style={[s.iviBadgeText, { color: level.color }]}>{level.text}</Text>
+                <Text style={[s.iviBadgeText, { color: level.color }]}>{t('homeUI.bands.' + level.key)}</Text>
               </View>
-              <Text style={s.iviDesc}>{loading ? 'Calculando...' : iviDescription(scores)}</Text>
+              <Text style={s.iviDesc}>{loading ? t('homeUI.calculating') : iviDescription(scores, t)}</Text>
             </View>
           </View>
         </View>
@@ -200,7 +199,7 @@ export default function HomeScreen() {
 
       {/* ── DIMENSÕES 2×2 ── */}
       <FadeInView delay={80}>
-        <Text style={s.sectionLabel}>DIMENSÕES ATIVAS</Text>
+        <Text style={s.sectionLabel}>{t('homeUI.dimensionsActive')}</Text>
         <View style={s.dimGrid}>
           {DIMS.map((d) => {
             const score = scores[d.key as keyof Scores] as number;
@@ -210,8 +209,8 @@ export default function HomeScreen() {
                   <Text style={s.dimIcon}>{d.icon}</Text>
                   <Text style={s.dimScore}>{loading ? '—' : score}</Text>
                 </View>
-                <Text style={s.dimLabel}>{d.label}</Text>
-                <Text style={s.dimSub}>{d.sub}</Text>
+                <Text style={s.dimLabel}>{t('homeUI.dims.' + d.i18n + '.label')}</Text>
+                <Text style={s.dimSub}>{t('homeUI.dims.' + d.i18n + '.sub')}</Text>
                 <View style={s.dimTrack}>
                   <View style={[s.dimFill, { width: `${loading ? 0 : score}%`, backgroundColor: d.color }]} />
                 </View>
@@ -223,7 +222,7 @@ export default function HomeScreen() {
 
       {/* ── SINAIS ATIVOS ── */}
       <FadeInView delay={160}>
-        <Text style={s.sectionLabel}>SINAIS ATIVOS</Text>
+        <Text style={s.sectionLabel}>{t('homeUI.signalsActive')}</Text>
         <View style={s.signalsCard}>
           {loading
             ? <ActivityIndicator color={colors.primary} />
@@ -239,7 +238,7 @@ export default function HomeScreen() {
 
       {/* ── MÓDULOS ── */}
       <FadeInView delay={240}>
-        <Text style={s.sectionLabel}>MÓDULOS</Text>
+        <Text style={s.sectionLabel}>{t('homeUI.modulesLabel')}</Text>
         {modules.map((mod, i) => {
           const route = ROUTE_MAP[mod.slug];
           const live = mod.status === 'active' && !!route;
@@ -253,8 +252,8 @@ export default function HomeScreen() {
               >
                 <Text style={s.modIcon}>{mod.icon}</Text>
                 <View style={s.modContent}>
-                  <Text style={s.modTitle}>{mod.title}</Text>
-                  <Text style={s.modDesc}>{mod.desc}</Text>
+                  <Text style={s.modTitle}>{t('homeUI.modTitles.' + mod.slug, mod.title)}</Text>
+                  <Text style={s.modDesc}>{t('homeUI.mods.' + mod.slug, mod.desc)}</Text>
                 </View>
                 {!live && <Text style={s.modSoon}>em breve</Text>}
                 <Text style={s.modChevron}>›</Text>
@@ -265,8 +264,8 @@ export default function HomeScreen() {
       </FadeInView>
 
       <View style={s.footer}>
-        <Text style={s.footerText}>Arkhe Labs · V2.0604 · 2026</Text>
-        <Text style={s.footerSub}>Consciência como tecnologia</Text>
+        <Text style={s.footerText}>{t('homeUI.footer')}</Text>
+        <Text style={s.footerSub}>{t('homeUI.footerSub')}</Text>
       </View>
     </ScrollView>
   );
