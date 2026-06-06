@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+﻿import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ export default function LoginScreen() {
           <TextInput style={s.input} placeholder={t('auth.login.passwordPlaceholder')} placeholderTextColor={colors.textMuted} value={password} onChangeText={setPassword} secureTextEntry />
 
           <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading}>
-            {loading ? <ActivityIndicator color={colors.bg} /> : <Text style={s.buttonText}>{t('auth.login.loginButton')}</Text>}
+            {loading ? <ActivityIndicator color={colors.textLight} /> : <Text style={s.buttonText}>{t('auth.login.loginButton')}</Text>}
           </TouchableOpacity>
 
           <Link href="/(auth)/register" asChild>
@@ -63,7 +63,7 @@ const s = StyleSheet.create({
   input: { backgroundColor: colors.card, borderRadius: radius.lg, padding: spacing.lg, color: colors.text, fontSize: fontSize.xl, borderWidth: 1, borderColor: colors.border, marginBottom: 14 },
   button: { backgroundColor: colors.primary, borderRadius: radius.lg, padding: spacing.lg, alignItems: 'center', marginTop: spacing.sm },
   buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: colors.bg, fontWeight: '700', fontSize: fontSize.xl },
+  buttonText: { color: colors.textLight, fontWeight: '700', fontSize: fontSize.xl },
   linkBtn: { marginTop: spacing.xxl, alignItems: 'center' },
   linkText: { color: colors.textSecondary, fontSize: fontSize.body },
   linkHighlight: { color: colors.primary, fontWeight: '600' },

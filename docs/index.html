@@ -362,6 +362,23 @@
             .profile-cards { grid-template-columns:1fr 1fr; }
             .footer-cols { grid-template-columns:1fr 1fr; }
         }
+        /* ── DETAIL MODAL ── */
+        .detail-overlay { position:fixed; inset:0; z-index:200; background:rgba(10,12,20,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; padding:1.5rem; }
+        .detail-overlay.open { display:flex; }
+        .detail-modal { background:var(--card); border:1px solid var(--border); border-radius:20px; max-width:520px; width:100%; max-height:85vh; overflow-y:auto; padding:2.25rem; position:relative; box-shadow:0 24px 64px rgba(0,0,0,0.3); }
+        .detail-close { position:absolute; top:0.9rem; right:1.1rem; background:none; border:none; font-size:1.6rem; color:var(--text-muted); cursor:pointer; line-height:1; }
+        .detail-icon { font-size:2.5rem; margin-bottom:0.5rem; }
+        .detail-name { font-size:1.5rem; font-weight:800; letter-spacing:-0.02em; margin-bottom:0.25rem; }
+        .detail-role { font-size:0.78rem; font-weight:600; color:var(--primary); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:1rem; }
+        .detail-status { display:inline-block; font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0.25rem 0.7rem; border-radius:100px; margin-bottom:1.25rem; }
+        .detail-status.ativo { background:rgba(82,201,138,0.15); color:#2e9e63; }
+        .detail-status.breve { background:rgba(124,92,191,0.15); color:var(--primary); }
+        .detail-desc { font-size:0.95rem; color:var(--text-muted); line-height:1.7; margin-bottom:1.5rem; }
+        .detail-tools-label { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.75rem; }
+        .detail-tools { list-style:none; display:flex; flex-direction:column; gap:0.65rem; }
+        .detail-tools li { font-size:0.85rem; color:var(--text); display:flex; gap:0.6rem; align-items:flex-start; line-height:1.5; }
+        .detail-tools li::before { content:'◆'; color:var(--primary); font-size:0.7rem; margin-top:0.25rem; flex-shrink:0; }
+        .clickable-card { cursor:pointer; }
     </style>
 </head>
 <body>
@@ -828,6 +845,20 @@
     </div>
 </footer>
 
+<!-- DETAIL MODAL -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+    <div class="detail-modal">
+        <button class="detail-close" onclick="closeDetail()" aria-label="Fechar">&times;</button>
+        <div class="detail-icon" id="dIcon">✦</div>
+        <div class="detail-name" id="dName">—</div>
+        <div class="detail-role" id="dRole">—</div>
+        <div class="detail-status" id="dStatus">—</div>
+        <div class="detail-desc" id="dDesc">—</div>
+        <div class="detail-tools-label">O que oferece</div>
+        <ul class="detail-tools" id="dTools"></ul>
+    </div>
+</div>
+
 <script>
     // Fade-in on scroll
     const observer = new IntersectionObserver((entries) => {
@@ -861,6 +892,41 @@
         }
         requestAnimationFrame(tick);
     }
+
+    // ── DETALHE DOS MÓDULOS / AGENTES (cada card leva a um lugar) ──
+    const DETAILS = {
+      'ProteOS':       { icon:'🤖', role:'Sua interface com o AquariOS', status:'ativo', desc:'A voz que aparece quando importa. Conversa com memória do seu contexto real — refeições, humor, diário, energia — e fala na hora certa.', tools:['Chat de IA com memória do seu dia','4 personas (acolhedora, direta, clínica, suporte)','Análise por foto (visão)','Criptografia E2E nas conversas'] },
+      'HygeiOS':       { icon:'🧬', role:'A memória ativa · iVi', status:'breve', desc:'O motor que organiza seu histórico e calcula o iVi — seu Índice de Vitalidade em 4 dimensões.', tools:['iVi 4D: Físico, Mental, Espiritual, Social','Detecção de padrões ao longo do tempo','Pipeline de verificação de dado','Estatísticas que alimentam a leitura preditiva'] },
+      'CerberOS':      { icon:'⚖️', role:'O núcleo de proteção', status:'ativo', desc:'Antes de qualquer resposta chegar até você, passa por aqui. Garante que o que você recebe é ético, seguro e verdadeiro.', tools:['Segurança ativa em 7 camadas','Carimbo de verificação em cada dado','Auditoria LGPD acessível só por você','Nunca decide sem registrar'] },
+      'PanaceIA':      { icon:'🔗', role:'Ponte para o ecossistema', status:'breve', desc:'Conecta o AquariOS a clínicas, empresas e ferramentas — sempre opcional e sob seu consentimento explícito.', tools:['Exportação de dado verificado','Integração corporativa (Office, Workspace)','Marketplace consciente','Transparência total de custo'] },
+      'SandeirOS':     { icon:'🔮', role:'Jornada · identidade da voz', status:'breve', desc:'A camada simbólica do autoconhecimento. Os 22 arcanos como espelho — eles perguntam, você responde.', tools:['Arcano do dia (espelho, não adivinhação)','22 arcanos maiores','Padrões simbólicos ao longo do tempo','Tom da voz adaptado ao seu estado'] },
+      'EcumenicOS':    { icon:'🕊️', role:'Sabedoria das tradições', status:'breve', desc:'Sabedoria das grandes tradições espirituais — sem dogma, com profundidade real e respeito a cada caminho.', tools:['13 tradições espirituais','3 modos: 30s · 5min · jornada de 30min','Sabedoria como conceito universal','Curadoria respeitosa por cultura'] },
+      'AsclepiOS':     { icon:'🩺', role:'Saúde clínica', status:'breve', desc:'Saúde clínica longitudinal: exames, histórico e alertas baseados em dados verificados.', tools:['Prontuário digital longitudinal','Anamnese assistida por IA','Arquivo de exames','Telemedicina via Rapidoc'] },
+      'HermeOS':       { icon:'📊', role:'Saúde financeira', status:'breve', desc:'Saúde financeira integrada ao bem-estar — porque dinheiro afeta a mente e o corpo.', tools:['Visão consolidada de finanças','Educação financeira','Impacto do dinheiro no iVi Mental','Criptografia E2E nos dados'] },
+      'EteriOS':       { icon:'✨', role:'Sono e recuperação', status:'breve', desc:'Sono, sonhos e recuperação — o módulo da noite que alimenta o dia seguinte. Conecta seus wearables.', tools:['Sincroniza wearables (Apple Watch, Oura, Fitbit)','Variabilidade cardíaca (VFC)','Qualidade e profundidade do sono','Rituais noturnos de transformação'] },
+      'Comunidades':   { icon:'👥', role:'Conexão real', status:'ativo', desc:'Conexão com pessoas na mesma jornada. Não é palco — é testemunho. Sem algoritmo de engajamento.', tools:['Círculos por arquétipo do iVi','Timeline sem viralização nem ranking','Presença real, não performance','Moderação ética'] },
+      'Diário do Ser': { icon:'📓', role:'Reflexão criptografada', status:'ativo', desc:'Reflexões diárias e autoconhecimento. E2E criptografado — só você lê. A IA identifica padrões sem ver o conteúdo.', tools:['Criptografia ponta a ponta','Streak de reflexão','Padrões ao longo do tempo','Exportação completa (JSON + PDF)'] },
+      'Nutrição':      { icon:'🥗', role:'Alimentação inteligente', status:'ativo', desc:'Alimentação inteligente com registro por foto, metas personalizadas e impacto direto no iVi Físico.', tools:['Registro por foto com OCR','Metas nutricionais','Histórico real','Impacto direto no iVi Físico'] },
+    };
+    function openDetail(name){
+      const d = DETAILS[name]; if(!d) return;
+      document.getElementById('dIcon').textContent = d.icon;
+      document.getElementById('dName').textContent = name;
+      document.getElementById('dRole').textContent = d.role;
+      const st = document.getElementById('dStatus');
+      st.textContent = d.status === 'ativo' ? 'Disponível no beta' : 'Em breve';
+      st.className = 'detail-status ' + (d.status === 'ativo' ? 'ativo' : 'breve');
+      document.getElementById('dDesc').textContent = d.desc;
+      document.getElementById('dTools').innerHTML = d.tools.map(t => `<li>${t}</li>`).join('');
+      document.getElementById('detailOverlay').classList.add('open');
+    }
+    function closeDetail(){ document.getElementById('detailOverlay').classList.remove('open'); }
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDetail(); });
+    document.querySelectorAll('.module-card, .agent-card').forEach(card => {
+      const el = card.querySelector('.mod-name, .agent-name');
+      const key = el && el.textContent.trim();
+      if(key && DETAILS[key]){ card.classList.add('clickable-card'); card.addEventListener('click', () => openDetail(key)); }
+    });
 </script>
 </body>
 </html>

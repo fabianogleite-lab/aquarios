@@ -6,11 +6,11 @@ export default function AppLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: { backgroundColor: colors.bg },
-        headerTintColor: colors.text,
-        headerTitleStyle: { fontWeight: '600' },
+        headerStyle: { backgroundColor: colors.cardDark },
+        headerTintColor: colors.textLight,
+        headerTitleStyle: { fontWeight: '600', color: colors.textLight },
         tabBarStyle: {
-          backgroundColor: colors.bg,
+          backgroundColor: colors.card,
           borderTopColor: colors.border,
           borderTopWidth: 1,
           paddingBottom: 8,
@@ -59,8 +59,14 @@ export default function AppLayout() {
       <Tabs.Screen name="comunidades-notificacoes" options={{ href: null }} />
       <Tabs.Screen name="comunidades-post-form" options={{ href: null, title: 'Novo Post' }} />
       <Tabs.Screen name="store" options={{ href: null, title: 'Loja AquariOS' }} />
+      <Tabs.Screen name="telemedicina" options={{ href: null, title: 'Telemedicina' }} />
       <Tabs.Screen name="hygeios" options={{ href: null, title: 'HygeiOS' }} />
       <Tabs.Screen name="coming-soon" options={{ href: null, title: 'Em Breve' }} />
+      <Tabs.Screen name="humor" options={{ href: null, title: 'Check-in de Humor' }} />
+      <Tabs.Screen name="gratidao" options={{ href: null, title: 'Gratidão' }} />
+      <Tabs.Screen name="hidratacao" options={{ href: null, title: 'Hidratação' }} />
+      <Tabs.Screen name="relacionamentos" options={{ href: null, title: 'Relacionamentos' }} />
+      <Tabs.Screen name="jornada" options={{ href: null, title: 'Jornada' }} />
       <Tabs.Screen name="admin" options={{ href: null, title: '⚙ Admin' }} />
       <Tabs.Screen name="divergencias" options={{ href: null, title: '📊 Divergências DEVPACK v4' }} />
       <Tabs.Screen name="diario-new" options={{ href: null, title: 'Nova Reflexão' }} />

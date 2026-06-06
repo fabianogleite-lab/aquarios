@@ -394,7 +394,18 @@
                     <div class="content-subtitle">Ecossistema de servicos AquariOS — ativos e em desenvolvimento</div>
                 </div>
             </div>
-            <h3 style="font-size:1rem; color:var(--success); margin-bottom:1rem;">&#x2705; Ativos (6)</h3>
+            <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
+                <input id="modSearch" placeholder="Buscar modulo..." oninput="renderModulos()" style="flex:1;min-width:200px;padding:.6rem .9rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:inherit;font:inherit;">
+                <select id="modFilter" onchange="renderModulos()" style="padding:.6rem;border-radius:8px;background:rgba(255,255,255,.05);color:inherit;border:1px solid rgba(255,255,255,.12);font:inherit;">
+                    <option value="all">Todos</option><option value="active">Ativos</option><option value="coming_soon">Em breve</option><option value="locked">Bloqueados</option>
+                </select>
+                <button onclick="loadModulos(true)" style="padding:.6rem 1rem;border-radius:8px;border:none;background:var(--accent,#7C5CBF);color:#fff;font-weight:700;cursor:pointer;">&#x21BB; Recarregar</button>
+                <button onclick="ativarTodos()" style="padding:.6rem 1rem;border-radius:8px;border:none;background:var(--success,#52C98A);color:#06210f;font-weight:800;cursor:pointer;">&#x26A1; Ativar todos (eliminar &quot;em breve&quot;)</button>
+                <span id="modStats" style="width:100%;color:var(--muted,#888);font-size:.8rem;"></span>
+            </div>
+            <div id="modulosGrid" class="cards-grid"></div>
+            <div id="modulosMsg" style="color:var(--muted,#888);font-size:.85rem;margin-top:1rem;min-height:1.2em;"></div>
+            <!-- legacy estatico (substituido pelo painel dinamico acima):
             <div class="cards-grid" style="margin-bottom:2rem;">
                 <div class="module-card"><div class="module-icon">&#x1F4AC;</div><div class="module-info"><h4>ProteOS</h4><p>IA Assistente Pessoal. 4 personas (Default, Pragmatico, Suporte, Urgencia). Edge Function chat/index.ts</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
                 <div class="module-card"><div class="module-icon">&#x1F3AF;</div><div class="module-info"><h4>HygeiOS</h4><p>IVI Score V1.0512. Bio*0.40 + Mental*0.35 + Spirit*0.25. FIX-1 calibracao, FIX-4 anti-gaming. 7 Niveis Evolutivos.</p></div><div class="module-status"><span class="badge badge-active">Ativo</span></div></div>
@@ -411,6 +422,7 @@
                 <div class="module-card"><div class="module-icon">&#x1FA99;</div><div class="module-info"><h4>Token Economy</h4><p>3 tipos: comprado (permanente), doado/propaganda (30-90d), diario (24h).</p></div><div class="module-status"><span class="badge badge-warning">Breve</span></div></div>
                 <div class="module-card"><div class="module-icon">&#x1F6E1;</div><div class="module-info"><h4>CerberOS</h4><p>Defesa 7 camadas. ETERNAL MAZE. HygeiOS Data Gate. Aprisionamento ativo.</p></div><div class="module-status"><span class="badge badge-danger">Seguranca</span></div></div>
             </div>
+            -->
         </div>
 
         <!-- PAGE: PERSONAS & FAQ -->
@@ -687,6 +699,125 @@ async function loadDashboard() {
     } catch(e) { console.error(e); }
 }
 
+// === MODULOS (painel de controle — decisao do operador mora aqui) ===
+const MODULES_FALLBACK = [
+  {slug:'proteos',name:'ProteOS',icon:'💬',status:'active',category:'core',description:'Assistente IA pessoal. 4 personas, visao por foto, contexto real do usuario, E2E.'},
+  {slug:'hygeios',name:'iVi (Vitalidade)',icon:'🧬',status:'active',category:'core',description:'Indice de Vitalidade 4D. Fisico 0.35 + Mental 0.30 + Espiritual 0.20 + Social 0.15.'},
+  {slug:'nutricao',name:'Nutricao',icon:'🥗',status:'active',category:'module',description:'Tracking nutricional com foto/OCR e metas. Alimenta o iVi Fisico.'},
+  {slug:'diario',name:'Diario do Ser',icon:'✎',status:'active',category:'module',description:'Reflexoes diarias E2E. Streak. Alimenta iVi Mental e Espiritual.'},
+  {slug:'comunidades',name:'Comunidades',icon:'👥',status:'active',category:'module',description:'Coracao do AquariOS. Timeline, circulos por arquetipo, personas IA.'},
+  {slug:'wonder',name:'Descanso',icon:'🌙',status:'active',category:'module',description:'Rituais noturnos, sono consciente, check-in existencial. Engenharia: EteriOS.'},
+  {slug:'tokens',name:'Token Economy',icon:'🪙',status:'active',category:'system',description:'4 tipos de token. Ganho por engajamento, streak e contribuicao.'},
+  {slug:'cerberos',name:'CerberOS',icon:'🔐',status:'active',category:'system',description:'Seguranca ativa 7 camadas. Audit LGPD. So recebe sinais de HygeiOS.'},
+  {slug:'alexandrios',name:'AlexandriOS',icon:'📖',status:'active',category:'infrastructure',description:'Motor de ajuda contextual. 42 FAQs em 15 categorias.'},
+  {slug:'sandeiros',name:'Jornada',icon:'🔮',status:'coming_soon',category:'core',description:'Autoconhecimento. Engine simbolica dos 22 arcanos. Modo oculto + 4 tiragens.'},
+  {slug:'ecumenicos',name:'Sabedoria',icon:'☯',status:'coming_soon',category:'module',description:'Sabedoria inter-religiosa. 13 tradicoes. 3 modos: 30s / 5min / 30min.'},
+  {slug:'asclepios',name:'Saude',icon:'⚕',status:'coming_soon',category:'module',description:'Modulo clinico longitudinal. Prontuario, anamnese IA, exames, Rapidoc.'},
+  {slug:'hermeos',name:'Financas',icon:'💰',status:'coming_soon',category:'module',description:'Inteligencia financeira. Open Banking, educacao, impacto no iVi Mental.'},
+  {slug:'eterios',name:'Wearables',icon:'📡',status:'coming_soon',category:'system',description:'Conexao com wearables/IoT. Apple Watch, Oura, Fitbit, Garmin. VFC e sono.'},
+  {slug:'aeropagos',name:'AeropagOS',icon:'🏛',status:'coming_soon',category:'system',description:'Gamificacao por lotes. XP Existencial, badges, leaderboard, mentoria.'},
+  {slug:'panaceia',name:'Loja (PanaceIA)',icon:'🛒',status:'coming_soon',category:'system',description:'Marketplace + monetizacao. Tokens, servicos, rev share 70/30.'},
+  {slug:'beckoffice',name:'Beck Office',icon:'🏢',status:'coming_soon',category:'b2b',description:'B2B para clinicas e empresas. Matching por iVi. White-label.'},
+  {slug:'rapidoc',name:'Rapidoc',icon:'🩺',status:'coming_soon',category:'module',description:'Telemedicina CFM. Videochamada E2E, receituario ICP-Brasil, laudo juridico.'},
+  {slug:'agenda',name:'Agenda do Ser',icon:'📅',status:'coming_soon',category:'module',description:'Linha do tempo bio/mental/espiritual/social. Ciclos circadianos.'},
+  {slug:'movimento',name:'Movimento',icon:'🤸',status:'coming_soon',category:'module',description:'9 modalidades (Tai Chi, Yoga, musculacao...). Atencao dividida.'},
+  {slug:'sono',name:'Sono Consciente',icon:'😴',status:'coming_soon',category:'module',description:'Rastreamento de sono via wearable + manual. Impacto iVi Fisico+Mental.'},
+  {slug:'meditacao',name:'Meditacao',icon:'🧘',status:'coming_soon',category:'module',description:'Praticas contemplativas guiadas. Timer, sessoes, impacto Mental+Espiritual.'},
+  {slug:'respiracao',name:'Respiracao',icon:'🌬',status:'coming_soon',category:'module',description:'Wim Hof, coerencia cardiaca, pranayama. Integrado com VFC.'},
+  {slug:'humor',name:'Check-in de Humor',icon:'😊',status:'coming_soon',category:'module',description:'Humor, energia e intencao (1-10). Alimenta HygeiOS em tempo real.'},
+  {slug:'hidratacao',name:'Hidratacao',icon:'💧',status:'coming_soon',category:'module',description:'Ingestao hidrica com lembretes adaptativos. Impacto iVi Fisico.'},
+  {slug:'suplementos',name:'Suplementos',icon:'💊',status:'coming_soon',category:'module',description:'Suplementacao e medicamentos. Horarios, doses, alertas.'},
+  {slug:'estresse',name:'Gestao de Estresse',icon:'⚡',status:'coming_soon',category:'module',description:'Carga cognitiva + estresse percebido. ProteOS sugere intervencoes.'},
+  {slug:'orcamento',name:'Orcamento',icon:'📊',status:'coming_soon',category:'module',description:'Receitas e despesas com impacto no iVi Mental. Complementa Financas.'},
+  {slug:'gratidao',name:'Gratidao',icon:'🙏',status:'coming_soon',category:'module',description:'Registro diario de gratidoes. Impacto mensuravel no iVi Espiritual.'},
+  {slug:'afirmacoes',name:'Afirmacoes',icon:'✨',status:'coming_soon',category:'module',description:'Afirmacoes positivas personalizadas. Frequencia e reforco.'},
+  {slug:'metas',name:'Metas do Ser',icon:'🎯',status:'coming_soon',category:'module',description:'Metas fisicas, mentais, espirituais e sociais. OKR pessoal.'},
+  {slug:'relacionamentos',name:'Relacionamentos',icon:'❤',status:'coming_soon',category:'module',description:'Mapeamento de vinculos. Qualidade, frequencia, suporte. iVi Social.'},
+  {slug:'proposito',name:'Proposito',icon:'🌟',status:'coming_soon',category:'module',description:'Senso de proposito. Ikigai. ProteOS guia via maieutica socratica.'},
+  {slug:'criatividade',name:'Criatividade',icon:'🎨',status:'coming_soon',category:'module',description:'Expressao criativa. Projetos e insights. iVi Mental+Espiritual.'},
+  {slug:'leitura',name:'Leitura',icon:'📚',status:'coming_soon',category:'module',description:'Leituras com reflexoes. Biblioteca pessoal. Sugestoes do ProteOS.'},
+  {slug:'experiencias',name:'Experiencias',icon:'🗺',status:'coming_soon',category:'module',description:'Viagens, eventos, encontros. Memoria existencial no Diario.'},
+  {slug:'ancestralidade',name:'Ancestralidade',icon:'🌳',status:'coming_soon',category:'module',description:'Padroes familiares e ancestrais. Constelacao sistemica digital.'},
+  {slug:'sonhos',name:'Diario de Sonhos',icon:'🌌',status:'coming_soon',category:'module',description:'Registro e analise de sonhos. Padroes detectados pelo SandeirOS.'},
+  {slug:'saude_sexual',name:'Saude Sexual',icon:'💞',status:'coming_soon',category:'module',description:'Ciclos, libido e bem-estar sexual. 100% privado (E2E). Sensivel.'},
+  {slug:'sintomas',name:'Sintomas e Dor',icon:'🩹',status:'coming_soon',category:'module',description:'Dores, sintomas e condicoes. Historico ao Modulo Medico.'},
+  {slug:'tela',name:'Saude Digital',icon:'📱',status:'coming_soon',category:'module',description:'Tempo de tela e redes. Impacto iVi Mental. Intervencoes do ProteOS.'},
+  {slug:'ambiente',name:'Ambiente',icon:'🏠',status:'coming_soon',category:'module',description:'Qualidade do ambiente (luz, ruido, organizacao). iVi Fisico+Mental.'},
+];
+let MODULOS = [];
+async function loadModulos(){
+  const grid = document.getElementById('modulosGrid'); if(!grid) return;
+  const msg = document.getElementById('modulosMsg');
+  // render imediato com catalogo local — o painel nunca fica em branco
+  if(!MODULOS.length){ MODULOS = MODULES_FALLBACK; renderModulos(); }
+  msg.textContent = 'Carregando ao vivo do Supabase...';
+  try{
+    const fetchP = sb('aquarios_modules', '?select=slug,name,icon,status,category,description&order=status.asc,name.asc');
+    const timeoutP = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000));
+    const { data } = await Promise.race([fetchP, timeoutP]);
+    if(Array.isArray(data) && data.length){ MODULOS = data; renderModulos(); msg.textContent = '✓ ' + data.length + ' modulos ao vivo do Supabase (editavel).'; }
+    else { msg.textContent = 'Tabela aquarios_modules vazia ou sem acesso — exibindo catalogo local (' + MODULES_FALLBACK.length + '). Login admin para editar ao vivo.'; }
+  }catch(e){ msg.textContent = 'Offline/sem acesso — exibindo catalogo local (' + MODULES_FALLBACK.length + ' modulos). Login admin p/ editar ao vivo.'; }
+}
+async function ativarTodos(){
+  const pend = MODULOS.filter(m => m.status !== 'active');
+  if(!pend.length){ document.getElementById('modulosMsg').textContent = 'Todos os modulos ja estao ativos.'; return; }
+  if(!confirm('Ativar TODOS os ' + pend.length + ' modulos em breve? Eles passam a aparecer no app.')) return;
+  document.getElementById('modulosMsg').textContent = 'Ativando ' + pend.length + ' modulos...';
+  let ok = 0;
+  for(const m of pend){ const r = await patchModulo(m.slug, { status:'active' }); m.status = 'active'; if(r) ok++; }
+  renderModulos();
+  document.getElementById('modulosMsg').textContent = ok === pend.length
+    ? ('⚡ ' + ok + ' modulos ativados — nenhum "em breve" restante!')
+    : ('⚡ ' + ok + '/' + pend.length + ' salvos no Supabase (resto local — faca login admin para persistir).');
+}
+function renderModulos(){
+  const grid = document.getElementById('modulosGrid'); if(!grid) return;
+  const q = (document.getElementById('modSearch').value || '').toLowerCase();
+  const f = document.getElementById('modFilter').value;
+  const c = { active:0, coming_soon:0, locked:0 };
+  MODULOS.forEach(m => { c[m.status] = (c[m.status]||0) + 1; });
+  document.getElementById('modStats').textContent = MODULOS.length + ' modulos · ' + (c.active||0) + ' ativos · ' + (c.coming_soon||0) + ' em breve · ' + (c.locked||0) + ' bloqueados';
+  const list = MODULOS.filter(m => (f==='all' || m.status===f) && ((m.name||'') + ' ' + (m.slug||'') + ' ' + (m.description||'')).toLowerCase().includes(q));
+  grid.innerHTML = list.map(m => `
+    <div class="module-card" data-slug="${m.slug}">
+      <div class="module-icon">${m.icon||'⬡'}</div>
+      <div class="module-info">
+        <h4 contenteditable="true" spellcheck="false" onblur="setModuloName('${m.slug}', this.textContent)" title="clique para editar o nome ao usuario" style="outline:none;border-bottom:1px dashed transparent;" onfocus="this.style.borderBottomColor='var(--accent,#7C5CBF)'">${m.name||m.slug}</h4>
+        <p>${(m.description||'').replace(/</g,'&lt;')}</p>
+        <span style="font-size:.68rem;color:var(--muted,#888);letter-spacing:.04em;">${m.slug} · ${m.category||'module'}</span>
+      </div>
+      <div class="module-status">
+        <select onchange="setModuloStatus('${m.slug}', this.value)" style="padding:.4rem;border-radius:6px;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.14);font:inherit;cursor:pointer;">
+          <option value="active"${m.status==='active'?' selected':''}>Ativo</option>
+          <option value="coming_soon"${m.status==='coming_soon'?' selected':''}>Em breve</option>
+          <option value="locked"${m.status==='locked'?' selected':''}>Bloqueado</option>
+        </select>
+      </div>
+    </div>`).join('') || '<p class="empty" style="color:var(--muted,#888);padding:2rem;">Nenhum modulo encontrado.</p>';
+}
+async function patchModulo(slug, body){
+  try{
+    const r = await fetch(`${SB_URL}/rest/v1/aquarios_modules?slug=eq.${encodeURIComponent(slug)}`, {
+      method:'PATCH',
+      headers:{ apikey:SB_KEY, Authorization:`Bearer ${token||SB_KEY}`, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body: JSON.stringify(body)
+    });
+    return r.ok;
+  }catch(e){ return false; }
+}
+async function setModuloStatus(slug, status){
+  const m = MODULOS.find(x => x.slug===slug); if(m) m.status = status; renderModulos();
+  const ok = await patchModulo(slug, { status });
+  document.getElementById('modulosMsg').textContent = ok ? ('✓ ' + slug + ': status → ' + status + ' (salvo no Supabase)') : ('⚠ ' + slug + ': alterado localmente — faca login admin para salvar.');
+}
+async function setModuloName(slug, name){
+  name = (name||'').trim(); if(!name) return;
+  const m = MODULOS.find(x => x.slug===slug); if(m) m.name = name;
+  const ok = await patchModulo(slug, { name });
+  document.getElementById('modulosMsg').textContent = ok ? ('✓ ' + slug + ': nome → "' + name + '" (salvo)') : ('⚠ ' + slug + ': nome alterado localmente — login admin para salvar.');
+}
+
 // === NAVIGATION ===
 document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -694,6 +825,7 @@ document.querySelectorAll('.nav-item').forEach(item => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         item.classList.add('active');
         document.getElementById('page-' + item.dataset.page).classList.add('active');
+        if (item.dataset.page === 'modulos') loadModulos();
     });
 });
 

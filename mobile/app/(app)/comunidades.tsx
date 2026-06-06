@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -230,7 +230,7 @@ const s = StyleSheet.create({
   },
   activeTab: { backgroundColor: colors.primary, borderColor: colors.primary },
   tabText: { color: colors.text, fontSize: fontSize.md, fontWeight: '600' },
-  activeTabText: { color: colors.bg },
+  activeTabText: { color: colors.textLight },
   listContent: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
   postCard: {
     backgroundColor: colors.card, borderRadius: radius.lg, padding: spacing.md,
@@ -245,7 +245,7 @@ const s = StyleSheet.create({
     borderRadius: radius.lg, padding: spacing.md, marginBottom: spacing.sm, borderWidth: 1, borderColor: colors.border,
   },
   helperRank: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginRight: spacing.md },
-  rankNumber: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
+  rankNumber: { color: colors.textLight, fontSize: fontSize.lg, fontWeight: '700' },
   helperInfo: { flex: 1 },
   helperName: { color: colors.text, fontSize: fontSize.lg, fontWeight: '600', marginBottom: spacing.xs },
   helperStats: { flexDirection: 'row', gap: spacing.sm, flexWrap: 'wrap' },
@@ -267,7 +267,7 @@ const s = StyleSheet.create({
     shadowRadius: 4,
   },
   fabText: {
-    color: colors.bg,
+    color: colors.textLight,
     fontSize: fontSize.xxl,
     fontWeight: '700',
     lineHeight: 40,

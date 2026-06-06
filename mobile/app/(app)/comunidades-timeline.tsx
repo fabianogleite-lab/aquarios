@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -287,7 +287,7 @@ export default function ComunidadesTimelineScreen() {
           disabled={submittingReply}
         >
           {submittingReply ? (
-            <ActivityIndicator color={colors.bg} size="small" />
+            <ActivityIndicator color={colors.textLight} size="small" />
           ) : (
             <Text style={s.submitBtnText}>Responder</Text>
           )}
@@ -469,7 +469,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   submitBtnText: {
-    color: colors.bg,
+    color: colors.textLight,
     fontSize: fontSize.md,
     fontWeight: '700',
   },

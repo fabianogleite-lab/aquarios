@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -143,7 +143,7 @@ export default function NutricaoNovoScreen() {
           <Text style={s.cancelText}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={s.saveBtn} onPress={save} disabled={saving}>
-          {saving ? <ActivityIndicator color={colors.bg} /> : <Text style={s.saveText}>Salvar</Text>}
+          {saving ? <ActivityIndicator color={colors.textLight} /> : <Text style={s.saveText}>Salvar</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -164,7 +164,7 @@ const s = StyleSheet.create({
   macroInput: { backgroundColor: colors.card, borderRadius: radius.md, paddingHorizontal: 10, paddingVertical: 10, color: colors.text, fontSize: fontSize.body, borderWidth: 1, borderColor: colors.border, textAlign: 'center' },
   typeRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   typeBtn: { flex: 1, minWidth: '45%', alignItems: 'center', backgroundColor: colors.card, borderRadius: radius.lg, padding: 10, borderWidth: 1, borderColor: colors.border },
-  typeBtnActive: { borderColor: colors.primary, backgroundColor: '#1a1508' },
+  typeBtnActive: { borderColor: colors.primary, backgroundColor: colors.primarySubtle },
   typeIcon: { fontSize: 20, marginBottom: spacing.xs },
   typeLabel: { color: colors.textMuted, fontSize: fontSize.xs, fontWeight: '600' },
   typeLabelActive: { color: colors.primary },
@@ -172,5 +172,5 @@ const s = StyleSheet.create({
   cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, alignItems: 'center' },
   cancelText: { color: colors.textMuted, fontSize: fontSize.lg, fontWeight: '600' },
   saveBtn: { flex: 2, paddingVertical: 14, borderRadius: radius.lg, backgroundColor: colors.primary, alignItems: 'center' },
-  saveText: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
+  saveText: { color: colors.textLight, fontSize: fontSize.lg, fontWeight: '700' },
 });
