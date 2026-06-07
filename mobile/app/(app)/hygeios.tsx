@@ -22,6 +22,7 @@ interface IVIData {
   diaryUniqueDays: number; // FIX-4: unique days with diary activity, caps at 1/day
   wonderMonth: number;
   postsMonth: number;      // Social: posts em comunidades no último mês
+  streak: number;          // Social: dias consecutivos — espelha index.tsx
 }
 
 function calcIVI(data: IVIData): IVIScores {
@@ -29,7 +30,8 @@ function calcIVI(data: IVIData): IVIScores {
   const mental = Math.min(100, Math.round((data.diaryWeek / 5) * 60 + (data.diaryUniqueDays / 15) * 40));
   // FIX-4: spirit uses unique diary days — max +5 spirit pts/day, prevents gaming
   const spirit = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryUniqueDays / 10) * 50));
-  const social = Math.min(100, Math.round((data.postsMonth / 10) * 100));
+  // Social — padronizado com index.tsx (Decisão Conflito 2 / S24): 60% volume de posts + 40% consistência (streak, cap 30d)
+  const social = Math.min(100, Math.round((data.postsMonth / 10) * 60 + Math.min(data.streak, 30) / 30 * 40));
   // Fórmula 4D aprovada — V2.0604
   const overall = Math.round(bio * 0.35 + mental * 0.30 + spirit * 0.20 + social * 0.15);
   return { bio, mental, spirit, social, overall };
@@ -148,7 +150,8 @@ export default function HygeiOSScreen() {
     // FIX-1: IVI only meaningful after 7 unique active days
     const uniqueActiveDays = new Set(allDates.map(d => new Date(d).toDateString())).size;
     setHasEnoughData(uniqueActiveDays >= 7);
-    setStreak(calcStreak(allDates));
+    const currentStreak = calcStreak(allDates);
+    setStreak(currentStreak);
     setScores(calcIVI({
       mealsToday: mealsToday.count ?? 0,
       mealsWeek: mealsWeek.count ?? 0,
@@ -156,6 +159,7 @@ export default function HygeiOSScreen() {
       diaryUniqueDays,
       wonderMonth: wonderMonth.count ?? 0,
       postsMonth: postsMonth.count ?? 0,
+      streak: currentStreak,
     }));
     setLoading(false);
   };
