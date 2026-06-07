@@ -94,7 +94,7 @@ const s = StyleSheet.create({
   unit: { fontSize: fontSize.lg, color: colors.textMuted, fontWeight: '600' },
   goalText: { fontSize: fontSize.sm, color: colors.textSecondary, marginTop: spacing.xs, marginBottom: spacing.md },
   track: { height: 8, width: '80%', backgroundColor: colors.border, borderRadius: 4, overflow: 'hidden' },
-  fill: { height: '100%', backgroundColor: colors.somatica, borderRadius: 4 },
+  fill: { height: '100%', backgroundColor: colors.fisico, borderRadius: 4 },
   sectionLabel: { fontSize: fontSize.xs, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, marginHorizontal: spacing.lg, marginTop: spacing.xl, marginBottom: spacing.md },
   btnRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: spacing.lg, gap: spacing.sm },
   addBtn: { flex: 1, alignItems: 'center', backgroundColor: colors.card, borderRadius: radius.md, paddingVertical: spacing.lg, borderWidth: 1, borderColor: colors.border },

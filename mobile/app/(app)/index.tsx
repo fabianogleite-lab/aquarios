@@ -10,19 +10,19 @@ import { PressableScale } from '../../components/PressableScale';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 // ─── IVI helpers (espelhado do hygeios.tsx) ───────────────────────────────────
-interface Scores { bio: number; mental: number; spirit: number; social: number; overall: number }
+interface Scores { fisico: number; mental: number; espiritual: number; social: number; overall: number }
 
 function calcIVI(mealsToday: number, mealsWeek: number, diaryWeek: number, diaryUnique: number, wonderMonth: number, postsMonth: number, streak: number, moodScore: number = 0, gratitudeScore: number = 0, hydrationScore: number = 0, relationshipScore: number = 0): Scores {
-  let   bio    = Math.min(100, Math.round((mealsWeek / 21) * 70 + (mealsToday / 3) * 30));
-  if (hydrationScore > 0) bio = Math.round(bio * 0.6 + hydrationScore * 0.4); // Hidratação entra no Físico
+  let   fisico    = Math.min(100, Math.round((mealsWeek / 21) * 70 + (mealsToday / 3) * 30));
+  if (hydrationScore > 0) fisico = Math.round(fisico * 0.6 + hydrationScore * 0.4); // Hidratação entra no Físico
   let   mental = Math.min(100, Math.round((diaryWeek / 5) * 60 + (diaryUnique / 15) * 40));
   if (moodScore > 0) mental = Math.round(mental * 0.6 + moodScore * 0.4); // Check-in de Humor entra no Mental
-  let   spirit = Math.min(100, Math.round((wonderMonth / 4) * 50 + (diaryUnique / 10) * 50));
-  if (gratitudeScore > 0) spirit = Math.round(spirit * 0.6 + gratitudeScore * 0.4); // Gratidão entra no Espiritual
+  let   espiritual = Math.min(100, Math.round((wonderMonth / 4) * 50 + (diaryUnique / 10) * 50));
+  if (gratitudeScore > 0) espiritual = Math.round(espiritual * 0.6 + gratitudeScore * 0.4); // Gratidão entra no Espiritual
   let   social = Math.min(100, Math.round((postsMonth / 10) * 60 + Math.min(streak, 30) / 30 * 40));
   if (relationshipScore > 0) social = Math.round(social * 0.6 + relationshipScore * 0.4); // Relacionamentos entram no Social
-  const overall = Math.round(bio * 0.35 + mental * 0.30 + spirit * 0.20 + social * 0.15);
-  return { bio, mental, spirit, social, overall };
+  const overall = Math.round(fisico * 0.35 + mental * 0.30 + espiritual * 0.20 + social * 0.15);
+  return { fisico, mental, espiritual, social, overall };
 }
 
 function greeting(name: string, t: any): string {
@@ -34,7 +34,7 @@ function greeting(name: string, t: any): string {
 }
 
 function iviLabel(s: number) {
-  if (s >= 81) return { key: 'excellent', color: colors.existencial };
+  if (s >= 81) return { key: 'excellent', color: colors.espiritual };
   if (s >= 61) return { key: 'good',       color: colors.primary };
   if (s >= 41) return { key: 'attention',  color: colors.warning };
   if (s >= 21) return { key: 'alert',      color: colors.social };
@@ -43,7 +43,7 @@ function iviLabel(s: number) {
 
 function iviDescription(scores: Scores, t: any): string {
   const dn = (k: string) => t(`homeUI.dims.${k}.label`);
-  const map: Array<[keyof Scores, string]> = [['bio','fisico'],['mental','mental'],['social','social'],['spirit','espiritual']];
+  const map: Array<[keyof Scores, string]> = [['fisico','fisico'],['mental','mental'],['social','social'],['espiritual','espiritual']];
   const weak = map.filter(([sk]) => (scores[sk] as number) < 50).map(([, dk]) => dn(dk));
   if (weak.length === 0) return t('homeUI.allStable');
   const strongEntry = map.find(([sk, dk]) => !weak.includes(dn(dk)) && (scores[sk] as number) > 65);
@@ -53,10 +53,10 @@ function iviDescription(scores: Scores, t: any): string {
 
 // ─── Dimensões IVI 4D — V2.0604 ──────────────────────────────────────────────
 const DIMS = [
-  { key: 'bio'    as const, i18n: 'fisico',     color: colors.somatica,    icon: '🫀' },
-  { key: 'mental' as const, i18n: 'mental',     color: colors.psicologica, icon: '🧠' },
-  { key: 'social' as const, i18n: 'social',     color: colors.social,      icon: '👥' },
-  { key: 'spirit' as const, i18n: 'espiritual', color: colors.existencial, icon: '✦' },
+  { key: 'fisico'    as const, i18n: 'fisico',     color: colors.fisico,    icon: '🫀' },
+  { key: 'mental'    as const, i18n: 'mental',     color: colors.mental,    icon: '🧠' },
+  { key: 'social'    as const, i18n: 'social',     color: colors.social,    icon: '👥' },
+  { key: 'espiritual' as const, i18n: 'espiritual', color: colors.espiritual, icon: '✦' },
 ];
 
 // ─── Módulos (dashboard-driven: status vem da tabela aquarios_modules) ─────────
@@ -95,7 +95,7 @@ export default function HomeScreen() {
   const displayName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Aquariano';
 
   const [loading, setLoading] = useState(true);
-  const [scores, setScores] = useState<Scores>({ bio: 0, mental: 0, spirit: 0, social: 0, overall: 0 });
+  const [scores, setScores] = useState<Scores>({ fisico: 0, mental: 0, espiritual: 0, social: 0, overall: 0 });
   const [streak, setStreak] = useState(0);
   const [modules, setModules] = useState<HomeModule[]>(FALLBACK_MODULES);
 
@@ -155,10 +155,10 @@ export default function HomeScreen() {
   const signals: { color: string; text: string }[] = [];
   if (!loading) {
     if (scores.mental < 50) signals.push({ color: colors.error,      text: t('homeUI.sig.mentalLow', { score: scores.mental }) });
-    if (scores.bio    > 70) signals.push({ color: colors.somatica,   text: t('homeUI.sig.physicalStable', { streak }) });
-    if (scores.social < 40) signals.push({ color: colors.social,     text: t('homeUI.sig.joinCommunity') });
-    if (scores.spirit > 75) signals.push({ color: colors.existencial,text: t('homeUI.sig.spiritHigh') });
-    if (signals.length === 0) signals.push({ color: colors.existencial, text: t('homeUI.sig.allStable') });
+    if (scores.fisico    > 70) signals.push({ color: colors.fisico,     text: t('homeUI.sig.physicalStable', { streak }) });
+    if (scores.social    < 40) signals.push({ color: colors.social,     text: t('homeUI.sig.joinCommunity') });
+    if (scores.espiritual > 75) signals.push({ color: colors.espiritual,text: t('homeUI.sig.spiritHigh') });
+    if (signals.length === 0) signals.push({ color: colors.espiritual, text: t('homeUI.sig.allStable') });
   }
 
   return (

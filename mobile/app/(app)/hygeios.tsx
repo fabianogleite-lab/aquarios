@@ -8,10 +8,10 @@ import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 // IVI 4D — V2.0604 (Físico×0.35 + Mental×0.30 + Espiritual×0.20 + Social×0.15)
 interface IVIScores {
-  bio: number;    // Físico
-  mental: number; // Mental
-  spirit: number; // Espiritual
-  social: number; // Social
+  fisico: number;     // Físico
+  mental: number;     // Mental
+  espiritual: number; // Espiritual
+  social: number;     // Social
   overall: number;
 }
 
@@ -26,15 +26,15 @@ interface IVIData {
 }
 
 function calcIVI(data: IVIData): IVIScores {
-  const bio    = Math.min(100, Math.round((data.mealsWeek / 21) * 70 + (data.mealsToday / 3) * 30));
+  const fisico    = Math.min(100, Math.round((data.mealsWeek / 21) * 70 + (data.mealsToday / 3) * 30));
   const mental = Math.min(100, Math.round((data.diaryWeek / 5) * 60 + (data.diaryUniqueDays / 15) * 40));
-  // FIX-4: spirit uses unique diary days — max +5 spirit pts/day, prevents gaming
-  const spirit = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryUniqueDays / 10) * 50));
+  // FIX-4: espiritual uses unique diary days — max +5 espiritual pts/day, prevents gaming
+  const espiritual = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryUniqueDays / 10) * 50));
   // Social — padronizado com index.tsx (Decisão Conflito 2 / S24): 60% volume de posts + 40% consistência (streak, cap 30d)
   const social = Math.min(100, Math.round((data.postsMonth / 10) * 60 + Math.min(data.streak, 30) / 30 * 40));
   // Fórmula 4D aprovada — V2.0604
-  const overall = Math.round(bio * 0.35 + mental * 0.30 + spirit * 0.20 + social * 0.15);
-  return { bio, mental, spirit, social, overall };
+  const overall = Math.round(fisico * 0.35 + mental * 0.30 + espiritual * 0.20 + social * 0.15);
+  return { fisico, mental, espiritual, social, overall };
 }
 
 // Faixas V1.0512: 0-20 CRÍTICO · 21-40 ALERTA · 41-60 ATENÇÃO · 61-80 BOM · 81-100 EXCELENTE
@@ -108,7 +108,7 @@ function RingScore({ score, label, icon, delay }: { score: number; label: string
 }
 
 export default function HygeiOSScreen() {
-  const [scores, setScores] = useState<IVIScores>({ bio: 0, mental: 0, spirit: 0, social: 0, overall: 0 });
+  const [scores, setScores] = useState<IVIScores>({ fisico: 0, mental: 0, espiritual: 0, social: 0, overall: 0 });
   const [streak, setStreak] = useState(0);
   const [hasEnoughData, setHasEnoughData] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -214,10 +214,10 @@ export default function HygeiOSScreen() {
 
       {/* Rings Físico / Mental / Espiritual / Social — IVI 4D V2.0604 */}
       <View style={s.rings}>
-        <RingScore score={scores.bio}    label="Físico"     icon="🫀" delay={200} />
-        <RingScore score={scores.mental} label="Mental"     icon="🧠" delay={300} />
-        <RingScore score={scores.spirit} label="Espiritual" icon="✦"  delay={400} />
-        <RingScore score={scores.social} label="Social"     icon="👥" delay={500} />
+        <RingScore score={scores.fisico}    label="Físico"     icon="🫀" delay={200} />
+        <RingScore score={scores.mental}    label="Mental"     icon="🧠" delay={300} />
+        <RingScore score={scores.espiritual} label="Espiritual" icon="✦"  delay={400} />
+        <RingScore score={scores.social}    label="Social"     icon="👥" delay={500} />
       </View>
 
       {/* Streak + Nível Evolutivo */}

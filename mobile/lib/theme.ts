@@ -25,11 +25,11 @@ export const colors = {
   secondary: '#00B4CC',      // cyan
   gold: '#B8952A',           // gold (XP, achievements, selos)
 
-  // === DIMENSION COLORS (IVI) ===
-  somatica: '#22D3EE',       // cyan  — Somática
-  psicologica: '#8B5CF6',    // violet — Psicológica
+  // === DIMENSION COLORS (IVI 4D — V2.0604) ===
+  fisico: '#22D3EE',         // cyan   — Físico
+  mental: '#8B5CF6',         // violet — Mental
   social: '#F59E0B',         // amber  — Social
-  existencial: '#22C55E',    // green  — Existencial
+  espiritual: '#22C55E',     // green  — Espiritual
 
   // === STATUS ===
   error: '#EF4444',

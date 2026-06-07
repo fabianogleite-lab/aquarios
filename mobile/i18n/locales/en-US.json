@@ -258,15 +258,7 @@
   },
   "hygeios": {
     "title": "HygeiOS",
-    "ivi": "Integral Vitality Index",
-    "dimensions": {
-      "physical": "Physical",
-      "mental": "Mental",
-      "emotional": "Emotional",
-      "social": "Social",
-      "spiritual": "Spiritual",
-      "nutritional": "Nutritional"
-    }
+    "ivi": "Integral Vitality Index"
   },
   "comingSoon": {
     "title": "Coming soon",

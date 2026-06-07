@@ -151,7 +151,7 @@ const s = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: spacing.sm,
   },
-  progressFill: { height: '100%', backgroundColor: colors.existencial, borderRadius: 4 },
+  progressFill: { height: '100%', backgroundColor: colors.espiritual, borderRadius: 4 },
   progressText: { fontSize: fontSize.sm, color: colors.textSecondary },
 
   sectionLabel: {
