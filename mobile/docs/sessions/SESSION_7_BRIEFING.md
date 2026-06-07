@@ -39,10 +39,11 @@ TOOLS DISPONIVEIS:
 
 TAREFA DESTA SESSAO (nesta ordem):
 
-1. VERIFICAR BUILD APK
-   - Checar status do build EAS ID: 0b644164-d4fa-4ed2-8879-397117a45068
-   - Se falhou: diagnosticar erro Gradle nos logs e corrigir
-   - Se sucesso: baixar APK
+1. UPGRADE SDK + FIX BUILD
+   - Builds S6 falharam 2x com "Gradle build failed" (SDK 54 incompativel)
+   - Upgrade: `npx expo install --fix` (SDK 54 -> 56)
+   - Testar que tudo compila apos upgrade
+   - Rebuild APK: `eas build --platform android --profile preview`
 
 2. TESTAR APK NO CELULAR
    - Instalar no celular real
