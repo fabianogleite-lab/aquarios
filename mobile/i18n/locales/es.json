@@ -64,7 +64,7 @@
       },
       "freeCommunity": {
         "label": "Free Comunidad",
-        "desc": "+ Comunidades · XP Existencial · IVI Spirit · historial 30 días"
+        "desc": "+ Comunidades · XP Espiritual · IVI Espiritual · historial 30 días"
       },
       "upgradeHint": "Mejora a Starter $5,99/mes → IVI completo + wearable"
     },
@@ -171,7 +171,7 @@
     "deleteError": "No se pudo eliminar tu cuenta. Inténtalo de nuevo o contacta: contato@podiumtec.com.br",
     "plans": {
       "freeAnonymous": { "label": "Free Anónimo", "price": "$0", "desc": "ProteOS básico · Nutrición · Diario Google Calendar" },
-      "freeCommunity": { "label": "Free Comunidad", "price": "$0", "desc": "Free + Comunidades · XP Existencial · IVI Spirit" },
+      "freeCommunity": { "label": "Free Comunidad", "price": "$0", "desc": "Free + Comunidades · XP Espiritual · IVI Espiritual" },
       "starter": { "label": "Starter", "price": "$5,99/mes", "desc": "ProteOS completo · Diario nativo · IVI completo · 1 wearable" },
       "premium": { "label": "Premium", "price": "$19,99/mes", "desc": "Módulos a elegir · Comunidades plenas · IA contextual" },
       "professional": { "label": "Professional", "price": "$39,99/mes", "desc": "Integración total · EteriOS completo · automatización predictiva" }

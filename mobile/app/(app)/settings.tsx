@@ -13,7 +13,7 @@ import { colors, fontSize, spacing, radius } from '../../lib/theme';
 // Planos V1.0512 com valores reais
 const PLANS = [
   { key: 'free_anonimo',    label: 'Free Anônimo',    price: 'R$ 0',          color: colors.textSecondary, desc: 'ProteOS básico · Nutrição · Diário via Google Agenda' },
-  { key: 'free_comunidade', label: 'Free Comunidade', price: 'R$ 0',          color: '#7f8c8d',            desc: 'Free + Comunidades · XP Existencial · IVI Spirit' },
+  { key: 'free_comunidade', label: 'Free Comunidade', price: 'R$ 0',          color: '#7f8c8d',            desc: 'Free + Comunidades · XP Espiritual · IVI Espiritual' },
   { key: 'starter',         label: 'Starter',         price: 'R$ 19,90/mês',  color: '#27ae60',            desc: 'ProteOS completo · Diário nativo · IVI completo · 1 wearable' },
   { key: 'premium',         label: 'Premium',         price: 'R$ 79,90/mês',  color: '#2980b9',            desc: 'Módulos à escolha · Comunidades plenas · IA contextual' },
   { key: 'professional',    label: 'Professional',    price: 'R$ 149,90/mês', color: colors.primary,       desc: 'Integração total · EteriOS completo · automação preditiva' },
