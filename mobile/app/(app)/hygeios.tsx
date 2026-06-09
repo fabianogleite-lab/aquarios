@@ -6,6 +6,9 @@ import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
+const USE_V2_SERVER = process.env.EXPO_PUBLIC_HYGEIOS_V2_SERVER === 'true';
+const V2_URL = process.env.EXPO_PUBLIC_HYGEIOS_V2_URL ?? '';
+
 // IVI 4D — V2.0604 (Físico×0.35 + Mental×0.30 + Espiritual×0.20 + Social×0.15)
 interface IVIScores {
   fisico: number;     // Físico
@@ -152,7 +155,7 @@ export default function HygeiOSScreen() {
     setHasEnoughData(uniqueActiveDays >= 7);
     const currentStreak = calcStreak(allDates);
     setStreak(currentStreak);
-    setScores(calcIVI({
+    const localScores = calcIVI({
       mealsToday: mealsToday.count ?? 0,
       mealsWeek: mealsWeek.count ?? 0,
       diaryWeek: diaryWeek.count ?? 0,
@@ -160,7 +163,26 @@ export default function HygeiOSScreen() {
       wonderMonth: wonderMonth.count ?? 0,
       postsMonth: postsMonth.count ?? 0,
       streak: currentStreak,
-    }));
+    });
+    if (USE_V2_SERVER) {
+      try {
+        const res = await fetch(`${V2_URL}/api/v2/ivi/${user.id}`);
+        if (res.ok) {
+          const { scores: srv } = await res.json() as { scores: IVIScores };
+          const diff = { fisico: srv.fisico - localScores.fisico, mental: srv.mental - localScores.mental, espiritual: srv.espiritual - localScores.espiritual, social: srv.social - localScores.social, overall: srv.overall - localScores.overall };
+          console.log('[IVI v2 parallel]', JSON.stringify({ local: localScores, server: srv, diff }));
+          setScores(srv);
+        } else {
+          console.warn('[IVI v2] server ' + res.status + ', usando local');
+          setScores(localScores);
+        }
+      } catch {
+        console.warn('[IVI v2] fetch falhou, usando local');
+        setScores(localScores);
+      }
+    } else {
+      setScores(localScores);
+    }
     setLoading(false);
   };
 
