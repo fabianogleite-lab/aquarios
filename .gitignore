@@ -20,3 +20,7 @@ ios/
 Thumbs.db
 .claude/settings.local.json
 .claude/projects/
+
+# Handoffs/memória de sessão — nunca versionar (podem conter segredos em texto puro)
+memory/
+mobile/memory/

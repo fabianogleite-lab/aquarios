@@ -23,7 +23,7 @@
   "app": {
     "name": "AquariOS",
     "tagline": "Personal Operating System",
-    "footer": "Arkhe Labs · V1.0512 · 2026",
+    "footer": "Arkhe Labs · V2.0604 · 2026",
     "footerSub": "Consciousness as technology"
   },
   "auth": {
@@ -258,15 +258,7 @@
   },
   "hygeios": {
     "title": "HygeiOS",
-    "ivi": "Integral Vitality Index",
-    "dimensions": {
-      "physical": "Physical",
-      "mental": "Mental",
-      "emotional": "Emotional",
-      "social": "Social",
-      "spiritual": "Spiritual",
-      "nutritional": "Nutritional"
-    }
+    "ivi": "Integral Vitality Index"
   },
   "comingSoon": {
     "title": "Coming soon",

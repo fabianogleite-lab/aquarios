@@ -227,7 +227,7 @@ export default function SettingsScreen() {
           </View>
           <View style={s.row}>
             <Text style={s.label}>Build</Text>
-            <Text style={s.value}>SDK 56 · V1.0512</Text>
+            <Text style={s.value}>SDK 56 · V2.0604</Text>
           </View>
           <View style={s.row}>
             <Text style={s.label}>Desenvolvedor</Text>
