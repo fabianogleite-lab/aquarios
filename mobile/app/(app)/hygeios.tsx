@@ -262,19 +262,23 @@ export default function HygeiOSScreen() {
           <Text style={s.infoTitle}>Como o IVI é calculado</Text>
           <View style={s.infoRow}>
             <Text style={s.infoBullet}>🫀</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Bio (40%)</Text> — Refeições registradas na semana e hoje</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Físico (35%)</Text> — Refeições registradas na semana e hoje</Text>
           </View>
           <View style={s.infoRow}>
             <Text style={s.infoBullet}>🧠</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Mental (35%)</Text> — Entradas no Diário do Ser</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Mental (30%)</Text> — Entradas no Diário do Ser</Text>
           </View>
           <View style={s.infoRow}>
             <Text style={s.infoBullet}>✦</Text>
-            <Text style={s.infoText}><Text style={s.infoBold}>Spirit (25%)</Text> — Wonder Night e prática reflexiva</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Espiritual (20%)</Text> — Wonder Night e prática reflexiva</Text>
+          </View>
+          <View style={s.infoRow}>
+            <Text style={s.infoBullet}>🤝</Text>
+            <Text style={s.infoText}><Text style={s.infoBold}>Social (15%)</Text> — Publicações nas Comunidades</Text>
           </View>
           <View style={[s.infoRow, { marginTop: spacing.sm, paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: colors.border }]}>
             <Text style={s.infoBullet}>📊</Text>
-            <Text style={s.infoText}>Spirit conta <Text style={s.infoBold}>dias únicos</Text> de prática (cap: 1×/dia). Streak dos últimos 90 dias.</Text>
+            <Text style={s.infoText}>Espiritual conta <Text style={s.infoBold}>dias únicos</Text> de prática (cap: 1×/dia). Streak dos últimos 90 dias.</Text>
           </View>
         </View>
       </FadeInView>

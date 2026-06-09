@@ -12,7 +12,7 @@ const MODULE_INFO: Record<string, { icon: string; name: string; tagline: string;
     features: [
       'Sistema de lotes progressivos por módulo',
       'Conquistas e badges de autoconhecimento',
-      'XP Existencial como moeda de crescimento',
+      'XP Espiritual como moeda de crescimento',
       'Ranking comunitário com impacto real',
     ],
   },
