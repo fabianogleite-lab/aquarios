@@ -76,7 +76,13 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      ["expo-splash-screen", { "backgroundColor": "#090c14", "resizeMode": "contain" }],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#090c14",
+          "resizeMode": "contain"
+        }
+      ],
       "expo-status-bar",
       "expo-camera",
       "expo-image-picker",
@@ -100,7 +106,8 @@
           "calendarPermission": "AquariOS acessa seu calendário para integrar com Google Agenda."
         }
       ],
-      "./plugins/withAssistant.js"
+      "./plugins/withAssistant.js",
+      "expo-audio"
     ]
   }
 }
