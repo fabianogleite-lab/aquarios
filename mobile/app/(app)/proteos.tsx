@@ -9,9 +9,12 @@
   ScrollView,
   Image,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { useVoice } from '../../hooks/useVoice';
 import Markdown from 'react-native-markdown-display';
 import { getDeviceLocale } from '../../lib/locale';
 import { supabase } from '../../lib/supabase';
@@ -97,9 +100,11 @@ export default function ProteosScreen() {
   const [conversationId, setConversationId] = useState<string>('');
   const [persona, setPersona] = useState<PersonaKey>('default');
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
+  const [voiceEnabled, setVoiceEnabled] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
   const { logXP } = useXP();
+  const { voiceState, isAvailable: voiceAvailable, startRecording, stopRecordingAndTranscribe, speakResponse, stopSpeaking, error: voiceError } = useVoice();
 
   useEffect(() => {
     loadConversationHistory();
@@ -258,6 +263,11 @@ export default function ProteosScreen() {
       const assistantMsg: Message = { id: `assistant-${Date.now()}`, role: 'assistant', content: assistantContent, created_at: futureTime };
       setMessages((prev) => [...prev, assistantMsg]);
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+
+      // TTS: ProteOS fala a resposta se voz estiver ativa
+      if (voiceEnabled && voiceAvailable && assistantContent && assistantContent !== 'Desculpe, não consegui processar. Tente novamente.') {
+        speakResponse(assistantContent).catch(() => {});
+      }
     } catch (error) {
       console.error('Chat error:', error);
       const errorMsg: Message = { id: `err-${Date.now()}`, role: 'assistant', content: 'Erro de conexão. Verifique sua internet.', created_at: new Date().toISOString() };
@@ -268,7 +278,11 @@ export default function ProteosScreen() {
   };
 
   return (
-    <View style={s.container}>
+    <KeyboardAvoidingView
+      style={s.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'android' ? 80 : 90}
+    >
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -324,10 +338,42 @@ export default function ProteosScreen() {
         </View>
       )}
 
+      {/* Barra de voz: toggle + status */}
+      <View style={s.voiceBar}>
+        <TouchableOpacity
+          style={[s.voiceToggle, voiceEnabled && s.voiceToggleActive]}
+          onPress={() => { setVoiceEnabled((v) => !v); if (voiceState === 'speaking') stopSpeaking(); }}
+        >
+          <Text style={s.voiceToggleText}>{voiceEnabled ? '🔊 Voz ativa' : '🔇 Voz desligada'}</Text>
+        </TouchableOpacity>
+        {voiceState !== 'idle' && (
+          <Text style={s.voiceStatus}>
+            {voiceState === 'recording' ? '🔴 Gravando...' : voiceState === 'processing' ? '⏳ Transcrevendo...' : '🎵 Falando...'}
+          </Text>
+        )}
+        {voiceError ? <Text style={s.voiceError}>{voiceError}</Text> : null}
+      </View>
+
       <View style={s.inputRow}>
         <TouchableOpacity style={s.cameraBtn} onPress={pickImage} disabled={loading}>
           <Text style={s.cameraBtnText}>{selectedImage ? '🖼️' : '📷'}</Text>
         </TouchableOpacity>
+
+        {/* Botão microfone — segura para gravar, solta para enviar */}
+        <TouchableOpacity
+          style={[s.micBtn, voiceState === 'recording' && s.micBtnRecording]}
+          onLongPress={startRecording}
+          onPressOut={async () => {
+            if (voiceState === 'recording') {
+              const transcript = await stopRecordingAndTranscribe();
+              if (transcript) setMessage(transcript);
+            }
+          }}
+          disabled={loading || voiceState === 'processing' || voiceState === 'speaking'}
+        >
+          <Text style={s.micBtnText}>{voiceState === 'recording' ? '⏺' : '🎤'}</Text>
+        </TouchableOpacity>
+
         <TextInput
           style={s.input}
           value={message}
@@ -346,7 +392,7 @@ export default function ProteosScreen() {
           <Text style={s.sendText}>→</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -418,4 +464,14 @@ const s = StyleSheet.create({
   personaIcon: { fontSize: 14 },
   personaLabel: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '500' },
   personaLabelActive: { color: colors.primary, fontWeight: '700' },
+  // Voz
+  voiceBar: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.md, paddingVertical: 6, borderTopWidth: 1, borderTopColor: colors.border },
+  voiceToggle: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.md, paddingVertical: 5, borderRadius: radius.pill, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
+  voiceToggleActive: { borderColor: colors.primary, backgroundColor: colors.primarySubtle },
+  voiceToggleText: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '500' },
+  voiceStatus: { fontSize: fontSize.sm, color: colors.primary, fontWeight: '600' },
+  voiceError: { fontSize: fontSize.xs, color: '#FF3B30', flex: 1 },
+  micBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border, justifyContent: 'center', alignItems: 'center', marginRight: spacing.xs },
+  micBtnRecording: { backgroundColor: '#FF3B30', borderColor: '#FF3B30' },
+  micBtnText: { fontSize: 18 },
 });
