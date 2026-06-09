@@ -104,14 +104,14 @@
     "strongIn": "Forte em {{dim}}. ",
     "attentionIn": "Atenção em {{dims}}.",
     "dims": {
-      "fisico":     { "label": "Física",     "sub": "Refeições, sono" },
+      "fisico":     { "label": "Físico",     "sub": "Refeições, sono" },
       "mental":     { "label": "Mental",     "sub": "Diário, humor" },
       "social":     { "label": "Social",     "sub": "Vínculos, suporte" },
       "espiritual": { "label": "Espiritual", "sub": "Propósito, valores" }
     },
     "sig": {
       "mentalLow": "Score mental em {{score}} — abaixo da média",
-      "physicalStable": "Física estável · sequência de {{streak}}",
+      "physicalStable": "Físico estável · sequência de {{streak}}",
       "joinCommunity": "Participe das Comunidades para elevar o Social",
       "spiritHigh": "Dimensão Espiritual em alta",
       "allStable": "Todas as dimensões estáveis — continue assim"

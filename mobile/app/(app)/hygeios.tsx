@@ -6,36 +6,17 @@ import { useAuthStore } from '../../store/auth';
 import { FadeInView } from '../../components/FadeInView';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
+const V2_URL = process.env.EXPO_PUBLIC_HYGEIOS_V2_URL ?? '';
+
 // IVI 4D — V2.0604 (Físico×0.35 + Mental×0.30 + Espiritual×0.20 + Social×0.15)
 interface IVIScores {
-  bio: number;    // Físico
-  mental: number; // Mental
-  spirit: number; // Espiritual
-  social: number; // Social
+  fisico: number;
+  mental: number;
+  espiritual: number;
+  social: number;
   overall: number;
 }
 
-interface IVIData {
-  mealsToday: number;
-  mealsWeek: number;
-  diaryWeek: number;
-  diaryUniqueDays: number; // FIX-4: unique days with diary activity, caps at 1/day
-  wonderMonth: number;
-  postsMonth: number;      // Social: posts em comunidades no último mês
-  streak: number;          // Social: dias consecutivos — espelha index.tsx
-}
-
-function calcIVI(data: IVIData): IVIScores {
-  const bio    = Math.min(100, Math.round((data.mealsWeek / 21) * 70 + (data.mealsToday / 3) * 30));
-  const mental = Math.min(100, Math.round((data.diaryWeek / 5) * 60 + (data.diaryUniqueDays / 15) * 40));
-  // FIX-4: spirit uses unique diary days — max +5 spirit pts/day, prevents gaming
-  const spirit = Math.min(100, Math.round((data.wonderMonth / 4) * 50 + (data.diaryUniqueDays / 10) * 50));
-  // Social — padronizado com index.tsx (Decisão Conflito 2 / S24): 60% volume de posts + 40% consistência (streak, cap 30d)
-  const social = Math.min(100, Math.round((data.postsMonth / 10) * 60 + Math.min(data.streak, 30) / 30 * 40));
-  // Fórmula 4D aprovada — V2.0604
-  const overall = Math.round(bio * 0.35 + mental * 0.30 + spirit * 0.20 + social * 0.15);
-  return { bio, mental, spirit, social, overall };
-}
 
 // Faixas V1.0512: 0-20 CRÍTICO · 21-40 ALERTA · 41-60 ATENÇÃO · 61-80 BOM · 81-100 EXCELENTE
 function getIVILevel(score: number): { label: string; status: string; color: string; action: string } {
@@ -108,7 +89,7 @@ function RingScore({ score, label, icon, delay }: { score: number; label: string
 }
 
 export default function HygeiOSScreen() {
-  const [scores, setScores] = useState<IVIScores>({ bio: 0, mental: 0, spirit: 0, social: 0, overall: 0 });
+  const [scores, setScores] = useState<IVIScores>({ fisico: 0, mental: 0, espiritual: 0, social: 0, overall: 0 });
   const [streak, setStreak] = useState(0);
   const [hasEnoughData, setHasEnoughData] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -118,49 +99,34 @@ export default function HygeiOSScreen() {
     if (!user?.id) return;
     setLoading(true);
 
-    const now = new Date();
-    const todayStart = new Date(now);
-    todayStart.setHours(0, 0, 0, 0);
-    const weekAgo = new Date(now.getTime() - 7 * 86400000);
-    const monthAgo = new Date(now.getTime() - 30 * 86400000);
-    const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 86400000);
 
-    const [mealsToday, mealsWeek, diaryWeek, wonderMonth, diaryDates, mealDates, postsMonth] = await Promise.all([
-      supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', todayStart.toISOString()),
-      supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
-      supabase.from('diario_entries').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', weekAgo.toISOString()),
-      supabase.from('wonder_night_purchases').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
+    const [diaryDates, mealDates] = await Promise.all([
       supabase.from('diario_entries').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
       supabase.from('meals').select('created_at').eq('user_id', user.id).gte('created_at', ninetyDaysAgo.toISOString()),
-      supabase.from('community_posts').select('*', { count: 'exact', head: true }).eq('user_id', user.id).gte('created_at', monthAgo.toISOString()),
     ]);
-
-    // FIX-4: unique diary days in last 30d (one entry max per day)
-    const diaryUniqueDays = new Set(
-      (diaryDates.data || [])
-        .filter((r: any) => new Date(r.created_at) >= monthAgo)
-        .map((r: any) => new Date(r.created_at).toDateString())
-    ).size;
 
     const allDates = [
       ...((diaryDates.data || []).map((r: any) => r.created_at)),
       ...((mealDates.data || []).map((r: any) => r.created_at)),
     ];
 
-    // FIX-1: IVI only meaningful after 7 unique active days
     const uniqueActiveDays = new Set(allDates.map(d => new Date(d).toDateString())).size;
     setHasEnoughData(uniqueActiveDays >= 7);
-    const currentStreak = calcStreak(allDates);
-    setStreak(currentStreak);
-    setScores(calcIVI({
-      mealsToday: mealsToday.count ?? 0,
-      mealsWeek: mealsWeek.count ?? 0,
-      diaryWeek: diaryWeek.count ?? 0,
-      diaryUniqueDays,
-      wonderMonth: wonderMonth.count ?? 0,
-      postsMonth: postsMonth.count ?? 0,
-      streak: currentStreak,
-    }));
+    setStreak(calcStreak(allDates));
+
+    try {
+      const res = await fetch(`${V2_URL}/api/v2/ivi/${user.id}`);
+      if (res.ok) {
+        const { scores: srv } = await res.json() as { scores: IVIScores };
+        setScores(srv);
+      } else {
+        console.warn('[IVI] server ' + res.status);
+      }
+    } catch {
+      console.warn('[IVI] servidor indisponível');
+    }
+
     setLoading(false);
   };
 
@@ -214,10 +180,10 @@ export default function HygeiOSScreen() {
 
       {/* Rings Físico / Mental / Espiritual / Social — IVI 4D V2.0604 */}
       <View style={s.rings}>
-        <RingScore score={scores.bio}    label="Físico"     icon="🫀" delay={200} />
-        <RingScore score={scores.mental} label="Mental"     icon="🧠" delay={300} />
-        <RingScore score={scores.spirit} label="Espiritual" icon="✦"  delay={400} />
-        <RingScore score={scores.social} label="Social"     icon="👥" delay={500} />
+        <RingScore score={scores.fisico}     label="Físico"     icon="🫀" delay={200} />
+        <RingScore score={scores.mental}     label="Mental"     icon="🧠" delay={300} />
+        <RingScore score={scores.espiritual} label="Espiritual" icon="✦"  delay={400} />
+        <RingScore score={scores.social}     label="Social"     icon="👥" delay={500} />
       </View>
 
       {/* Streak + Nível Evolutivo */}
