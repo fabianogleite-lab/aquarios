@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+﻿import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { colors, fontSize } from '../lib/theme';
 
 interface Gate {
@@ -172,7 +172,7 @@ const s = StyleSheet.create({
   buttonText: {
     fontSize: fontSize.body,
     fontWeight: '600',
-    color: colors.bg,
+    color: colors.textLight,
   },
   hint: {
     fontSize: fontSize.caption,

@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -98,7 +98,7 @@ export default function NutricaoMetasScreen() {
           <Text style={s.cancelText}>Cancelar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={s.saveBtn} onPress={save} disabled={saving}>
-          {saving ? <ActivityIndicator color={colors.bg} /> : <Text style={s.saveText}>Salvar Metas</Text>}
+          {saving ? <ActivityIndicator color={colors.textLight} /> : <Text style={s.saveText}>Salvar Metas</Text>}
         </TouchableOpacity>
       </View>
     </View>
@@ -118,5 +118,5 @@ const s = StyleSheet.create({
   cancelBtn: { flex: 1, paddingVertical: 14, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.border, alignItems: 'center' },
   cancelText: { color: colors.textMuted, fontSize: fontSize.lg, fontWeight: '600' },
   saveBtn: { flex: 2, paddingVertical: 14, borderRadius: radius.lg, backgroundColor: colors.primary, alignItems: 'center' },
-  saveText: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
+  saveText: { color: colors.textLight, fontSize: fontSize.lg, fontWeight: '700' },
 });

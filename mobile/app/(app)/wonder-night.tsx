@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -186,7 +186,7 @@ const s = StyleSheet.create({
   ticketLabel: { color: colors.textMuted, fontSize: fontSize.xs, fontWeight: '600', marginBottom: spacing.xs, textTransform: 'uppercase', letterSpacing: 1 },
   ticketCode: { color: colors.text, fontSize: 20, fontWeight: '700', letterSpacing: 3, marginBottom: spacing.md, fontVariant: ['tabular-nums'] },
   joinBtn: { backgroundColor: colors.primary, borderRadius: radius.lg, paddingVertical: spacing.md, alignItems: 'center' },
-  joinBtnText: { color: colors.bg, fontSize: fontSize.lg, fontWeight: '700' },
+  joinBtnText: { color: colors.textLight, fontSize: fontSize.lg, fontWeight: '700' },
   priceSection: { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 14, alignItems: 'center' },
   price: { color: colors.primary, fontSize: fontSize.hero, fontWeight: '700', marginBottom: spacing.xs },
   priceNote: { color: colors.textMuted, fontSize: fontSize.sm },

@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -211,5 +211,5 @@ const s = StyleSheet.create({
   mealKcal: { color: colors.primary, fontSize: fontSize.body, fontWeight: '700' },
   mealMacros: { color: colors.textMuted, fontSize: fontSize.sm, marginTop: spacing.xs },
   fab: { position: 'absolute', bottom: 20, right: 20, width: 56, height: 56, borderRadius: radius.round, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', elevation: 8 },
-  fabText: { color: colors.bg, fontSize: fontSize.display, fontWeight: '700' },
+  fabText: { color: colors.textLight, fontSize: fontSize.display, fontWeight: '700' },
 });

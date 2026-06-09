@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -147,7 +147,7 @@ export default function DiarioNewScreen() {
             onPress={saveEntry}
             disabled={loading}
           >
-            {loading ? <ActivityIndicator size="small" color={colors.bg} /> : <Text style={s.saveButtonText}>Salvar Reflexão</Text>}
+            {loading ? <ActivityIndicator size="small" color={colors.textLight} /> : <Text style={s.saveButtonText}>Salvar Reflexão</Text>}
           </TouchableOpacity>
 
           <TouchableOpacity style={s.cancelButton} onPress={() => router.back()} disabled={loading}>
@@ -190,7 +190,7 @@ const s = StyleSheet.create({
   },
   saveButton: { backgroundColor: colors.primary, borderRadius: radius.lg, paddingVertical: spacing.md, alignItems: 'center', marginBottom: 10 },
   saveButtonDisabled: { opacity: 0.6 },
-  saveButtonText: { color: colors.bg, fontSize: fontSize.xl, fontWeight: '700' },
+  saveButtonText: { color: colors.textLight, fontSize: fontSize.xl, fontWeight: '700' },
   cancelButton: {
     backgroundColor: 'transparent', borderRadius: radius.lg, paddingVertical: spacing.md,
     alignItems: 'center', borderWidth: 1, borderColor: colors.border,

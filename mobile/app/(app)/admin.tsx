@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+﻿import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useState, useCallback } from 'react';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
@@ -169,7 +169,7 @@ export default function AdminScreen() {
             disabled={seedLoading}
           >
             {seedLoading ? (
-              <ActivityIndicator color={colors.bg} size="small" />
+              <ActivityIndicator color={colors.textLight} size="small" />
             ) : (
               <Text style={s.seedBtnText}>🤖 Seed Demo Comunidades</Text>
             )}
@@ -240,7 +240,7 @@ const s = StyleSheet.create({
     opacity: 0.5,
   },
   seedBtnText: {
-    color: colors.bg,
+    color: colors.textLight,
     fontSize: fontSize.body,
     fontWeight: '700',
   },

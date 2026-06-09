@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { messages, persona, locale } = await req.json();
+    const { messages, persona, locale, userContext } = await req.json();
     if (!messages || !Array.isArray(messages)) {
       return new Response(
         JSON.stringify({ error: "Mensagens inválidas" }),
@@ -155,7 +155,11 @@ Deno.serve(async (req) => {
         system: (() => {
           const base = PERSONAS[persona as keyof typeof PERSONAS];
           const addendum = getCulturalAddendum(locale as string);
-          return addendum ? `${base}\n\nVoz Cultural Ativa: ${addendum}` : base;
+          const ctx = userContext
+            ? `\n\nCONTEXTO ATUAL DO USUÁRIO (dados reais do HygeiOS — use para personalizar respostas, não invente dados fora deste contexto):\n${userContext}`
+            : '';
+          const cultural = addendum ? `\n\nVoz Cultural Ativa: ${addendum}` : '';
+          return `${base}${cultural}${ctx}`;
         })(),
         messages,
       }),

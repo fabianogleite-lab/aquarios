@@ -14,6 +14,7 @@ import XPBar from '../../components/XPBar';
 import StoreCard from '../../components/StoreCard';
 import { useEconomyEngine } from '../../hooks/useEconomyEngine';
 import { formatNumber } from '../../lib/locale';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
 import products from '../../data/products.json';
 
 interface Product {
@@ -107,7 +108,7 @@ export default function StoreScreen() {
   if (isLoading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#4ade80" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -175,69 +176,74 @@ export default function StoreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f0f',
+    backgroundColor: colors.bg,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.bg,
   },
   header: {
-    padding: 16,
-    paddingTop: 24,
-    backgroundColor: '#0f0f0f',
+    padding: spacing.lg,
+    paddingTop: spacing.xl,
+    backgroundColor: colors.cardDark,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
+    borderBottomColor: colors.border,
   },
   title: {
-    fontSize: 20,
+    fontSize: fontSize.xl,
     fontWeight: '700',
-    color: '#4ade80',
-    marginBottom: 12,
+    color: colors.textLight,
+    marginBottom: spacing.md,
   },
   tokensBox: {
-    backgroundColor: '#1a1a1a',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 12,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    padding: spacing.md,
+    borderRadius: radius.md,
+    marginTop: spacing.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   tokensLabel: {
-    color: '#888',
-    fontSize: 12,
+    color: colors.textMuted,
+    fontSize: fontSize.sm,
   },
   tokensValue: {
-    color: '#4ade80',
-    fontSize: 18,
+    color: colors.gold,
+    fontSize: fontSize.xl,
     fontWeight: '700',
   },
   tabsContainer: {
-    paddingVertical: 12,
+    paddingVertical: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
+    borderBottomColor: colors.border,
+    backgroundColor: colors.card,
   },
   tab: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginHorizontal: 4,
-    borderRadius: 6,
-    backgroundColor: '#1a1a1a',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    marginHorizontal: spacing.xs,
+    borderRadius: radius.pill,
+    backgroundColor: colors.cardActive,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   tabActive: {
-    backgroundColor: '#4ade80',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   tabText: {
-    color: '#888',
-    fontSize: 12,
+    color: colors.textSecondary,
+    fontSize: fontSize.sm,
     fontWeight: '600',
   },
   tabTextActive: {
-    color: '#000',
+    color: colors.textLight,
   },
   listContent: {
-    padding: 8,
+    padding: spacing.sm,
   },
   row: {
     flex: 1,
@@ -245,10 +251,10 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flex: 1,
-    marginHorizontal: 4,
+    marginHorizontal: spacing.xs,
   },
   emptyText: {
-    color: '#666',
-    fontSize: 14,
+    color: colors.textSecondary,
+    fontSize: fontSize.body,
   },
 });

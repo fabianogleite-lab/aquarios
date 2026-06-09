@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../lib/supabase';
+import { colors, fontSize, spacing, radius } from '../../lib/theme';
+import { FadeInView } from '../../components/FadeInView';
 
 interface LeaderboardEntry {
   rank: number;
@@ -16,17 +17,12 @@ export default function LeaderboardScreen() {
   const [userRank, setUserRank] = useState<LeaderboardEntry | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadLeaderboard();
-  }, []);
+  useEffect(() => { loadLeaderboard(); }, []);
 
   const loadLeaderboard = async () => {
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session?.session?.user?.id) {
-        setLoading(false);
-        return;
-      }
+      if (!session?.session?.user?.id) { setLoading(false); return; }
 
       const { data: users } = await supabase
         .from('user_xp')
@@ -40,23 +36,11 @@ export default function LeaderboardScreen() {
           userId: user.user_id,
           uviScore: Math.round(user.level * 9.2 + Math.random() * 5),
           change: Math.floor(Math.random() * 3) - 1,
-          isSelf: user.user_id === session.session!.user.id
+          isSelf: user.user_id === session.session!.user.id,
         }));
-
         setLeaderboard(entries);
-
         const selfEntry = entries.find(e => e.isSelf);
-        if (selfEntry) {
-          setUserRank(selfEntry);
-        } else {
-          setUserRank({
-            rank: 15,
-            userId: session.session!.user.id,
-            uviScore: 72,
-            change: 2,
-            isSelf: true
-          });
-        }
+        setUserRank(selfEntry ?? { rank: 15, userId: session.session!.user.id, uviScore: 72, change: 2, isSelf: true });
       }
     } catch (err) {
       console.error('Error loading leaderboard:', err);
@@ -67,8 +51,8 @@ export default function LeaderboardScreen() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#FF9800" />
+      <View style={s.center}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -76,31 +60,38 @@ export default function LeaderboardScreen() {
   const medals = ['🥇', '🥈', '🥉'];
 
   return (
-    <LinearGradient colors={['#0f0f0f', '#1a1a1a']} style={styles.container}>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Top 10 IVI da Comunidade</Text>
+    <ScrollView style={s.container} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
+      {/* Hero */}
+      <FadeInView>
+        <View style={s.hero}>
+          <Text style={s.heroLabel}>COMUNIDADE</Text>
+          <Text style={s.heroTitle}>Ranking IVI</Text>
+        </View>
+      </FadeInView>
 
-        <View style={styles.leaderboardCard}>
+      {/* Tabela */}
+      <FadeInView delay={80}>
+        <Text style={s.sectionLabel}>TOP 10</Text>
+        <View style={s.tableCard}>
           {leaderboard.map((entry) => (
-            <View
-              key={entry.userId}
-              style={[styles.leaderboardRow, entry.isSelf && styles.selfRow]}
-            >
-              <View style={styles.rankSection}>
-                <Text style={styles.medal}>{entry.rank <= 3 ? medals[entry.rank - 1] : entry.rank}</Text>
+            <View key={entry.userId} style={[s.row, entry.isSelf && s.rowSelf]}>
+              <View style={s.rankCol}>
+                <Text style={s.medal}>{entry.rank <= 3 ? medals[entry.rank - 1] : entry.rank}</Text>
               </View>
-
-              <View style={styles.userSection}>
-                <Text style={styles.userName}>
+              <View style={s.userCol}>
+                <Text style={[s.userName, entry.isSelf && s.userNameSelf]}>
                   Aquariano#{Math.floor(Math.random() * 100)}
                 </Text>
-                {entry.isSelf && <Text style={styles.selfLabel}>Você</Text>}
+                {entry.isSelf && (
+                  <View style={s.youBadge}>
+                    <Text style={s.youText}>Você</Text>
+                  </View>
+                )}
               </View>
-
-              <View style={styles.scoreSection}>
-                <Text style={styles.score}>{entry.uviScore} IVI</Text>
+              <View style={s.scoreCol}>
+                <Text style={s.score}>{entry.uviScore} IVI</Text>
                 {entry.change !== undefined && (
-                  <Text style={[styles.change, entry.change > 0 ? styles.changeUp : styles.changeDown]}>
+                  <Text style={[s.change, entry.change > 0 ? s.up : entry.change < 0 ? s.down : s.flat]}>
                     {entry.change > 0 ? '↑' : entry.change < 0 ? '↓' : '→'} {Math.abs(entry.change)}
                   </Text>
                 )}
@@ -108,186 +99,118 @@ export default function LeaderboardScreen() {
             </View>
           ))}
         </View>
+      </FadeInView>
 
-        {userRank && (
-          <View style={styles.yourPositionCard}>
-            <Text style={styles.yourPositionTitle}>Sua Posição</Text>
-
-            <View style={styles.yourPositionContent}>
-              <View style={styles.positionBadge}>
-                <Text style={styles.positionRank}>#{userRank.rank}</Text>
-              </View>
-
-              <View style={styles.positionInfo}>
-                <Text style={styles.positionScore}>{userRank.uviScore} IVI</Text>
-                <Text style={styles.positionChange}>
-                  {userRank.change && userRank.change > 0
-                    ? `⬆️ Subiu ${userRank.change} posição${userRank.change > 1 ? 's' : ''}`
-                    : '→ Mantém posição'}
-                </Text>
-              </View>
+      {/* Sua posição */}
+      {userRank && (
+        <FadeInView delay={160}>
+          <Text style={s.sectionLabel}>SUA POSIÇÃO</Text>
+          <View style={s.posCard}>
+            <View style={s.posBadge}>
+              <Text style={s.posRank}>#{userRank.rank}</Text>
+            </View>
+            <View style={s.posInfo}>
+              <Text style={s.posScore}>{userRank.uviScore} IVI</Text>
+              <Text style={s.posChange}>
+                {userRank.change && userRank.change > 0
+                  ? `⬆️ Subiu ${userRank.change} posição`
+                  : '→ Mantém posição'}
+              </Text>
             </View>
           </View>
-        )}
+        </FadeInView>
+      )}
 
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Como Funciona?</Text>
-          <Text style={styles.infoText}>
-            • Seu IVI é calculado baseado no seu nível e atividades
-          </Text>
-          <Text style={styles.infoText}>
-            • Suba no ranking participando da comunidade
-          </Text>
-          <Text style={styles.infoText}>
-            • Dados atualizados semanalmente
-          </Text>
+      {/* Info */}
+      <FadeInView delay={240}>
+        <View style={s.infoCard}>
+          <Text style={s.infoTitle}>Como funciona</Text>
+          {[
+            'Seu IVI é calculado pelo nível e atividades diárias',
+            'Suba no ranking participando da comunidade',
+            'Dados atualizados semanalmente',
+          ].map((t, i) => (
+            <View key={i} style={s.infoRow}>
+              <Text style={s.infoDot}>•</Text>
+              <Text style={s.infoText}>{t}</Text>
+            </View>
+          ))}
         </View>
-      </ScrollView>
-    </LinearGradient>
+      </FadeInView>
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+const s = StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.bg },
+  scroll: { paddingBottom: 40 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg },
+
+  hero: {
+    backgroundColor: colors.cardDark,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.xxl,
   },
-  content: {
-    flex: 1,
-    padding: 16,
-    paddingTop: 12,
+  heroLabel: { fontSize: fontSize.xs, fontWeight: '700', color: colors.textMuted, letterSpacing: 1.5, marginBottom: spacing.xs },
+  heroTitle: { fontSize: fontSize.title, fontWeight: '700', color: colors.textLight },
+
+  sectionLabel: {
+    fontSize: fontSize.xs, fontWeight: '700', color: colors.textMuted,
+    letterSpacing: 1.2, marginHorizontal: spacing.lg,
+    marginTop: spacing.xl, marginBottom: spacing.sm,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 20,
-    marginTop: 8,
-  },
-  leaderboardCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 12,
+
+  tableCard: {
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    marginHorizontal: spacing.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
     overflow: 'hidden',
-    marginBottom: 20,
   },
-  leaderboardRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
+  row: {
+    flexDirection: 'row', alignItems: 'center',
+    paddingVertical: spacing.md, paddingHorizontal: spacing.lg,
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  selfRow: {
-    backgroundColor: '#1a4d2e',
+  rowSelf: { backgroundColor: colors.primarySubtle },
+  rankCol: { width: 36, alignItems: 'center' },
+  medal: { fontSize: 18 },
+  userCol: { flex: 1, marginLeft: spacing.md, flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  userName: { fontSize: fontSize.body, fontWeight: '600', color: colors.text },
+  userNameSelf: { color: colors.primary },
+  youBadge: { backgroundColor: colors.primarySubtle, borderRadius: radius.sm, paddingHorizontal: spacing.sm, paddingVertical: 2, borderWidth: 1, borderColor: colors.primaryFaded },
+  youText: { fontSize: fontSize.xs, color: colors.primary, fontWeight: '700' },
+  scoreCol: { alignItems: 'flex-end' },
+  score: { fontSize: fontSize.body, fontWeight: '700', color: colors.gold },
+  change: { fontSize: fontSize.xs, marginTop: 2, fontWeight: '600' },
+  up: { color: colors.success },
+  down: { color: colors.error },
+  flat: { color: colors.textMuted },
+
+  posCard: {
+    backgroundColor: colors.card, borderRadius: radius.lg,
+    marginHorizontal: spacing.lg, padding: spacing.lg,
+    borderWidth: 1, borderColor: colors.border,
+    flexDirection: 'row', alignItems: 'center', gap: spacing.lg,
   },
-  rankSection: {
-    width: 40,
-    alignItems: 'center',
+  posBadge: {
+    width: 60, height: 60, borderRadius: 30,
+    backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center',
   },
-  medal: {
-    fontSize: 20,
-  },
-  userSection: {
-    flex: 1,
-    marginLeft: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  userName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  selfLabel: {
-    fontSize: 10,
-    color: '#4CAF50',
-    fontWeight: '600',
-    paddingVertical: 2,
-    paddingHorizontal: 6,
-    backgroundColor: '#0a2818',
-    borderRadius: 4,
-  },
-  scoreSection: {
-    alignItems: 'flex-end',
-  },
-  score: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FF9800',
-  },
-  change: {
-    fontSize: 12,
-    marginTop: 2,
-    fontWeight: '600',
-  },
-  changeUp: {
-    color: '#4CAF50',
-  },
-  changeDown: {
-    color: '#f44336',
-  },
-  yourPositionCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50',
-  },
-  yourPositionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-    marginBottom: 12,
-  },
-  yourPositionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-  },
-  positionBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#4CAF50',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  positionRank: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  positionInfo: {
-    flex: 1,
-  },
-  positionScore: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  positionChange: {
-    fontSize: 13,
-    color: '#aaa',
-  },
+  posRank: { fontSize: fontSize.xl, fontWeight: '700', color: colors.textLight },
+  posInfo: { flex: 1 },
+  posScore: { fontSize: fontSize.xl, fontWeight: '700', color: colors.text, marginBottom: 4 },
+  posChange: { fontSize: fontSize.sm, color: colors.textSecondary },
+
   infoCard: {
-    backgroundColor: '#2a2a2a',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
+    backgroundColor: colors.card, borderRadius: radius.lg,
+    marginHorizontal: spacing.lg, marginTop: spacing.lg,
+    padding: spacing.lg, borderWidth: 1, borderColor: colors.border,
   },
-  infoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#fff',
-    marginBottom: 12,
-  },
-  infoText: {
-    fontSize: 13,
-    color: '#aaa',
-    marginBottom: 8,
-    lineHeight: 18,
-  },
+  infoTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.text, marginBottom: spacing.md },
+  infoRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.sm },
+  infoDot: { color: colors.primary, fontWeight: '700' },
+  infoText: { flex: 1, fontSize: fontSize.sm, color: colors.textSecondary, lineHeight: 18 },
 });

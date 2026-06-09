@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+﻿import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useState, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from 'expo-router';
@@ -431,7 +431,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   actionBtnSecondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
-  actionBtnText: { color: colors.bg, fontWeight: '700', fontSize: fontSize.body },
+  actionBtnText: { color: colors.textLight, fontWeight: '700', fontSize: fontSize.body },
 
   listSection: { paddingHorizontal: spacing.xl, marginTop: spacing.lg },
 
@@ -527,7 +527,7 @@ const s = StyleSheet.create({
   },
   optionLetterChosen: { backgroundColor: colors.success },
   optionLetterText: { color: colors.text, fontSize: fontSize.body, fontWeight: '700' },
-  optionLetterTextChosen: { color: colors.bg },
+  optionLetterTextChosen: { color: colors.textLight },
   optionContent: { flex: 1 },
   optionTitleRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 },
   optionTitle: { color: colors.text, fontSize: fontSize.body, fontWeight: '600' },

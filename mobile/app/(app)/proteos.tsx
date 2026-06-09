@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   TextInput,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import Markdown from 'react-native-markdown-display';
 import { getDeviceLocale } from '../../lib/locale';
 import { supabase } from '../../lib/supabase';
 import { useAuthStore } from '../../store/auth';
@@ -47,6 +48,46 @@ function generateUUID(): string {
     const r = (Math.random() * 16) | 0;
     return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
+}
+
+async function fetchUserContext(userId: string): Promise<string> {
+  try {
+    const now = new Date();
+    const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+    const weekAgo = new Date(now.getTime() - 7 * 86400000);
+
+    const [mealsToday, mealsWeek, diaryWeek, xp, mood, grat, hyd, rel] = await Promise.all([
+      supabase.from('meals').select('calories').eq('user_id', userId).gte('created_at', todayStart.toISOString()),
+      supabase.from('meals').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('created_at', weekAgo.toISOString()),
+      supabase.from('diario_entries').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('created_at', weekAgo.toISOString()),
+      supabase.from('user_xp').select('total_xp, level').eq('user_id', userId).single(),
+      supabase.from('mood_logs').select('mood').eq('user_id', userId).gte('created_at', weekAgo.toISOString()),
+      supabase.from('gratitude_logs').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('created_at', weekAgo.toISOString()),
+      supabase.from('hydration_logs').select('amount_ml').eq('user_id', userId).gte('created_at', todayStart.toISOString()),
+      supabase.from('relationship_logs').select('*', { count: 'exact', head: true }).eq('user_id', userId).gte('created_at', weekAgo.toISOString()),
+    ]);
+
+    const kcalHoje = (mealsToday.data || []).reduce((sum: number, m: any) => sum + (m.calories || 0), 0);
+    const numRefeicoes = (mealsToday.data || []).length;
+    const refeicoesSemana = mealsWeek.count ?? 0;
+    const diarioSemana = diaryWeek.count ?? 0;
+    const nivel = xp.data?.level ?? 1;
+    const totalXP = xp.data?.total_xp ?? 0;
+    const hora = now.toLocaleString('pt-BR', { weekday: 'long', hour: '2-digit', minute: '2-digit' });
+    const moodVals = (mood.data || []).map((m: any) => m.mood).filter((n: any) => typeof n === 'number');
+    const moodAvg = moodVals.length ? (moodVals.reduce((a: number, b: number) => a + b, 0) / moodVals.length).toFixed(1) : null;
+    const gratCount = grat.count ?? 0;
+    const hydMl = (hyd.data || []).reduce((a: number, r: any) => a + (r.amount_ml || 0), 0);
+    const relCount = rel.count ?? 0;
+
+    return `Momento: ${hora}
+Refeições hoje: ${numRefeicoes} (${kcalHoje} kcal registradas)
+Refeições esta semana: ${refeicoesSemana}
+Entradas no Diário do Ser esta semana: ${diarioSemana}${moodAvg ? `\nHumor médio (7 dias): ${moodAvg}/10` : ''}${gratCount ? `\nGratidões registradas (7 dias): ${gratCount}` : ''}${hydMl ? `\nÁgua hoje: ${hydMl} ml` : ''}${relCount ? `\nConexões registradas (7 dias): ${relCount}` : ''}
+Nível AquariOS: ${nivel} | XP total: ${totalXP}`;
+  } catch {
+    return '';
+  }
 }
 
 export default function ProteosScreen() {
@@ -171,8 +212,9 @@ export default function ProteosScreen() {
 
       try {
         const locale = getDeviceLocale();
+        const userContext = await fetchUserContext(user.id);
         const { data, error: fnError } = await supabase.functions.invoke('chat', {
-          body: { messages: apiMessages, persona, locale },
+          body: { messages: apiMessages, persona, locale, userContext },
         });
 
         if (fnError) {
@@ -235,12 +277,12 @@ export default function ProteosScreen() {
         renderItem={({ item }) => (
           <FadeInView>
             <View style={[s.bubble, item.role === 'user' ? s.userBubble : s.botBubble]}>
-              <Text style={[s.bubbleText, item.role === 'user' && s.userText]}>
-                {item.content}
-              </Text>
-              <Text style={s.timestamp}>
-                {formatTime(item.created_at)}
-              </Text>
+              {item.role === 'assistant' ? (
+                <Markdown style={mdStyle}>{item.content}</Markdown>
+              ) : (
+                <Text style={[s.bubbleText, s.userText]}>{item.content}</Text>
+              )}
+              <Text style={s.timestamp}>{formatTime(item.created_at)}</Text>
             </View>
           </FadeInView>
         )}
@@ -308,6 +350,21 @@ export default function ProteosScreen() {
   );
 }
 
+const mdStyle = {
+  body:       { color: colors.text, fontSize: fontSize.lg, lineHeight: 22 },
+  heading1:   { fontSize: fontSize.xl, fontWeight: '700' as const, color: colors.primary, marginBottom: 4, marginTop: 8 },
+  heading2:   { fontSize: fontSize.lg, fontWeight: '700' as const, color: colors.text, marginBottom: 4, marginTop: 6 },
+  strong:     { fontWeight: '700' as const, color: colors.text },
+  em:         { fontStyle: 'italic' as const, color: colors.textSecondary },
+  bullet_list:{ marginVertical: 4 },
+  ordered_list:{ marginVertical: 4 },
+  list_item:  { marginBottom: 2 },
+  code_inline:{ backgroundColor: colors.cardActive, color: colors.primary, borderRadius: 4, paddingHorizontal: 4, fontFamily: 'monospace' },
+  fence:      { backgroundColor: colors.cardActive, borderRadius: 8, padding: 8, marginVertical: 6 },
+  hr:         { backgroundColor: colors.border, height: 1, marginVertical: 8 },
+  paragraph:  { marginBottom: 6 },
+};
+
 const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
   messageList: { paddingHorizontal: spacing.lg, paddingTop: spacing.sm, paddingBottom: spacing.sm },
@@ -329,7 +386,7 @@ const s = StyleSheet.create({
     width: 20, height: 20, borderRadius: 10, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
-  removeImgText: { color: colors.bg, fontSize: 10, fontWeight: '700' },
+  removeImgText: { color: colors.textLight, fontSize: 10, fontWeight: '700' },
   previewLabel: { flex: 1, color: colors.textMuted, fontSize: fontSize.xs },
   inputRow: { flexDirection: 'row', padding: spacing.md, borderTopWidth: 1, borderTopColor: colors.border, alignItems: 'flex-end' },
   cameraBtn: { width: 36, height: 36, justifyContent: 'center', alignItems: 'center', marginRight: spacing.xs },
@@ -348,7 +405,7 @@ const s = StyleSheet.create({
   },
   sendBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', marginLeft: spacing.sm },
   sendBtnDisabled: { opacity: 0.5 },
-  sendText: { color: colors.bg, fontSize: 20, fontWeight: '700' },
+  sendText: { color: colors.textLight, fontSize: 20, fontWeight: '700' },
   personaRow: { borderTopWidth: 1, borderTopColor: colors.border, maxHeight: 54 },
   personaRowContent: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.sm },
   personaBtn: {

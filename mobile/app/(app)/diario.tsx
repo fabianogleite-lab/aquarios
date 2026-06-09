@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -203,5 +203,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center',
     elevation: 8, shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: 4,
   },
-  fabText: { color: colors.bg, fontSize: fontSize.display, fontWeight: '700' },
+  fabText: { color: colors.textLight, fontSize: fontSize.display, fontWeight: '700' },
 });

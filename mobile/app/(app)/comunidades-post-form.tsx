@@ -1,4 +1,4 @@
-import {
+﻿import {
   View,
   Text,
   StyleSheet,
@@ -217,7 +217,7 @@ export default function CommunityPostForm({ visible, onClose, onSuccess }: Commu
             disabled={loading || !title.trim() || !content.trim()}
           >
             {loading ? (
-              <ActivityIndicator color={colors.bg} />
+              <ActivityIndicator color={colors.textLight} />
             ) : (
               <Text style={s.publishBtnText}>Publicar</Text>
             )}
@@ -345,7 +345,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   publishBtnText: {
-    color: colors.bg,
+    color: colors.textLight,
     fontSize: fontSize.md,
     fontWeight: '700',
   },

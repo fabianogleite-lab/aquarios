@@ -1,28 +1,54 @@
 export const colors = {
-  primary: '#b8952a',
-  primaryFaded: '#b8952a44',
-  primarySubtle: '#b8952a22',
-  bg: '#090c14',
-  card: '#0d1520',
-  cardActive: '#1a2a3a',
-  cardHighlight: '#0f1a2a',
-  border: '#141c28',
-  text: '#ccd6e8',
-  textLight: '#e0e8f0',
-  textSecondary: '#6a7a8a',
-  textMuted: '#3a4a5a',
-  textDimmed: '#2a3a4a',
-  error: '#e74c3c',
-  errorBg: '#1a1a2e',
-  success: '#2ecc71',
-  warning: '#f39c12',
-  surface: '#141c28',
-  like: '#e05a5a',
-  userBubble: '#1a3a4a',
+  // === BASE ===
+  bg: '#EDEAE4',            // warm light grey (page background)
+  card: '#FFFFFF',           // white cards
+  cardDark: '#1A1F2E',      // dark navy (hero headers) — padrão "dark hero"
+  cardActive: '#F5F2EE',    // slightly darker bg for hover/active
+  cardHighlight: '#F0EDE8', // highlight variant
+
+  // === BORDERS ===
+  border: '#E2DDD8',         // subtle warm border
+
+  // === TEXT ===
+  text: '#1F2430',           // dark graphite (main)
+  textLight: '#FFFFFF',      // white (for use on dark cards)
+  textSecondary: '#6B7280',  // medium grey
+  textMuted: '#9CA3AF',      // light grey
+  textDimmed: '#C4BDB6',     // very light (dimmed hints)
+
+  // === PRIMARY — VIOLET ===
+  primary: '#7C5CBF',
+  primaryFaded: '#7C5CBF33',
+  primarySubtle: '#7C5CBF15',
+
+  // === ACCENTS ===
+  secondary: '#00B4CC',      // cyan
+  gold: '#B8952A',           // gold (XP, achievements, selos)
+
+  // === DIMENSION COLORS (IVI) ===
+  somatica: '#22D3EE',       // cyan  — Somática
+  psicologica: '#8B5CF6',    // violet — Psicológica
+  social: '#F59E0B',         // amber  — Social
+  existencial: '#22C55E',    // green  — Existencial
+
+  // === STATUS ===
+  error: '#EF4444',
+  errorBg: '#FEF2F2',
+  success: '#22C55E',
+  warning: '#F59E0B',
+
+  // === SURFACES ===
+  surface: '#F5F2ED',
+
+  // === UI SPECIFIC ===
+  like: '#EF4444',
+  userBubble: '#1A1F2E',     // dark navy for user chat bubbles
+
+  // === MACRO NUTRIENTS ===
   macro: {
-    protein: '#ff6b6b',
-    carbs: '#4ecdc4',
-    fat: '#ffd93d',
+    protein: '#FF6B6B',
+    carbs: '#4ECDC4',
+    fat: '#FFD93D',
   },
 } as const;
 
