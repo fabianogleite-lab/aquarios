@@ -23,11 +23,13 @@ Compliance e lojas vêm logo atrás. Cada fase abaixo = **1 handoff/sessão**.
 - Branches stale arquivadas como tags + remoto limpo.
 - **Commits:** `d4aa88b` (saneamento) + cherry-pick `settings.json`.
 
-### ⛳ S33 — Definir a matriz dos 13 *(PRÓXIMO — gate)*
-- **Entrega:** `COUNTRY_MATRIX.md` revisado e **aprovado**.
-- **Decisões do fundador (ver §Decisões da matriz):** confirmar os 13 (Irã = risco de sanções), gateway de pagamento por país, ordem de rollout, moeda de cobrança.
-- **Por que é gate:** sem os 13 fechados e o mapa de idiomas, S34 e S35 não têm escopo.
-- **Esforço:** ~1 sessão (decisão + ajuste do doc).
+### ✅ S33 — Definir a matriz dos 13 *(concluído 10/Jun/2026)*
+- `COUNTRY_MATRIX.md` **APROVADO** — os 4 gates decididos pelo fundador:
+  1. **Irã adiado** — Onda 4, condicionado a parecer OFAC; nenhum investimento em farsi antes.
+  2. **Pagamento:** Nigéria → Paystack; Venezuela → free tier no MVP; Irã segue o item 1.
+  3. **Rollout em 4 ondas** (Onda 1 = 6 países PT/EN/ES) — ver §Ordem de rollout.
+  4. **Moeda local-first** (local onde o gateway liquida; USD fallback).
+- S34 e S35 desbloqueadas (escopo fechado; ordem de idiomas da S34 = ordem das ondas).
 
 ### 🔤 S34 — Localização *(caminho crítico — semanas/meses)*
 - Traduzir UI: **+7 idiomas** (`fa, he, th, ko, zh-Hant, nb, de`) além de pt/en/es.
@@ -60,14 +62,14 @@ Compliance e lojas vêm logo atrás. Cada fase abaixo = **1 handoff/sessão**.
 
 | Risco | Detalhe | Ação |
 |-------|---------|------|
-| 🇮🇷 **Sanções (Irã)** | OFAC pode bloquear Stripe / App Store / Play Store p/ `fa-IR` | Decidir na S33: manter, adiar ou trocar |
-| 💳 **Pagamento** | Stripe não cobre Irã, Nigéria, Venezuela direto | Gateway alternativo (Paystack) ou só plano free nesses mercados |
+| 🇮🇷 **Sanções (Irã)** | OFAC pode bloquear Stripe / App Store / Play Store p/ `fa-IR` | ✅ S33: **adiado** p/ Onda 4, gate = parecer OFAC |
+| 💳 **Pagamento** | Stripe não cobre Irã, Nigéria, Venezuela direto | ✅ S33: Paystack (NG); free tier (VE, IR) |
 | 🔤 **Localização** | 7 idiomas novos + 2 RTL + 3 scripts complexos | Faseado por idioma; QA nativo |
 | 🖥️ **Infra** | 1 VM de 1 GB não escala p/ 13 países | GCP Cloud Run **antes** de qualquer tração real |
 
 ---
 
-## Ordem de rollout sugerida (mitiga o gargalo de tradução)
+## Ordem de rollout — ✅ APROVADA na S33 (mitiga o gargalo de tradução)
 
 1. **Onda 1 — já cobertos (PT/EN/ES):** Brasil, Portugal, EUA, Nigéria, Peru, Venezuela* (*ver pagamento).
 2. **Onda 2 — idiomas latinos novos:** Noruega (`nb`), Suíça (`de`).
@@ -76,4 +78,4 @@ Compliance e lojas vêm logo atrás. Cada fase abaixo = **1 handoff/sessão**.
 
 ---
 
-*S32 (09/Jun/2026). Próximo passo: aprovar `COUNTRY_MATRIX.md` na S33.*
+*S32 (09/Jun/2026) · S33 (10/Jun/2026): `COUNTRY_MATRIX.md` aprovado. Próximo: S34 — localização (começar por `nb`/`de`, ordem das ondas).*
