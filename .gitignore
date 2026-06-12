@@ -24,3 +24,8 @@ Thumbs.db
 # Handoffs/memória de sessão — nunca versionar (podem conter segredos em texto puro)
 memory/
 mobile/memory/
+
+# Python — caches e artefatos de build (business-agent, meta-agente, agencia, tools)
+__pycache__/
+*.pyc
+*.pyo

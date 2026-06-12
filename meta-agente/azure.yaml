@@ -1,0 +1,8 @@
+name: aquarios-meta-agente
+metadata:
+  template: aquarios-meta-agente@1.0.0
+services:
+  meta-agente:
+    project: .
+    language: py
+    host: containerapp
