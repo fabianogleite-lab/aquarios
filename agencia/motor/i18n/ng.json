@@ -1,0 +1,25 @@
+{
+  "pais": "Nigeria",
+  "locale": "en-NG",
+  "onda": 1,
+  "variants": {
+    "A": {
+      "label": "The question",
+      "headline": "Who are you when nobody's watching?",
+      "body": "Twelve apps track your steps, your sleep, your money. None of them ask how you're really doing inside. AquariOS measures your vitality across 4 dimensions — body, mind, purpose, and connection — and shows you where to focus.",
+      "cta": "Come back to yourself → free pre-registration"
+    },
+    "B": {
+      "label": "The number",
+      "headline": "You have a vitality score.",
+      "body": "iVi is one number, updated in real time, bringing together your physical, mental, spiritual, and social wellbeing. No scattered charts, no noise — plus a private journal not even our AI can read.",
+      "cta": "Find your iVi → free, no card needed"
+    },
+    "C": {
+      "label": "The origin",
+      "headline": "Born from a near heart attack. Became a fresh start.",
+      "body": "A dentist with 36 years in practice asked the question that changed everything: \"Where did I lose myself?\" The answer became the first Personal Operating System for whole-person health.",
+      "cta": "Read the story → aquarios"
+    }
+  }
+}

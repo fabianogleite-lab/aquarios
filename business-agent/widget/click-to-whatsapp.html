@@ -1,0 +1,73 @@
+<!-- ==========================================================================
+  Pacote D · D4 — Widget Click-to-WhatsApp (embutível em landing/site).
+  Conformidade embutida:
+    • Disclosure de IA antes de abrir o WhatsApp  (AI_DISCLOSURE §3)
+    • Caixas de opt-in B e C SEM pré-marcação     (CONSENTIMENTO §1, §2)
+    • Captura de UTMs/referrer p/ widget_interactions (PRIVACIDADE §14)
+  Uso: ajuste data-api e data-version; cole o bloco no site. Sem dependências.
+=========================================================================== -->
+<div id="aq-c2w"
+     data-api="https://api.podiumtec.com.br"
+     data-version="v1.0_20260610"
+     data-pais="BR" data-lang="pt-BR">
+  <style>
+    #aq-c2w{--fisico:#E07B54;--mental:#5B8DEF;--espiritual:#7C5CBF;--social:#52C98A;
+      --bg:#fff;--fg:#1a1726;--muted:#6b6678;--line:#e7e3ef;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:380px;
+      background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:16px;
+      padding:20px;box-shadow:0 8px 30px rgba(124,92,191,.10)}
+    #aq-c2w h3{margin:0 0 4px;font-size:17px}
+    #aq-c2w .ia{display:flex;gap:8px;align-items:flex-start;background:#f6f3fc;
+      border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12.5px;
+      color:var(--muted);margin:12px 0}
+    #aq-c2w input[type=tel]{width:100%;box-sizing:border-box;padding:11px 12px;
+      border:1px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:10px}
+    #aq-c2w label{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;
+      color:var(--fg);margin:8px 0;line-height:1.35;cursor:pointer}
+    #aq-c2w label input{margin-top:2px}
+    #aq-c2w button{width:100%;margin-top:14px;padding:13px;border:0;border-radius:10px;
+      background:var(--social);color:#06351f;font-weight:700;font-size:15px;cursor:pointer}
+    #aq-c2w button:disabled{opacity:.5;cursor:not-allowed}
+    #aq-c2w .err{color:#b3261e;font-size:12px;min-height:16px;margin-top:6px}
+  </style>
+
+  <h3>Fale com o ProteOS 🌊</h3>
+  <div class="ia">🤖 Você falará com o <b>ProteOS</b>, uma IA de bem-estar do AquariOS
+    (não médico). Quando precisar, posso te encaminhar para uma pessoa.</div>
+
+  <input id="aq-phone" type="tel" inputmode="tel" placeholder="Seu WhatsApp (ex.: +55 11 9 9999-9999)"/>
+
+  <label><input id="aq-b" type="checkbox"/>
+    Autorizo o AquariOS a tratar meus dados de bem-estar (humor, diário e dimensões do
+    iVi) para acompanhamento personalizado, conforme a Política de Privacidade.</label>
+
+  <label><input id="aq-c" type="checkbox"/>
+    Concordo em receber mensagens de marketing do AquariOS no WhatsApp.</label>
+
+  <button id="aq-go">Falar com o ProteOS</button>
+  <div class="err" id="aq-err"></div>
+</div>
+
+<script>(function(){
+  var root=document.getElementById('aq-c2w');
+  var API=root.dataset.api, VER=root.dataset.version, PAIS=root.dataset.pais, LANG=root.dataset.lang;
+  var q=new URLSearchParams(location.search);
+  var phone=document.getElementById('aq-phone'), b=document.getElementById('aq-b'),
+      c=document.getElementById('aq-c'), go=document.getElementById('aq-go'), err=document.getElementById('aq-err');
+  function e164(v){return (v||'').replace(/[^\d+]/g,'');}
+  go.onclick=function(){
+    err.textContent='';
+    var p=e164(phone.value);
+    if(p.replace('+','').length<10){err.textContent='Informe um número válido com DDI/DDD.';return;}
+    go.disabled=true;
+    var cText=c.checked?'Concordo em receber mensagens de marketing do AquariOS no WhatsApp.':'';
+    fetch(API+'/widget/optin',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({phone_e164:p,pais:PAIS,language:LANG,consent_version:VER,
+        consent_text:cText,B_bemestar:b.checked,C_marketing:c.checked,source:'widget_c2w',
+        referrer:document.referrer,utm_source:q.get('utm_source'),utm_medium:q.get('utm_medium'),
+        utm_campaign:q.get('utm_campaign')})})
+    .then(function(r){return r.ok?r.json():r.json().then(function(j){throw new Error(j.detail||'erro')})})
+    .then(function(j){location.href=j.redirect;})
+    .catch(function(ex){err.textContent=String(ex.message||ex);go.disabled=false;});
+  };
+})();</script>
