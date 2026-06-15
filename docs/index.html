@@ -254,6 +254,33 @@
         .partner-items li { font-size:0.775rem; color:rgba(255,255,255,0.55); display:flex; align-items:center; gap:0.5rem; }
         .partner-items li::before { content:'→'; color:var(--primary-light); font-weight:700; }
 
+        /* ── PRESENÇA GLOBAL ── */
+        .global-section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
+        .country-tabs { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:2.5rem; }
+        .country-tab {
+            background:var(--card); border:1px solid var(--border); border-radius:100px;
+            padding:0.6rem 1.25rem; font-size:0.85rem; font-weight:600; color:var(--text-muted);
+            cursor:pointer; transition:all 0.2s; font-family:inherit;
+        }
+        .country-tab:hover { border-color:var(--primary); color:var(--text); }
+        .country-tab.active { background:var(--hero); color:#fff; border-color:var(--hero); }
+        .country-panel {
+            background:var(--card); border:1px solid var(--border); border-radius:20px;
+            padding:2.25rem; margin-top:1.5rem;
+        }
+        .country-head { display:flex; align-items:center; gap:1.25rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+        .country-flag { font-size:2.5rem; }
+        .country-name { font-size:1.25rem; font-weight:800; letter-spacing:-0.01em; }
+        .country-meta { font-size:0.78rem; color:var(--text-muted); margin-top:0.15rem; }
+        .country-badge {
+            margin-left:auto; font-size:0.7rem; font-weight:700; letter-spacing:0.04em;
+            border:1.5px solid; border-radius:100px; padding:0.4rem 0.9rem; white-space:nowrap;
+        }
+        .country-text { font-size:0.95rem; color:var(--text); line-height:1.75; margin-bottom:1.25rem; }
+        .country-foot { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; padding-top:1.25rem; border-top:1px solid var(--border); }
+        .privacy-badge { font-size:0.78rem; font-weight:600; color:var(--text); background:var(--bg); padding:0.4rem 0.9rem; border-radius:100px; }
+        .country-fonte { font-size:0.7rem; color:var(--text-muted); font-style:italic; }
+
         /* ── WAITLIST ── */
         .waitlist-section { padding:7rem 2.5rem; max-width:680px; margin:0 auto; text-align:center; }
         .waitlist-section .section-label { color:var(--primary); }
@@ -356,6 +383,8 @@
             .footer-top { grid-template-columns:1fr; gap:2.5rem; }
             .footer-cols { grid-template-columns:1fr 1fr; gap:1.5rem; }
             .footer-bottom { flex-direction:column; align-items:flex-start; }
+            .country-head { flex-direction:column; align-items:flex-start; }
+            .country-badge { margin-left:0; }
         }
         @media (max-width:480px) {
             .modules-grid { grid-template-columns:1fr; }
@@ -392,6 +421,7 @@
         <li><a href="#modulos">Módulos</a></li>
         <li><a href="#parceiros">Para quem</a></li>
         <li><a href="#agentes">Arquitetura</a></li>
+        <li><a href="#global">Global</a></li>
     </ul>
     <a class="nav-cta" href="#waitlist">Quero ser beta tester</a>
 </nav>
@@ -670,6 +700,24 @@
     </div>
 </div>
 
+<!-- PRESENÇA GLOBAL -->
+<div id="global" class="global-section">
+    <div class="fade">
+        <div class="section-label">Presença global</div>
+        <h2 class="section-title">Construído no Brasil.<br>Pensado para o mundo.</h2>
+        <p class="section-desc">O AquariOS já fala a língua — e entende a dor — de 6 países em 3 continentes. Cada um com seu regime de privacidade, sua cultura e o ponto exato do iVi onde fazemos mais diferença.</p>
+    </div>
+    <div class="country-tabs fade fade-d1">
+        <button type="button" class="country-tab active" data-country="br" onclick="showCountry('br')">🇧🇷 Brasil</button>
+        <button type="button" class="country-tab" data-country="pt" onclick="showCountry('pt')">🇵🇹 Portugal</button>
+        <button type="button" class="country-tab" data-country="us" onclick="showCountry('us')">🇺🇸 Estados Unidos</button>
+        <button type="button" class="country-tab" data-country="ng" onclick="showCountry('ng')">🇳🇬 Nigéria</button>
+        <button type="button" class="country-tab" data-country="pe" onclick="showCountry('pe')">🇵🇪 Peru</button>
+        <button type="button" class="country-tab" data-country="ve" onclick="showCountry('ve')">🇻🇪 Venezuela</button>
+    </div>
+    <div class="country-panel fade fade-d2" id="countryPanel"></div>
+</div>
+
 <!-- WAITLIST -->
 <div id="waitlist" class="waitlist-section">
     <div class="fade">
@@ -796,7 +844,7 @@
             <div>
                 <div class="footer-logo">AquariOS</div>
                 <div class="footer-tagline">Sistema Operacional Pessoal</div>
-                <div class="footer-sub">Por ARKHE Labs</div>
+                <div class="footer-sub">Uma plataforma Podiumtec</div>
             </div>
             <div class="footer-cols">
                 <div>
@@ -834,12 +882,14 @@
                         <li><a href="privacy-policy.html">Privacidade</a></li>
                         <li><a href="privacy-policy.html">LGPD</a></li>
                         <li><a href="terms.html">Termos de uso</a></li>
+                        <li><a href="deletion.html">Exclusão de dados</a></li>
                     </ul>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>&copy; 2026 ARKHE Labs &middot; Fabiano Gomes Leite</span>
+            <span>&copy; 2026 AquariOS &middot; uma plataforma Podiumtec &middot; operada por CARVALHO &amp; LEITE GESTORA DE RECURSOS LIMITADA &middot; CNPJ 41.191.506/0001-02</span>
+            <span>Rua Adriano Chaves e Matos, 486 &middot; Belo Horizonte/MG &middot; CEP 30390-552 &middot; contato@podiumtec.com.br</span>
             <span>Lei 9.610/1998 &middot; LGPD Lei 13.709/2018</span>
         </div>
     </div>
@@ -892,6 +942,55 @@
         }
         requestAnimationFrame(tick);
     }
+
+    // ── PRESENÇA GLOBAL — skins por país ──
+    const DIM_COLOR = { fisico:'var(--somatica)', mental:'var(--psicologica)', espiritual:'var(--existencial)', social:'var(--social)' };
+    const COUNTRY_SKINS = {
+      br: { flag:'🇧🇷', nome:'Brasil', idioma:'Português (BR)', regime:'LGPD · Lei 13.709/2018',
+            dim:'mental', dimNome:'Mental', bardo:'Ansiedade Leve · Stress Alto',
+            texto:'O Brasil lidera o ranking mundial de ansiedade — 26,8% da população (Covitel 2023) — e só 9% dos diagnosticados com depressão recebem tratamento adequado. O AquariOS nomeia isso antes de virar crise: o Bardo certo aparece no seu iVi, dentro de um diário que nem a nossa IA consegue ler.',
+            fonte:'Fonte: Covitel 2023 / ONU News, set/2025' },
+      pt: { flag:'🇵🇹', nome:'Portugal', idioma:'Português (PT)', regime:'RGPD (UE)',
+            dim:'social', dimNome:'Social', bardo:'Exaustão · Dissociação',
+            texto:'Portugal tem uma das populações mais envelhecidas da Europa — os filhos emigram, os pais ficam. O AquariOS cuida da dimensão Social antes que a saudade vire isolamento, e da Espiritual quando a pergunta é "para onde foi o sentido de tudo isto?"',
+            fonte:'' },
+      us: { flag:'🇺🇸', nome:'United States', idioma:'English', regime:'CCPA / CPRA',
+            dim:'social', dimNome:'Social', bardo:'Exhaustion',
+            texto:'In 2023, the U.S. Surgeon General declared loneliness a public health epidemic. Twelve apps already track your steps — none ask how connected you feel. AquariOS measures the Social dimension in real time, and names the Bardo before burnout sets in.',
+            fonte:'Source: U.S. Surgeon General Advisory, 2023' },
+      ng: { flag:'🇳🇬', nome:'Nigeria', idioma:'English (NG)', regime:'NDPA',
+            dim:'mental', dimNome:'Mental', bardo:'High Stress',
+            texto:'Mental health still carries real stigma in Nigeria, even as "hustle" pressure builds every day. AquariOS keeps your iVi and your journal completely private — not even our AI can read it — so you can name what you feel without telling anyone.',
+            fonte:'' },
+      pe: { flag:'🇵🇪', nome:'Perú', idioma:'Español (PE)', regime:'Ley 29733',
+            dim:'espiritual', dimNome:'Espiritual', bardo:'Estrés Alto',
+            texto:'La filosofía andina del Buen Vivir (Sumak Kawsay) ya entiende el bienestar como algo integral — cuerpo, mente y espíritu en equilibrio. El iVi 4D del AquariOS habla ese mismo idioma, justo donde la economía informal genera más estrés físico y financiero del día a día.',
+            fonte:'' },
+      ve: { flag:'🇻🇪', nome:'Venezuela', idioma:'Español (VE)', regime:'— · acesso gratuito no MVP',
+            dim:'social', dimNome:'Social', bardo:'Ansiedad Leve',
+            texto:'Millones de familias venezolanas viven hoy separadas por la diáspora. El AquariOS mide la dimensión Social — el vínculo que la distancia no debería romper — y está disponible gratis, sin tarjeta, para quien más lo necesita ahora.',
+            fonte:'' },
+    };
+    function showCountry(code){
+        const c = COUNTRY_SKINS[code];
+        document.querySelectorAll('.country-tab').forEach(b => b.classList.toggle('active', b.dataset.country === code));
+        const fonteHtml = c.fonte ? `<span class="country-fonte">${c.fonte}</span>` : '';
+        document.getElementById('countryPanel').innerHTML = `
+            <div class="country-head">
+                <div class="country-flag">${c.flag}</div>
+                <div>
+                    <div class="country-name">${c.nome}</div>
+                    <div class="country-meta">${c.idioma} · Onda 1</div>
+                </div>
+                <div class="country-badge" style="border-color:${DIM_COLOR[c.dim]};color:${DIM_COLOR[c.dim]}">${c.dimNome} · ${c.bardo}</div>
+            </div>
+            <p class="country-text">${c.texto}</p>
+            <div class="country-foot">
+                <span class="privacy-badge">🔒 ${c.regime}</span>
+                ${fonteHtml}
+            </div>`;
+    }
+    showCountry('br');
 
     // ── DETALHE DOS MÓDULOS / AGENTES (cada card leva a um lugar) ──
     const DETAILS = {
