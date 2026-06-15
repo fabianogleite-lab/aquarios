@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PodiumTec — Engenharia & Arquitetura Meta AI</title>
+    <meta name="description" content="Como o ProteOS (AquariOS) atende aos requisitos de um agente de IA no ecossistema Meta: privacidade, segurança, escala e transparência — com stack real e auditável.">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #090c14; color: #e0e0e0; line-height: 1.7; padding: 2rem; max-width: 860px; margin: 0 auto; }
+        h1 { color: #00d4aa; margin-bottom: 0.4rem; font-size: 1.9rem; }
+        h2 { color: #00d4aa; margin-top: 2.2rem; margin-bottom: 0.4rem; font-size: 1.25rem; }
+        h3 { color: #fff; margin-top: 1.6rem; margin-bottom: 0.3rem; font-size: 1.05rem; }
+        p, li { margin-bottom: 0.7rem; font-size: 0.94rem; }
+        ul { padding-left: 1.4rem; }
+        .sub { color: #9aa4b2; font-style: italic; margin-bottom: 0.3rem; }
+        .date { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
+        .nav { font-size: 0.85rem; margin-bottom: 1.5rem; }
+        a { color: #00d4aa; }
+        .lead { color: #cdd5e0; font-size: 1rem; border-left: 3px solid #00d4aa; padding-left: 1rem; margin: 1.2rem 0; }
+        .badge { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; padding: 0.12rem 0.5rem; border-radius: 100px; vertical-align: middle; margin-left: 0.4rem; }
+        .ok { background: rgba(82,201,138,0.16); color: #6fe0a6; border: 1px solid rgba(82,201,138,0.4); }
+        .evo { background: rgba(224,123,84,0.16); color: #f0a07e; border: 1px solid rgba(224,123,84,0.4); }
+        .principle { border: 1px solid #1c2230; border-radius: 12px; padding: 1.1rem 1.3rem; margin: 1rem 0; background: rgba(255,255,255,0.015); }
+        .principle .num { color: #00d4aa; font-weight: 800; }
+        code, pre { font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace; }
+        pre { background: #0d1320; border: 1px solid #1c2230; border-radius: 10px; padding: 1rem; overflow-x: auto; font-size: 0.82rem; color: #b8c4d4; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.86rem; }
+        th, td { border: 1px solid #1c2230; padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+        th { color: #00d4aa; }
+        .legend { font-size: 0.82rem; color: #9aa4b2; margin: 0.5rem 0 1.5rem; }
+        .disclaimer { color: #888; font-size: 0.82rem; margin-top: 2.5rem; border-top: 1px solid #1c2230; padding-top: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>Engenharia &amp; Arquitetura — Agentes de IA no ecossistema Meta</h1>
+    <p class="date">PodiumTec · marca da Carvalho &amp; Leite Gestora de Recursos Ltda · v1 · 15 de junho de 2026</p>
+    <p class="nav"><a href="index.html">← Início</a> · <a href="privacy-policy.html">Privacidade</a> · <a href="terms.html">Termos</a> · <a href="deletion.html">Exclusão de Dados</a></p>
+
+    <p class="lead">Como construímos o <strong>ProteOS</strong> — o agente de IA do AquariOS — para operar no WhatsApp, Instagram e Messenger atendendo aos requisitos de privacidade, segurança, escala e transparência exigidos de um parceiro do ecossistema Meta. Cada princípio abaixo descreve <strong>o que já está em produção</strong> e <strong>o que está em evolução</strong>, sem fabricar capacidade — porque o que afirmamos precisa ser auditável.</p>
+
+    <p class="legend"><span class="badge ok">ATIVO</span> implementado e verificável no sistema atual &nbsp;·&nbsp; <span class="badge evo">EM EVOLUÇÃO</span> parcial ou em roadmap declarado</p>
+
+    <h2>Stack real (sem caixa-preta)</h2>
+    <table>
+        <thead><tr><th>Camada</th><th>Tecnologia</th></tr></thead>
+        <tbody>
+            <tr><td>Modelo de IA</td><td><strong>Claude (Anthropic)</strong> — Opus / Sonnet / Haiku, roteados por custo</td></tr>
+            <tr><td>Backend do agente</td><td>Python <strong>FastAPI</strong> (sem caixa-preta, auditável)</td></tr>
+            <tr><td>Infraestrutura</td><td><strong>Oracle Cloud (São Paulo)</strong> + nginx + HTTPS/TLS · systemd</td></tr>
+            <tr><td>Dados</td><td><strong>Supabase</strong> (PostgreSQL) com Row-Level Security deny-by-default</td></tr>
+            <tr><td>Cache de tokens</td><td>Cache semântico (Qdrant) para economia de chamadas ao modelo</td></tr>
+            <tr><td>Canais</td><td>WhatsApp Business API · Instagram · Messenger (Graph API v21)</td></tr>
+            <tr><td>Pagamentos</td><td>Stripe (multi-moeda) · Paystack (Nigéria)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Os 15 princípios</h2>
+
+    <div class="principle">
+        <h3><span class="num">1.</span> Globalização <span class="badge ok">ATIVO</span></h3>
+        <p class="sub">"O agente fala a língua do cliente, não o contrário."</p>
+        <p>pt-BR é língua primária, não tradução. Resolvemos o país pelo DDI do telefone (E.164 → ISO2) e roteamos idioma, moeda e gateway por país, com <strong>14 vozes culturais</strong> do ProteOS. Matriz aprovada de <strong>13 países</strong> em 4 ondas. Onda 1 (PT/EN/ES) cobre Brasil, EUA, Portugal, Nigéria, Peru e Venezuela; demais idiomas entram por onda.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">2.</span> Escalabilidade <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p class="sub">"Crescer sem reescrever."</p>
+        <p>Backend FastAPI <strong>stateless</strong> + banco gerenciado (Supabase) — o webhook responde (ACK) em &lt; 20s e processa em background, sem segurar a conexão. Hoje roda em VM dedicada 24×7 em São Paulo, dimensionada para o lançamento. <strong>Roadmap:</strong> failover horizontal (GCP Cloud Run) quando o volume exigir.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">3.</span> Inovação <span class="badge ok">ATIVO</span></h3>
+        <p class="sub">"O mais novo, mas só o que funciona."</p>
+        <p>Modelos de fronteira da <strong>Anthropic (Claude)</strong>, com roteamento por complexidade (Haiku para simples, Sonnet/Opus para complexo) e cache semântico para reduzir custo e latência. <strong>Roadmap:</strong> multimodal (imagem/áudio) e fine-tuning de tom de voz.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">4.</span> LGPD forte <span class="badge ok">ATIVO</span></h3>
+        <p class="sub">"A lei é o mínimo; nós fazemos o máximo."</p>
+        <ul>
+            <li><strong>Consentimento granular</strong> por finalidade (uso × marketing), revogável — com prova auditável (texto, versão, data/hora, IP).</li>
+            <li><strong>Direito ao esquecimento:</strong> endpoint <code>/delete-data</code> (callback Meta com assinatura HMAC) + canais app/e-mail, conclusão em até 30 dias.</li>
+            <li><strong>Zero compartilhamento de bem-estar com publicidade</strong> — nem com a Meta (ver Política de Privacidade §6).</li>
+            <li><strong>Criptografia AES-256-GCM</strong> em repouso para dados sensíveis + RLS por usuário.</li>
+        </ul>
+        <p><strong>Em evolução:</strong> mascaramento de PII antes do envio ao modelo (anonimização tokenizada).</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">5.</span> Código Python, aberto e auditável <span class="badge ok">ATIVO</span></h3>
+        <p class="sub">"Seu time lê, entende e modifica."</p>
+        <p>Framework <strong>FastAPI</strong>; integração Meta via Graph API; banco PostgreSQL (Supabase); deploy por systemd na VM Oracle. Sem orquestradores opacos — o fluxo é legível linha a linha.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">6.</span> Privacidade por design <span class="badge ok">ATIVO</span></h3>
+        <ul>
+            <li>Dados <strong>first-party</strong> apenas;</li>
+            <li>Criptografia em trânsito (TLS 1.2+) e em repouso (AES-256-GCM);</li>
+            <li><strong>Não treinamos modelos com seus dados;</strong></li>
+            <li>Isolamento por usuário (RLS deny-by-default) e auditoria de acesso.</li>
+        </ul>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">7.</span> Performance <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p class="sub">Meta: resposta percebida rápida.</p>
+        <p>ACK do webhook em &lt; 20s (garantido por processamento assíncrono), cache semântico para respostas recorrentes e chamadas assíncronas ao modelo. <strong>Metas de latência (p50/p95) serão medidas e publicadas após o go-live</strong> — não divulgamos números antes de medir em produção.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">8.</span> Experiência conversacional nativa <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p>Tom de voz da marca (camada de vozes culturais do ProteOS), histórico de conversa por cliente e <strong>handoff humano sem perder contexto</strong> (aprovação via Slack/HumanLayer). <strong>Roadmap:</strong> memória de preferências de longo prazo e resolução de referências.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">9.</span> Integração ecossistema Meta <span class="badge ok">ATIVO</span></h3>
+        <p class="sub">Um código, múltiplos canais.</p>
+        <p>Detecção de canal e do remetente para <strong>WhatsApp, Instagram e Messenger</strong> com histórico unificado (CRM próprio). Webhook com verificação de assinatura, ACK &lt; 20s e reenvio com retry. <strong>Roadmap:</strong> Threads.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">10.</span> Brand safety <span class="badge ok">ATIVO</span></h3>
+        <p>Guarda de conteúdo (<em>brand_guardian</em>) na saída: bloqueia <strong>alegações de saúde</strong> e linguagem de diagnóstico (coerente com "não é serviço médico"), respeita diversidade cultural/religiosa (camada EcumenicOS) e <strong>escala para humano</strong> quando a confiança cai.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">11.</span> Mensuração <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p>Registro de interações do widget (origem, UTMs, cliques). <strong>Roadmap:</strong> Meta Pixel e Conversions API — transmitindo somente eventos <em>lifestyle</em> não sensíveis (nunca dados de bem-estar, ver Privacidade §6).</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">12.</span> Segurança <span class="badge ok">ATIVO</span></h3>
+        <ul>
+            <li>Verificação de <strong>webhook por HMAC-SHA256</strong> (X-Hub-Signature-256);</li>
+            <li>Verificação do <strong>signed_request</strong> da Meta no fluxo de exclusão de dados;</li>
+            <li>RLS deny-by-default; segredos fora do código (variáveis de ambiente).</li>
+        </ul>
+        <p><strong>Roadmap:</strong> rate limiting no nginx, hardening contra prompt injection e pentest externo.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">13.</span> Transparência <span class="badge ok">ATIVO</span></h3>
+        <p>Sempre identificamos a IA: <em>"Você está conversando com o ProteOS, agente de IA do AquariOS."</em> Registros auditáveis (audit_logs) e esta própria página — que declara honestamente o que é ativo e o que é roadmap.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">14.</span> Personalização <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p>Integração com CRM próprio (cliente, histórico, país) para não repetir perguntas. Sempre <strong>opt-in</strong> e desativável. <strong>Roadmap:</strong> recomendações personalizadas.</p>
+    </div>
+
+    <div class="principle">
+        <h3><span class="num">15.</span> Resiliência <span class="badge evo">EM EVOLUÇÃO</span></h3>
+        <p>Reenvio à Meta com <strong>retry e backoff</strong>; fila de processamento em background; registro de falhas para reprocessamento. <strong>Roadmap:</strong> modo degradado por regras se o modelo cair, circuit breaker e metas formais de uptime/MTTR.</p>
+    </div>
+
+    <h2>Arquitetura (fluxo real)</h2>
+    <pre>WhatsApp / Instagram / Messenger
+        ↓
+nginx (HTTPS · api.podiumtec.com.br)
+        ↓
+FastAPI — verificação de assinatura (HMAC-SHA256) · ACK &lt; 20s
+        ↓
+Gate de compliance — país ativo na onda? · bloqueio OFAC (Irã)
+        ↓
+Roteamento — DDI → país → idioma / voz cultural / gateway
+        ↓
+ProteOS (Claude / Anthropic)  ·  cache semântico
+        ↓
+brand_guardian — alegações de saúde / tom / cultura  →  handoff humano (Slack)
+        ↓
+Supabase (RLS deny-by-default · AES-256-GCM · audit_logs)
+        ↓
+Envio à Meta (retry 3×)  ·  eventos lifestyle não sensíveis</pre>
+
+    <h2>Contato</h2>
+    <ul>
+        <li><strong>Geral / técnico / privacidade:</strong> contato@podiumtec.com.br</li>
+        <li><strong>Autoridade de controle (BR):</strong> ANPD — gov.br/anpd</li>
+    </ul>
+
+    <p class="disclaimer">PodiumTec é marca de CARVALHO &amp; LEITE GESTORA DE RECURSOS LIMITADA · CNPJ 41.191.506/0001-02 · Belo Horizonte/MG. Este documento descreve o estado de engenharia em 15/06/2026; itens marcados "em evolução" são roadmap declarado, não capacidade presente.</p>
+</body>
+</html>
