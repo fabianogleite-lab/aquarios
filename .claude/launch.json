@@ -6,6 +6,18 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3456", "--directory", "docs"],
       "port": 3456
+    },
+    {
+      "name": "odontolarplus-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3457", "--directory", "C:\\Users\\DWOS\\Desktop\\OdontolarPlus\\docs"],
+      "port": 3457
+    },
+    {
+      "name": "helius-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3458", "--directory", "C:\\Users\\DWOS\\Desktop\\Helius\\docs"],
+      "port": 3458
     }
   ]
 }
