@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>heYskY — Energia Solar para Pessoa Física</title>
+    <meta name="description" content="Energia solar sem complicação. Calcule sua economia agora e comece a pagar menos na conta de luz a partir de hoje.">
+    <meta name="description" lang="en" content="Residential solar energy for individuals. No upfront complexity. Calculate your savings now.">
+    <meta property="og:title" content="heYskY — Energia Solar para Pessoa Física">
+    <meta property="og:description" content="Calcule sua economia em energia solar. Sem burocracia, sem custo escondido.">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://podiumtec.com.br/heysky/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold:    #F5B800;
+            --gold-dk: #C99200;
+            --sky:     #0A2040;
+            --sky-mid: #0D3060;
+            --sky-lt:  #1A4A8A;
+            --sun:     #FF8C00;
+            --bg:      #F7F5F0;
+            --card:    #FFFFFF;
+            --text:    #1A1A2E;
+            --muted:   #6B7280;
+            --border:  rgba(26,26,46,0.08);
+            --green:   #16A34A;
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family:'Space Grotesk',system-ui,sans-serif;
+            background:var(--bg); color:var(--text);
+            line-height:1.6; -webkit-font-smoothing:antialiased;
+        }
+
+        /* ── LOGO HEYSKY ─────────────────────────────────────────── */
+        .logo-heysky { font-family:'Space Grotesk',sans-serif; font-weight:700; letter-spacing:-0.03em; }
+        .logo-heysky .y { color:var(--gold); font-weight:800; }
+        .logo-sm  { font-size:1.1rem; }
+        .logo-lg  { font-size:clamp(2.8rem,7vw,5.5rem); line-height:1; }
+        .logo-ft  { font-size:0.95rem; }
+
+        /* ── LGPD BANNER ─────────────────────────────────────────── */
+        #lgpd-banner {
+            position:fixed; bottom:0; left:0; right:0; z-index:9999;
+            background:rgba(10,32,64,0.97); backdrop-filter:blur(8px);
+            padding:1rem 2rem; display:flex; align-items:center; gap:1.5rem;
+            flex-wrap:wrap; border-top:1px solid rgba(245,184,0,0.2);
+        }
+        #lgpd-banner p { flex:1; margin:0; font-size:0.78rem; color:rgba(255,255,255,0.6); line-height:1.65; }
+        #lgpd-banner a { color:var(--gold); }
+        #lgpd-ok { background:var(--gold); color:#000; border:none; padding:0.5rem 1.25rem; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.78rem; white-space:nowrap; font-family:inherit; }
+
+        /* ── BAR 1 ───────────────────────────────────────────────── */
+        .bar-1 {
+            position:fixed; top:0; left:0; right:0; z-index:200;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0.875rem 2.5rem;
+            background:rgba(10,32,64,0.95); backdrop-filter:blur(20px);
+            border-bottom:1px solid rgba(245,184,0,0.12);
+        }
+        .bar-1-nav { display:flex; gap:2rem; list-style:none; }
+        .bar-1-nav a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.85rem; font-weight:500; transition:color 0.2s; }
+        .bar-1-nav a:hover { color:#fff; }
+        .bar-1-cta {
+            background:var(--gold); color:#000; font-size:0.8rem; font-weight:700;
+            padding:0.5rem 1.1rem; border-radius:8px; text-decoration:none;
+            font-family:inherit;
+        }
+
+        /* ── BAR 2 ───────────────────────────────────────────────── */
+        .bar-2 {
+            position:fixed; top:54px; left:0; right:0; z-index:190;
+            display:flex; align-items:center; justify-content:center; gap:2rem;
+            padding:0.45rem 2.5rem;
+            background:rgba(10,26,10,0.95);
+            border-bottom:1px solid rgba(255,255,255,0.04);
+            font-size:0.74rem;
+        }
+        .bar-2-label { color:rgba(255,255,255,0.3); font-weight:500; letter-spacing:0.04em; }
+        .bar-2-tab { color:rgba(255,255,255,0.4); font-weight:600; padding:0.3rem 1rem; text-decoration:none; border-bottom:2px solid transparent; transition:color 0.2s, border-color 0.2s; }
+        .bar-2-tab:hover, .bar-2-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+        .bar-2-cta { margin-left:auto; background:rgba(245,184,0,0.12); color:var(--gold); font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:0.3rem 0.875rem; border-radius:6px; text-decoration:none; border:1px solid rgba(245,184,0,0.25); }
+        .page-offset { padding-top:96px; }
+
+        /* ── HERO ────────────────────────────────────────────────── */
+        .hero {
+            min-height:100vh;
+            background:linear-gradient(160deg, #071421 0%, #0A2040 45%, #0D3060 100%);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            text-align:center; padding:7rem 2rem 5rem;
+            position:relative; overflow:hidden;
+        }
+        /* sol animado */
+        .hero-sun {
+            position:absolute; width:520px; height:520px; border-radius:50%;
+            background:radial-gradient(circle, rgba(245,184,0,0.12) 0%, rgba(255,140,0,0.05) 45%, transparent 70%);
+            top:50%; left:50%; transform:translate(-50%,-55%); pointer-events:none;
+            animation:sunpulse 6s ease-in-out infinite;
+        }
+        @keyframes sunpulse { 0%,100%{transform:translate(-50%,-55%) scale(1)} 50%{transform:translate(-50%,-55%) scale(1.08)} }
+        .hero-badge {
+            display:inline-flex; align-items:center; gap:0.5rem;
+            background:rgba(245,184,0,0.1); border:1px solid rgba(245,184,0,0.25);
+            color:var(--gold); font-size:0.68rem; font-weight:700;
+            letter-spacing:0.12em; text-transform:uppercase;
+            padding:0.35rem 0.9rem; border-radius:100px; margin-bottom:2.5rem;
+            position:relative;
+        }
+        .dot-gold { width:6px; height:6px; background:var(--gold); border-radius:50%; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+        .hero-logo-wrap { margin-bottom:1.5rem; position:relative; }
+        .hero-logo-wrap .logo-heysky .y { text-shadow:0 0 40px rgba(245,184,0,0.6); }
+        .hero-tagline {
+            font-size:clamp(1rem,2.5vw,1.35rem); color:rgba(255,255,255,0.55);
+            max-width:560px; margin-bottom:0.5rem; line-height:1.65;
+        }
+        .hero-tagline-en {
+            font-size:0.875rem; color:rgba(255,255,255,0.25);
+            margin-bottom:2.5rem; letter-spacing:0.02em;
+        }
+        .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; position:relative; }
+        .btn-gold {
+            display:inline-flex; align-items:center; gap:0.6rem;
+            background:var(--gold); color:#000; font-size:0.9rem; font-weight:700;
+            padding:0.875rem 1.75rem; border-radius:12px; text-decoration:none;
+            font-family:inherit; transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-gold:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,184,0,0.35); }
+        .btn-ghost-sky {
+            display:inline-flex; align-items:center; gap:0.5rem;
+            color:rgba(255,255,255,0.45); font-size:0.85rem; font-weight:500;
+            padding:0.875rem 1.5rem; border-radius:12px;
+            border:1px solid rgba(255,255,255,0.14); text-decoration:none;
+        }
+        .hero-scroll { position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.2); font-size:0.65rem; letter-spacing:0.08em; }
+        .scroll-line { width:1px; height:32px; background:linear-gradient(to bottom, rgba(245,184,0,0.4), transparent); }
+
+        /* ── STATS STRIP ─────────────────────────────────────────── */
+        .stats-strip {
+            background:var(--sky); padding:2.5rem 2.5rem;
+            display:flex; gap:0; overflow:hidden;
+        }
+        .stats-inner { max-width:1100px; margin:0 auto; display:flex; gap:0; width:100%; }
+        .stat { flex:1; text-align:center; padding:0 2rem; border-right:1px solid rgba(255,255,255,0.07); }
+        .stat:last-child { border-right:none; }
+        .stat-n { font-size:2rem; font-weight:800; color:var(--gold); letter-spacing:-0.04em; }
+        .stat-l { font-size:0.72rem; color:rgba(255,255,255,0.35); font-weight:500; letter-spacing:0.04em; margin-top:0.15rem; }
+
+        /* ── SECTIONS ────────────────────────────────────────────── */
+        .section { padding:6rem 2.5rem; }
+        .section-inner { max-width:1100px; margin:0 auto; }
+        .section-label { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-dk); margin-bottom:0.875rem; }
+        .section-title { font-size:clamp(1.6rem,3vw,2.4rem); font-weight:800; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1.1rem; }
+        .section-desc { font-size:1rem; color:var(--muted); line-height:1.75; max-width:540px; }
+        .fade { opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease; }
+        .fade.on { opacity:1; transform:translateY(0); }
+        .fade-d1{transition-delay:.1s} .fade-d2{transition-delay:.2s} .fade-d3{transition-delay:.3s} .fade-d4{transition-delay:.4s} .fade-d5{transition-delay:.5s}
+
+        /* ── FEATURES ────────────────────────────────────────────── */
+        .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+        .feature-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.625rem; transition:transform 0.2s, box-shadow 0.2s; }
+        .feature-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.06); }
+        .f-icon { font-size:1.25rem; width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:rgba(245,184,0,0.08); border-radius:10px; margin-bottom:1rem; }
+        .f-title { font-size:0.9rem; font-weight:700; margin-bottom:0.4rem; }
+        .f-desc { font-size:0.8rem; color:var(--muted); line-height:1.6; }
+
+        /* ── CALCULADORA ─────────────────────────────────────────── */
+        .calc-section { background:var(--sky); padding:6rem 2.5rem; }
+        .calc-inner { max-width:900px; margin:0 auto; }
+        .calc-section .section-label { color:rgba(245,184,0,0.7); }
+        .calc-section .section-title { color:#fff; }
+        .calc-section .section-desc { color:rgba(255,255,255,0.4); }
+        .calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-top:3rem; align-items:start; }
+        .calc-form { display:flex; flex-direction:column; gap:1.25rem; }
+        .calc-field label { display:block; font-size:0.8rem; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:0.4rem; letter-spacing:0.04em; }
+        .calc-field input {
+            width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+            border-radius:10px; padding:0.75rem 1rem; font-size:1rem; color:#fff;
+            font-family:inherit; outline:none; transition:border-color 0.2s;
+        }
+        .calc-field input:focus { border-color:var(--gold); }
+        .calc-field .hint { font-size:0.72rem; color:rgba(255,255,255,0.25); margin-top:0.3rem; }
+        .btn-calc {
+            background:var(--gold); color:#000; border:none; padding:0.875rem 1.5rem;
+            border-radius:12px; font-size:0.9rem; font-weight:700; cursor:pointer;
+            font-family:inherit; transition:transform 0.2s;
+            display:flex; align-items:center; justify-content:center; gap:0.5rem;
+        }
+        .btn-calc:hover { transform:translateY(-1px); }
+        .calc-results { background:rgba(255,255,255,0.04); border:1px solid rgba(245,184,0,0.2); border-radius:18px; padding:2rem; }
+        .result-label { font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:0.4rem; }
+        .result-val { font-size:1.75rem; font-weight:800; color:var(--gold); letter-spacing:-0.04em; margin-bottom:1.25rem; }
+        .result-val.big { font-size:2.25rem; }
+        .result-divider { border:none; border-top:1px solid rgba(255,255,255,0.06); margin:1rem 0; }
+        .calc-note { font-size:0.7rem; color:rgba(255,255,255,0.2); margin-top:1rem; line-height:1.6; }
+        .calc-cta { margin-top:1.5rem; display:flex; flex-direction:column; gap:0.6rem; }
+        .btn-phone {
+            display:flex; align-items:center; justify-content:center; gap:0.6rem;
+            background:var(--gold); color:#000; border:none; padding:0.875rem;
+            border-radius:12px; font-size:0.875rem; font-weight:700; cursor:pointer;
+            font-family:inherit; text-decoration:none; transition:transform 0.2s;
+        }
+        .btn-phone:hover { transform:translateY(-1px); }
+        .btn-whatsapp {
+            display:flex; align-items:center; justify-content:center; gap:0.6rem;
+            background:rgba(37,211,102,0.12); color:#25D366; padding:0.75rem;
+            border-radius:12px; font-size:0.85rem; font-weight:600; text-decoration:none;
+            border:1px solid rgba(37,211,102,0.25); transition:background 0.2s;
+        }
+        .btn-whatsapp:hover { background:rgba(37,211,102,0.2); }
+        .phone-note { font-size:0.7rem; color:rgba(255,255,255,0.2); text-align:center; }
+
+        /* ── COMO FUNCIONA ───────────────────────────────────────── */
+        .steps-section { background:var(--bg); }
+        .steps-h { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3.5rem; }
+        .step-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:1.75rem; }
+        .step-num { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; font-size:0.78rem; font-weight:800; background:rgba(245,184,0,0.1); color:var(--gold-dk); border:1px solid rgba(245,184,0,0.25); margin-bottom:1.25rem; }
+        .step-title { font-size:1rem; font-weight:700; margin-bottom:0.6rem; }
+        .step-desc { font-size:0.82rem; color:var(--muted); line-height:1.65; }
+        .step-tag { display:inline-block; margin-top:1rem; font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.25rem 0.7rem; border-radius:100px; background:rgba(245,184,0,0.08); color:var(--gold-dk); }
+
+        /* ── PHONE CTA SECTION ───────────────────────────────────── */
+        .phone-cta-section {
+            background:var(--sky-mid); padding:5rem 2.5rem; text-align:center;
+            position:relative; overflow:hidden;
+        }
+        .phone-cta-section::before { content:''; position:absolute; width:600px; height:600px; background:radial-gradient(circle, rgba(245,184,0,0.07) 0%, transparent 65%); top:50%; left:50%; transform:translate(-50%,-50%); }
+        .phone-cta-section h2 { font-size:clamp(1.75rem,3.5vw,2.5rem); font-weight:800; color:#fff; letter-spacing:-0.03em; margin-bottom:1rem; position:relative; }
+        .phone-cta-section h2 em { font-style:normal; color:var(--gold); }
+        .phone-cta-section p { font-size:1rem; color:rgba(255,255,255,0.4); max-width:480px; margin:0 auto 2.5rem; line-height:1.7; position:relative; }
+        .phone-cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; }
+        .btn-phone-lg {
+            display:inline-flex; align-items:center; gap:0.75rem;
+            background:var(--gold); color:#000; font-size:1rem; font-weight:700;
+            padding:1rem 2rem; border-radius:13px; text-decoration:none; font-family:inherit;
+            cursor:pointer; border:none; transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-phone-lg:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(245,184,0,0.4); }
+        .agent-note { font-size:0.72rem; color:rgba(255,255,255,0.2); margin-top:1.5rem; }
+
+        /* ── PROTECOS ────────────────────────────────────────────── */
+        .proteos-section { background:#070F1F; border-top:1px solid rgba(245,184,0,0.1); padding:4rem 2.5rem; }
+        .proteos-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+        .proteos-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(245,184,0,0.1); border:1px solid rgba(245,184,0,0.2); color:var(--gold); font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:100px; margin-bottom:1.25rem; }
+        .proteos-title { font-size:1.75rem; font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1rem; }
+        .proteos-desc { font-size:0.9rem; color:rgba(255,255,255,0.42); line-height:1.7; margin-bottom:2rem; }
+        .proteos-card { background:rgba(255,255,255,0.03); border:1px solid rgba(245,184,0,0.15); border-radius:16px; padding:2rem; }
+        .proteos-card-title { font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1rem; }
+        .proteos-login-btn { display:flex; align-items:center; justify-content:center; gap:0.6rem; background:var(--gold); color:#000; font-size:0.9rem; font-weight:700; padding:0.875rem; border-radius:12px; text-decoration:none; width:100%; margin-bottom:0.875rem; font-family:inherit; }
+        .proteos-login-note { font-size:0.72rem; color:rgba(255,255,255,0.2); text-align:center; line-height:1.6; }
+        .proteos-modules { display:flex; flex-direction:column; gap:0.6rem; }
+        .proteos-module { display:flex; align-items:center; gap:0.75rem; font-size:0.82rem; color:rgba(255,255,255,0.55); }
+        .proteos-module-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+
+        /* ── FOOTER ──────────────────────────────────────────────── */
+        footer { background:#05080F; padding:2.5rem; border-top:1px solid rgba(255,255,255,0.04); }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap; }
+        .footer-legal { font-size:0.68rem; color:rgba(255,255,255,0.18); line-height:1.7; }
+        .footer-links { display:flex; gap:1.5rem; list-style:none; }
+        .footer-links a { font-size:0.72rem; color:rgba(255,255,255,0.25); text-decoration:none; }
+        .footer-links a:hover { color:rgba(255,255,255,0.5); }
+
+        /* ── RESPONSIVE ──────────────────────────────────────────── */
+        @media (max-width:768px) {
+            .bar-1-nav, .bar-2 { display:none; }
+            .page-offset { padding-top:56px; }
+            .features-grid, .steps-h { grid-template-columns:1fr; }
+            .calc-grid { grid-template-columns:1fr; }
+            .proteos-inner { grid-template-columns:1fr; gap:2.5rem; }
+            .stats-inner { flex-wrap:wrap; }
+            .stat { flex:1 1 45%; border-right:none; border-bottom:1px solid rgba(255,255,255,0.07); padding-bottom:1.5rem; }
+            .footer-inner { flex-direction:column; text-align:center; }
+        }
+    </style>
+</head>
+<body class="page-offset">
+
+<!-- LGPD -->
+<div id="lgpd-banner">
+    <p>Usamos cookies técnicos essenciais para funcionamento do site. Nenhum dado pessoal identificável é armazenado sem sua autorização. <a href="https://podiumtec.com.br/privacy-policy.html">Política de Privacidade</a> — LGPD (Lei 13.709/2018).</p>
+    <button id="lgpd-ok" onclick="aceitarLGPD()">Entendido ✓</button>
+</div>
+
+<!-- BAR 1 -->
+<nav class="bar-1">
+    <a href="/" class="logo-heysky logo-sm" style="text-decoration:none;color:#fff;">
+        he<span class="y">Y</span>sk<span class="y">Y</span>
+    </a>
+    <ul class="bar-1-nav">
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#calculadora">Calcular economia</a></li>
+        <li><a href="#consultoria">Consultoria grátis</a></li>
+    </ul>
+    <a href="#calculadora" class="bar-1-cta">Calcular →</a>
+</nav>
+
+<!-- BAR 2 -->
+<div class="bar-2">
+    <span class="bar-2-label">Ecossistema C&L</span>
+    <nav style="display:flex;gap:0;">
+        <a href="#hero" class="bar-2-tab active">heYskY</a>
+        <a href="#proteos" class="bar-2-tab">ProteOS</a>
+    </nav>
+    <a href="#proteos" class="bar-2-cta">Entrar no app →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-sun"></div>
+    <div class="hero-badge"><span class="dot-gold"></span>Energia Solar · Pessoa Física</div>
+    <div class="hero-logo-wrap">
+        <div class="logo-heysky logo-lg" style="color:#fff;">
+            he<span class="y">Y</span>sk<span class="y">Y</span>
+        </div>
+    </div>
+    <p class="hero-tagline">Energia solar sem complicação.<br>Pague menos na conta de luz a partir de hoje.</p>
+    <p class="hero-tagline-en">Residential solar energy for individuals. No upfront complexity. Real savings.</p>
+    <div class="hero-btns">
+        <a href="#calculadora" class="btn-gold">☀ Calcular minha economia</a>
+        <a href="#como-funciona" class="btn-ghost-sky">Como funciona</a>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>ROLAR</div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+    <div class="stats-inner">
+        <div class="stat"><div class="stat-n">90%</div><div class="stat-l">Redução na conta de luz</div></div>
+        <div class="stat"><div class="stat-n">4–6 anos</div><div class="stat-l">Retorno médio investimento</div></div>
+        <div class="stat"><div class="stat-n">25 anos</div><div class="stat-l">Vida útil do sistema</div></div>
+        <div class="stat"><div class="stat-n">R$0</div><div class="stat-l">Custo de consultoria</div></div>
+    </div>
+</div>
+
+<!-- FUNCIONALIDADES -->
+<section class="section" id="funcionalidades">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Por que heYskY</div>
+            <h2 class="section-title">Solar para pessoa física.<br>Sem a burocracia de sempre.</h2>
+            <p class="section-desc">Focamos em quem mora em casa ou apartamento próprio e quer energia limpa sem complicação.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade fade-d1">
+                <div class="f-icon">☀</div>
+                <div class="f-title">Geração própria</div>
+                <div class="f-desc">Produza sua própria energia e injete o excedente na rede, acumulando créditos na conta da distribuidora.</div>
+            </div>
+            <div class="feature-card fade fade-d2">
+                <div class="f-icon">📉</div>
+                <div class="f-title">Conta reduzida em até 90%</div>
+                <div class="f-desc">A maioria dos clientes reduz a fatura mensal para o valor mínimo de disponibilidade — em média R$40–80.</div>
+            </div>
+            <div class="feature-card fade fade-d3">
+                <div class="f-icon">🛡</div>
+                <div class="f-title">Proteção contra inflação energética</div>
+                <div class="f-desc">Energia solar é gerada por você. A tarifa da distribuidora pode subir, mas seu custo fica estável.</div>
+            </div>
+            <div class="feature-card fade fade-d4">
+                <div class="f-icon">🌱</div>
+                <div class="f-title">Zero emissão de carbono</div>
+                <div class="f-desc">Sistema fotovoltaico não emite CO₂ na geração. Energia limpa para sua família e para o planeta.</div>
+            </div>
+            <div class="feature-card fade fade-d5">
+                <div class="f-icon">💳</div>
+                <div class="f-title">Financiamento acessível</div>
+                <div class="f-desc">Parcelas que cabem no bolso, muitas vezes menores que a conta de luz atual. Sua instalação pode ser financiada em até 84 meses.</div>
+            </div>
+            <div class="feature-card fade fade-d1">
+                <div class="f-icon">📲</div>
+                <div class="f-title">Acompanhe em tempo real</div>
+                <div class="f-desc">Geração diária, mensal e histórica na palma da mão. Integração com ProteOS para monitoramento inteligente.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CALCULADORA -->
+<section class="calc-section" id="calculadora">
+    <div class="calc-inner">
+        <div class="fade">
+            <div class="section-label">Calculadora de economia</div>
+            <h2 class="section-title" style="color:#fff;">Quanto você vai economizar?</h2>
+            <p class="section-desc">Insira seu consumo atual e veja a projeção de retorno em tempo real.</p>
+        </div>
+        <div class="calc-grid" style="margin-top:3rem;">
+            <div class="calc-form fade fade-d1">
+                <div class="calc-field">
+                    <label>Consumo mensal (kWh)</label>
+                    <input type="number" id="inp-kwh" value="250" min="50" max="5000">
+                    <span class="hint">Veja na sua última fatura de energia</span>
+                </div>
+                <div class="calc-field">
+                    <label>Tarifa atual (R$/kWh)</label>
+                    <input type="number" id="inp-tarifa" value="0.82" step="0.01" min="0.3" max="2.5">
+                    <span class="hint">Média nacional 2026: R$0,75–0,95</span>
+                </div>
+                <div class="calc-field">
+                    <label>Estado (irradiação solar)</label>
+                    <select id="inp-estado" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:0.75rem 1rem;font-size:1rem;color:#fff;font-family:inherit;outline:none;">
+                        <option value="1.0">MG / SP / RJ — média</option>
+                        <option value="1.1">BA / PE / CE — alto</option>
+                        <option value="1.15">MT / GO / MS — muito alto</option>
+                        <option value="0.9">RS / SC / PR — baixo</option>
+                        <option value="0.85">PA / AM / AC — nublado</option>
+                    </select>
+                </div>
+                <button class="btn-calc" onclick="calcular()">☀ Calcular economia</button>
+            </div>
+            <div class="calc-results fade fade-d2">
+                <div class="result-label">Economia mensal estimada</div>
+                <div class="result-val big" id="r-economia-mes">R$205</div>
+                <hr class="result-divider">
+                <div class="result-label">Potência necessária</div>
+                <div class="result-val" id="r-potencia">1,9 kWp</div>
+                <div class="result-label">Payback estimado</div>
+                <div class="result-val" id="r-payback">4,6 anos</div>
+                <div class="result-label">Economia em 25 anos</div>
+                <div class="result-val" id="r-25anos">R$61.500</div>
+                <p class="calc-note">* Estimativa baseada em irradiação média regional. Valores reais dependem de vistoria técnica gratuita.</p>
+                <div class="calc-cta">
+                    <button class="btn-phone" onclick="solicitarConsultoria()">📞 Falar com especialista agora</button>
+                    <a href="https://wa.me/5511999999999?text=Quero+saber+mais+sobre+energia+solar+heYskY" class="btn-whatsapp" target="_blank" rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Consultar pelo WhatsApp
+                    </a>
+                    <span class="phone-note">Consultoria 100% gratuita. Sem compromisso.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="section steps-section" id="como-funciona">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Como funciona</div>
+            <h2 class="section-title">Três etapas. Energia limpa na tomada.</h2>
+            <p class="section-desc">Do primeiro contato à geração independente, sem burocracia e sem custo escondido.</p>
+        </div>
+        <div class="steps-h">
+            <div class="step-card fade fade-d1">
+                <div class="step-num">01</div>
+                <div class="step-title">Diagnóstico gratuito</div>
+                <div class="step-desc">Consultor analisa sua conta de luz e dimensiona o sistema ideal para o seu consumo e telhado.</div>
+                <span class="step-tag">Sem compromisso</span>
+            </div>
+            <div class="step-card fade fade-d2">
+                <div class="step-num">02</div>
+                <div class="step-title">Proposta e aprovação</div>
+                <div class="step-desc">Apresentamos o projeto, equipamentos e opções de financiamento. Você aprova o que faz sentido para você.</div>
+                <span class="step-tag">Financiamento em até 84x</span>
+            </div>
+            <div class="step-card fade fade-d3">
+                <div class="step-num">03</div>
+                <div class="step-title">Instalação e ativação</div>
+                <div class="step-desc">Equipe certificada instala. Homologação com a distribuidora é por nossa conta. Você já sai gerando.</div>
+                <span class="step-tag">Garantia de 25 anos</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA PHONE -->
+<section class="phone-cta-section" id="consultoria">
+    <h2 class="fade">Fale com um especialista agora.<br><em>É gratuito.</em></h2>
+    <p class="fade fade-d1">Nossa IA de voz conecta você com um consultor em segundos. Tire dúvidas, receba uma proposta preliminar e entenda se solar faz sentido para você — tudo na mesma chamada.</p>
+    <div class="phone-cta-btns fade fade-d2">
+        <button class="btn-phone-lg" onclick="solicitarConsultoria()">📞 Ligar agora — gratuito</button>
+        <a href="https://wa.me/5511999999999?text=Quero+consultor+heYskY" class="btn-phone-lg" style="background:rgba(37,211,102,0.15);color:#25D366;font-size:0.9rem;" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <p class="agent-note">Atendimento por IA de voz + consultor humano · Disponível seg–sáb 8h–20h</p>
+</section>
+
+<!-- PROTEOS -->
+<section class="proteos-section" id="proteos">
+    <div class="proteos-inner">
+        <div class="fade">
+            <div class="proteos-badge"><span class="dot-gold"></span>ProteOS · Sistema Operacional</div>
+            <h2 class="proteos-title">Monitore sua geração<br>com inteligência artificial.</h2>
+            <p class="proteos-desc">ProteOS conecta seu painel solar ao ecossistema de saúde e finanças da Carvalho &amp; Leite. Produção de energia integrada ao seu bem-estar.</p>
+            <div class="proteos-modules">
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Geração diária, mensal e histórica</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Alertas de performance</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Relatório de carbono evitado</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Integração com iVi (índice de bem-estar)</div>
+            </div>
+        </div>
+        <div class="fade fade-d2">
+            <div class="proteos-card">
+                <div class="proteos-card-title">Acesso ao painel</div>
+                <a href="https://podiumtec.com.br" class="proteos-login-btn">→ Entrar no ProteOS</a>
+                <p class="proteos-login-note">App disponível para iOS e Android.<br>Download gratuito · <a href="https://podiumtec.com.br#download" style="color:rgba(255,255,255,0.3)">Baixar APK</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="logo-heysky logo-ft" style="color:rgba(255,255,255,0.4);">
+            he<span class="y">Y</span>sk<span class="y">Y</span>
+        </div>
+        <div class="footer-legal">Carvalho &amp; Leite Gestora de Recursos Ltda · CNPJ 41.191.506/0001-02<br>Belo Horizonte, MG · CNAE 74.90-1-04 · Parceira distribuidora Power Mais</div>
+        <ul class="footer-links">
+            <li><a href="https://podiumtec.com.br/privacy-policy.html">Privacidade</a></li>
+            <li><a href="https://podiumtec.com.br/terms.html">Termos</a></li>
+            <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+// LGPD
+function aceitarLGPD(){ document.getElementById('lgpd-banner').style.display='none'; localStorage.setItem('lgpd_ok','1'); }
+if(localStorage.getItem('lgpd_ok')) document.getElementById('lgpd-banner').style.display='none';
+
+// Solar Calculator
+function calcular(){
+    const kwh    = parseFloat(document.getElementById('inp-kwh').value)    || 250;
+    const tarifa = parseFloat(document.getElementById('inp-tarifa').value)  || 0.82;
+    const fator  = parseFloat(document.getElementById('inp-estado').value)  || 1.0;
+
+    // 1 kWp gera ~130 kWh/mês em MG/SP (ajustado pelo fator de irradiação)
+    const gBase   = 130 * fator;
+    const potKwp  = kwh / gBase;
+    const custo   = potKwp * 3800;          // R$3.800/kWp (instalação + equipamento)
+    const econMes = kwh * tarifa * 0.90;    // 90% de redução
+    const ecoAno  = econMes * 12;
+    const payback = custo / ecoAno;
+    const eco25   = Math.round(ecoAno * 25);
+
+    document.getElementById('r-economia-mes').textContent = 'R$' + Math.round(econMes).toLocaleString('pt-BR');
+    document.getElementById('r-potencia').textContent     = potKwp.toFixed(1) + ' kWp';
+    document.getElementById('r-payback').textContent      = payback.toFixed(1) + ' anos';
+    document.getElementById('r-25anos').textContent       = 'R$' + eco25.toLocaleString('pt-BR');
+}
+calcular(); // valor inicial
+
+// ElevenLabs phone consultation
+// AGENT_ID_HEYSKY: configurar após criar agent no painel ElevenLabs
+const _ELEVENLABS_AGENT_ID = 'CONFIGURE_HEYSKY_AGENT_ID';
+function solicitarConsultoria(){
+    // Quando agent configurado: inicializar ElevenLabs Conversational AI
+    if(_ELEVENLABS_AGENT_ID === 'CONFIGURE_HEYSKY_AGENT_ID'){
+        window.open('https://wa.me/5511999999999?text=Quero+consultar+sobre+energia+solar+heYskY','_blank','noopener');
+        return;
+    }
+    // SDK ElevenLabs Conversational (ativar após criar agent)
+    if(window.ElevenLabs && window.ElevenLabs.startConversation){
+        window.ElevenLabs.startConversation({ agentId: _ELEVENLABS_AGENT_ID });
+    }
+}
+
+// IntersectionObserver (fade in)
+const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), { threshold:0.12 });
+document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+// Bar-2 tab tracking
+const sections = document.querySelectorAll('section[id]');
+const sObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if(!e.isIntersecting) return;
+        document.querySelectorAll('.bar-2-tab').forEach(t => t.classList.remove('active'));
+        const id = e.target.id;
+        const tab = document.querySelector('.bar-2-tab[href="#' + id + '"]');
+        if(tab) tab.classList.add('active');
+        else document.querySelector('.bar-2-tab[href="#hero"]')?.classList.add('active');
+    });
+}, { threshold:0.4 });
+sections.forEach(s => sObs.observe(s));
+
+// HVP dwell
+const _start = Date.now(); let _clicks = 0;
+document.addEventListener('click', () => _clicks++);
+window.addEventListener('beforeunload', () => {
+    const d = Date.now() - _start;
+    if(d < 2000) return;
+    navigator.sendBeacon('https://api.podiumtec.com.br/v1/ingestao',
+        JSON.stringify({ tipo:'HVP_HEYSKY', dwell_ms: d, clicks: _clicks }));
+});
+</script>
+</body>
+</html>

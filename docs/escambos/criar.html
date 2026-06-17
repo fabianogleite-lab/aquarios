@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar meu site — EscambOS · C&L</title>
+    <style>
+        :root {
+            --bg: #F5F0E8; --hero: #0D1A0D; --card: #fff;
+            --primary: #16A34A; --primary-light: #4ADE80;
+            --text: #111827; --text-muted: #6B7280;
+            --border: rgba(17,24,39,0.09);
+            --step-max: 13; /* intro + 12 qs */
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--hero); min-height:100vh;
+            color:#fff; -webkit-font-smoothing:antialiased;
+            display:flex; flex-direction:column;
+        }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:1rem 2rem; border-bottom:1px solid rgba(255,255,255,0.06);
+        }
+        .topbar-logo { font-size:1rem; font-weight:800; color:#fff; text-decoration:none; }
+        .topbar-logo span { color:var(--primary-light); }
+        .topbar-plan {
+            font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+            padding:0.3rem 0.75rem; border-radius:100px;
+            background:rgba(22,163,74,0.15); color:var(--primary-light);
+            border:1px solid rgba(22,163,74,0.25);
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-wrap { padding:1.25rem 2rem 0; }
+        .progress-meta {
+            display:flex; justify-content:space-between; margin-bottom:0.6rem;
+            font-size:0.72rem; color:rgba(255,255,255,0.35); font-weight:500;
+        }
+        .progress-track {
+            height:3px; background:rgba(255,255,255,0.08); border-radius:100px; overflow:hidden;
+        }
+        .progress-fill {
+            height:3px; background:var(--primary-light); border-radius:100px;
+            transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        /* ── WIZARD STAGE ── */
+        .stage {
+            flex:1; display:flex; align-items:center; justify-content:center;
+            padding:3rem 1.5rem 2rem; position:relative; overflow:hidden;
+        }
+        .step {
+            width:100%; max-width:640px;
+            display:none; opacity:0;
+            animation:none;
+        }
+        .step.active {
+            display:block;
+            animation: slideIn 0.35s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        .step.exit-left {
+            display:block;
+            animation: slideOutLeft 0.25s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        .step.exit-right {
+            display:block;
+            animation: slideOutRight 0.25s cubic-bezier(0.4,0,0.2,1) forwards;
+        }
+        @keyframes slideIn {
+            from { opacity:0; transform:translateX(28px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+        @keyframes slideOutLeft {
+            from { opacity:1; transform:translateX(0); }
+            to   { opacity:0; transform:translateX(-28px); }
+        }
+        @keyframes slideOutRight {
+            from { opacity:1; transform:translateX(0); }
+            to   { opacity:0; transform:translateX(28px); }
+        }
+
+        /* ── STEP LABELS ── */
+        .step-badge {
+            display:inline-flex; align-items:center; gap:0.4rem;
+            font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+            color:rgba(255,255,255,0.35); margin-bottom:1.25rem;
+        }
+        .step-badge .dot {
+            width:5px; height:5px; border-radius:50%; background:var(--primary-light);
+        }
+        .step-q {
+            font-size:clamp(1.4rem,3.5vw,2rem); font-weight:800;
+            letter-spacing:-0.03em; line-height:1.2; margin-bottom:0.6rem; color:#fff;
+        }
+        .step-hint {
+            font-size:0.82rem; color:rgba(255,255,255,0.35); margin-bottom:2rem; line-height:1.5;
+        }
+        .step-hint em { color:var(--primary-light); font-style:normal; font-weight:600; }
+
+        /* ── INTRO INPUTS ── */
+        .intro-fields { display:flex; flex-direction:column; gap:1rem; }
+        .field-label {
+            font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+            color:rgba(255,255,255,0.4); margin-bottom:0.4rem;
+        }
+        .field-input {
+            width:100%; padding:0.875rem 1rem; border-radius:12px;
+            background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+            color:#fff; font-size:0.95rem; font-family:inherit;
+            outline:none; transition:border-color 0.2s, background 0.2s;
+        }
+        .field-input::placeholder { color:rgba(255,255,255,0.22); }
+        .field-input:focus { border-color:rgba(22,163,74,0.5); background:rgba(255,255,255,0.08); }
+
+        /* ── OPTION CARDS ── */
+        .options { display:flex; flex-direction:column; gap:0.75rem; }
+        .opt {
+            display:flex; align-items:center; gap:1rem;
+            padding:1rem 1.25rem; border-radius:14px;
+            background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.08);
+            cursor:pointer; transition:background 0.18s, border-color 0.18s, transform 0.15s;
+            user-select:none;
+        }
+        .opt:hover { background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.15); }
+        .opt.selected {
+            background:rgba(22,163,74,0.12); border-color:rgba(22,163,74,0.5);
+            transform:translateX(3px);
+        }
+        .opt-num {
+            width:34px; height:34px; border-radius:8px; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center;
+            background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+            font-size:0.82rem; font-weight:800; color:rgba(255,255,255,0.5);
+            transition:background 0.18s, color 0.18s, border-color 0.18s;
+        }
+        .opt.selected .opt-num {
+            background:rgba(22,163,74,0.25); border-color:rgba(22,163,74,0.5);
+            color:var(--primary-light);
+        }
+        .opt-text { flex:1; }
+        .opt-label { font-size:0.9rem; font-weight:600; color:#fff; margin-bottom:0.1rem; }
+        .opt-sub   { font-size:0.75rem; color:rgba(255,255,255,0.35); }
+        .opt-check {
+            width:18px; height:18px; border-radius:5px; border:1.5px solid rgba(255,255,255,0.2);
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            transition:background 0.18s, border-color 0.18s;
+        }
+        .opt.selected .opt-check { background:var(--primary); border-color:var(--primary); }
+        .opt.selected .opt-check::after { content:'✓'; font-size:0.65rem; color:#fff; font-weight:800; }
+
+        /* "Outro" input shown when Outro option is selected */
+        .outro-input-wrap {
+            margin-top:0.5rem; display:none;
+        }
+        .outro-input-wrap.visible { display:block; }
+        .outro-input {
+            width:100%; padding:0.7rem 1rem; border-radius:10px;
+            background:rgba(255,255,255,0.06); border:1px solid rgba(22,163,74,0.35);
+            color:#fff; font-size:0.875rem; font-family:inherit; outline:none;
+        }
+        .outro-input::placeholder { color:rgba(255,255,255,0.25); }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav {
+            padding:1.5rem 2rem; display:flex; align-items:center; gap:1rem;
+            border-top:1px solid rgba(255,255,255,0.05);
+        }
+        .btn-back {
+            display:flex; align-items:center; gap:0.4rem;
+            background:transparent; color:rgba(255,255,255,0.35);
+            font-size:0.85rem; font-weight:500; border:none; cursor:pointer;
+            padding:0.75rem 1rem; border-radius:10px;
+            transition:color 0.2s; font-family:inherit;
+        }
+        .btn-back:hover { color:#fff; }
+        .btn-back:disabled { opacity:0.3; cursor:not-allowed; }
+        .btn-next {
+            flex:1; display:flex; align-items:center; justify-content:center; gap:0.5rem;
+            background:var(--primary); color:#fff; font-size:0.9rem; font-weight:700;
+            padding:0.875rem 1.5rem; border-radius:12px; border:none; cursor:pointer;
+            transition:opacity 0.2s; font-family:inherit;
+        }
+        .btn-next:hover { opacity:0.88; }
+        .btn-next:disabled { opacity:0.35; cursor:not-allowed; }
+        .btn-skip {
+            background:transparent; color:rgba(255,255,255,0.25);
+            font-size:0.8rem; font-weight:500; border:none; cursor:pointer;
+            padding:0.75rem 0.75rem; border-radius:10px;
+            transition:color 0.2s; font-family:inherit; white-space:nowrap;
+        }
+        .btn-skip:hover { color:rgba(255,255,255,0.5); }
+
+        /* ── RESULT SCREEN ── */
+        .result-header {
+            display:flex; align-items:center; gap:0.75rem; margin-bottom:2rem;
+        }
+        .result-icon {
+            width:48px; height:48px; border-radius:14px;
+            background:rgba(22,163,74,0.2); border:1px solid rgba(22,163,74,0.35);
+            display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+        }
+        .result-title { font-size:1.5rem; font-weight:800; color:#fff; letter-spacing:-0.02em; }
+        .result-sub { font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.1rem; }
+        .result-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:1.5rem; }
+        .result-tag {
+            font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+            padding:0.28rem 0.7rem; border-radius:100px;
+            background:rgba(22,163,74,0.15); color:var(--primary-light);
+            border:1px solid rgba(22,163,74,0.25);
+        }
+
+        /* Code block */
+        .code-wrap {
+            background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08);
+            border-radius:14px; overflow:hidden; margin-bottom:1.5rem;
+        }
+        .code-header {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0.75rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);
+            font-size:0.72rem; color:rgba(255,255,255,0.35); font-weight:600;
+        }
+        .btn-copy {
+            background:rgba(22,163,74,0.15); color:var(--primary-light);
+            font-size:0.7rem; font-weight:700; letter-spacing:0.06em;
+            padding:0.3rem 0.75rem; border-radius:6px; border:1px solid rgba(22,163,74,0.25);
+            cursor:pointer; font-family:inherit; transition:background 0.2s;
+        }
+        .btn-copy:hover { background:rgba(22,163,74,0.25); }
+        .btn-copy.copied { background:rgba(22,163,74,0.35); }
+        pre {
+            padding:1.25rem 1rem; font-family:'Fira Code','Consolas',monospace;
+            font-size:0.72rem; line-height:1.85; color:rgba(255,255,255,0.75);
+            overflow-x:auto; max-height:280px; overflow-y:auto;
+        }
+        .kw  { color:#FCD34D; }
+        .str { color:#86EFAC; }
+        .num { color:#93C5FD; }
+        .cmt { color:rgba(74,222,128,0.45); }
+
+        /* Plan gate */
+        .plan-gate {
+            background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+            border-radius:14px; padding:1.5rem; display:flex; gap:1.25rem; align-items:flex-start;
+            margin-bottom:1.25rem;
+        }
+        .plan-gate-icon { font-size:1.25rem; flex-shrink:0; margin-top:0.1rem; }
+        .plan-gate-title { font-size:0.875rem; font-weight:700; color:#fff; margin-bottom:0.3rem; }
+        .plan-gate-desc { font-size:0.78rem; color:rgba(255,255,255,0.35); line-height:1.6; }
+        .plan-gate-cta {
+            display:inline-flex; align-items:center; gap:0.4rem; margin-top:0.75rem;
+            font-size:0.75rem; font-weight:700; color:var(--primary-light);
+            background:rgba(22,163,74,0.12); border:1px solid rgba(22,163,74,0.25);
+            padding:0.3rem 0.8rem; border-radius:6px; text-decoration:none; cursor:pointer;
+            border:none; font-family:inherit; transition:background 0.2s;
+        }
+        .plan-gate-cta:hover { background:rgba(22,163,74,0.22); }
+
+        .result-actions { display:flex; gap:0.875rem; flex-wrap:wrap; }
+        .btn-action-primary {
+            flex:1; display:flex; align-items:center; justify-content:center; gap:0.5rem;
+            background:var(--primary); color:#fff; font-size:0.9rem; font-weight:700;
+            padding:0.875rem 1.5rem; border-radius:12px; border:none; cursor:pointer;
+            transition:opacity 0.2s; font-family:inherit; text-decoration:none;
+        }
+        .btn-action-primary:hover { opacity:0.88; }
+        .btn-restart {
+            display:flex; align-items:center; gap:0.4rem;
+            background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.5);
+            font-size:0.82rem; font-weight:500; padding:0.875rem 1.25rem;
+            border-radius:12px; border:none; cursor:pointer; font-family:inherit;
+            transition:background 0.2s, color 0.2s;
+        }
+        .btn-restart:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+        /* Sections checklist */
+        .sections-list { display:flex; flex-direction:column; gap:0.4rem; margin-bottom:1.5rem; }
+        .section-item {
+            display:flex; align-items:center; gap:0.6rem;
+            font-size:0.8rem; color:rgba(255,255,255,0.5);
+        }
+        .section-item .chk { color:var(--primary-light); font-size:0.75rem; font-weight:800; }
+        .section-item .lock { color:rgba(255,255,255,0.2); font-size:0.7rem; }
+
+        @media (max-width:560px) {
+            .topbar { padding:0.875rem 1rem; }
+            .progress-wrap { padding:1rem 1rem 0; }
+            .stage { padding:2rem 1rem 1rem; }
+            .bottom-nav { padding:1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="topbar">
+    <a href="index.html" class="topbar-logo">Escamb<span>OS</span></a>
+    <span class="topbar-plan" id="plan-badge">Plano Gratuito</span>
+</header>
+
+<!-- ── PROGRESS ── -->
+<div class="progress-wrap">
+    <div class="progress-meta">
+        <span id="step-label">Introdução</span>
+        <span id="step-counter">0 / 13</span>
+    </div>
+    <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+</div>
+
+<!-- ── WIZARD STAGE ── -->
+<div class="stage" id="stage">
+
+    <!-- STEP 0 — Intro / nome -->
+    <div class="step" id="s0">
+        <div class="step-badge"><span class="dot"></span>Início</div>
+        <h1 class="step-q">Vamos criar<br>o seu site.</h1>
+        <p class="step-hint">
+            Responda de <em>10 a 13 perguntas</em> e a plataforma gera
+            a configuração completa para você. Gratuito. Sem precisar mexer em código.
+        </p>
+        <div class="intro-fields">
+            <div>
+                <div class="field-label">Nome do negócio *</div>
+                <input type="text" class="field-input" id="biz-name"
+                    placeholder="Ex: Padaria do Zé, Clínica Saúde+" maxlength="60">
+            </div>
+            <div>
+                <div class="field-label">O que você faz em uma frase</div>
+                <input type="text" class="field-input" id="biz-tagline"
+                    placeholder="Ex: Pão fresquinho entregue na sua porta" maxlength="100">
+            </div>
+            <div>
+                <div class="field-label">Seu e-mail de contato *</div>
+                <input type="email" class="field-input" id="biz-email"
+                    placeholder="contato@seunegocio.com.br">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 1 — Tipo de negócio -->
+    <div class="step" id="s1">
+        <div class="step-badge"><span class="dot"></span>Passo 1 de 11</div>
+        <h2 class="step-q">Qual é a natureza<br>do que você oferece?</h2>
+        <p class="step-hint">Pode marcar mais de um se necessário.</p>
+        <div class="options" data-step="1" data-multi="true">
+            <div class="opt" data-val="produto">
+                <div class="opt-num">1</div>
+                <div class="opt-text">
+                    <div class="opt-label">Produto físico</div>
+                    <div class="opt-sub">Tenho estoque e faço entrega</div>
+                </div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="servico">
+                <div class="opt-num">2</div>
+                <div class="opt-text">
+                    <div class="opt-label">Serviço</div>
+                    <div class="opt-sub">Ofereço expertise, atendimento ou execução</div>
+                </div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="intermediacao">
+                <div class="opt-num">3</div>
+                <div class="opt-text">
+                    <div class="opt-label">Intermediação / Marketplace</div>
+                    <div class="opt-sub">Conecto vendedores e compradores</div>
+                </div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-1">
+                <div class="opt-num">→</div>
+                <div class="opt-text">
+                    <div class="opt-label">Outro</div>
+                    <div class="opt-sub">Descreva brevemente</div>
+                </div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-1-wrap">
+                <input type="text" class="outro-input" id="outro-1-text" placeholder="Descreva..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2 — Setor -->
+    <div class="step" id="s2">
+        <div class="step-badge"><span class="dot"></span>Passo 2 de 11</div>
+        <h2 class="step-q">Em qual segmento<br>você atua?</h2>
+        <p class="step-hint">Pode marcar mais de um.</p>
+        <div class="options" data-step="2" data-multi="true">
+            <div class="opt" data-val="saude">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Saúde / Bem-estar / Clínica</div><div class="opt-sub">Medicina, odonto, estética, nutrição, fitness</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="varejo">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Varejo / Comércio / Moda</div><div class="opt-sub">Loja física ou online, beleza, casa e decoração</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="tech-energia">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Tecnologia / Energia / Serviços</div><div class="opt-sub">Software, solar, consultoria, educação</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-2">
+                <div class="opt-num">→</div>
+                <div class="opt-text"><div class="opt-label">Outro segmento</div><div class="opt-sub">Descreva</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-2-wrap">
+                <input type="text" class="outro-input" id="outro-2-text" placeholder="Seu segmento..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3 — Público -->
+    <div class="step" id="s3">
+        <div class="step-badge"><span class="dot"></span>Passo 3 de 11</div>
+        <h2 class="step-q">Quem é o seu<br>cliente principal?</h2>
+        <p class="step-hint">Pode marcar mais de um se atender perfis diferentes.</p>
+        <div class="options" data-step="3" data-multi="true">
+            <div class="opt" data-val="b2c">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Pessoa física — consumidor final</div><div class="opt-sub">Compra para uso próprio ou da família</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="b2b">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Empresa — B2B, pessoa jurídica</div><div class="opt-sub">Decisão corporativa, processo de compra formal</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="profissional">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Profissionais do setor</div><div class="opt-sub">Revendedores, franqueados, parceiros técnicos</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-3">
+                <div class="opt-num">→</div>
+                <div class="opt-text"><div class="opt-label">Outro perfil</div><div class="opt-sub">Descreva</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-3-wrap">
+                <input type="text" class="outro-input" id="outro-3-text" placeholder="Seu perfil de cliente..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 4 — Porte da empresa -->
+    <div class="step" id="s4">
+        <div class="step-badge"><span class="dot"></span>Passo 4 de 11</div>
+        <h2 class="step-q">Qual é o porte<br>da sua empresa?</h2>
+        <p class="step-hint">Escolha apenas um — ajuda a recomendar o plano ideal.</p>
+        <div class="options" data-step="4" data-multi="false">
+            <div class="opt" data-val="autonomo">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Autônomo / MEI</div><div class="opt-sub">Trabalho por conta própria ou microempreendedor individual</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="me">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Microempresa (ME)</div><div class="opt-sub">Até R$ 360 mil/ano de faturamento</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="pme">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Pequena ou média empresa</div><div class="opt-sub">Equipe estruturada, processo de vendas estabelecido</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="grande">
+                <div class="opt-num">4</div>
+                <div class="opt-text"><div class="opt-label">Grande empresa / corporação</div><div class="opt-sub">Múltiplos departamentos, decisão em comitê</div></div>
+                <div class="opt-check"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 5 — Diferencial -->
+    <div class="step" id="s5">
+        <div class="step-badge"><span class="dot"></span>Passo 5 de 11</div>
+        <h2 class="step-q">O que te faz diferente<br>dos concorrentes?</h2>
+        <p class="step-hint">Pode marcar mais de um — define o texto de cada feature card.</p>
+        <div class="options" data-step="5" data-multi="true">
+            <div class="opt" data-val="preco">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Preço — melhor custo-benefício</div><div class="opt-sub">Economize, pague menos, mais pelo mesmo valor</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="qualidade">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Qualidade — resultado comprovado</div><div class="opt-sub">Garantia, certificações, casos de sucesso</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="conveniencia">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Conveniência — rapidez e facilidade</div><div class="opt-sub">Sem burocracia, entrega rápida, tudo online</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-5">
+                <div class="opt-num">→</div>
+                <div class="opt-text"><div class="opt-label">Outro diferencial</div><div class="opt-sub">Descreva</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-5-wrap">
+                <input type="text" class="outro-input" id="outro-5-text" placeholder="Seu diferencial..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 6 — Orçamento / Plano -->
+    <div class="step" id="s6">
+        <div class="step-badge"><span class="dot"></span>Passo 6 de 11</div>
+        <h2 class="step-q">Qual é o seu orçamento<br>para o site?</h2>
+        <p class="step-hint">Escolha apenas um — define qual plano recomendamos para você.</p>
+        <div class="options" data-step="6" data-multi="false">
+            <div class="opt" data-val="gratuito">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Gratuito — começar sem custo</div><div class="opt-sub">Template universal, SITE{} config, publicação no GitHub Pages</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="pro">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Plano Pro — site profissional</div><div class="opt-sub">Domínio próprio, suporte, integrações básicas e ProteOS</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="enterprise">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Enterprise — editor completo</div><div class="opt-sub">Template editável, sub-páginas ilimitadas, HVP + dados de comportamento</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="consultoria">
+                <div class="opt-num">4</div>
+                <div class="opt-text"><div class="opt-label">Consultoria personalizada</div><div class="opt-sub">Projeto sob medida com a equipe C&amp;L — escopo em reunião</div></div>
+                <div class="opt-check"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 7 — CTA principal -->
+    <div class="step" id="s7">
+        <div class="step-badge"><span class="dot"></span>Passo 7 de 11</div>
+        <h2 class="step-q">O que você quer que<br>o visitante faça?</h2>
+        <p class="step-hint">Pode marcar mais de um — o primeiro selecionado será o CTA principal.</p>
+        <div class="options" data-step="7" data-multi="true">
+            <div class="opt" data-val="comprar">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Comprar / Assinar diretamente</div><div class="opt-sub">Link para loja, checkout ou plano</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="whatsapp">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Entrar em contato via WhatsApp</div><div class="opt-sub">Link direto com mensagem pré-preenchida</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="orcamento">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Agendar / Solicitar orçamento</div><div class="opt-sub">Formulário, calendário ou e-mail</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-7">
+                <div class="opt-num">→</div>
+                <div class="opt-text"><div class="opt-label">Outro</div><div class="opt-sub">Descreva a ação desejada</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-7-wrap">
+                <input type="text" class="outro-input" id="outro-7-text" placeholder="Qual ação..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 8 — Seções da landing -->
+    <div class="step" id="s8">
+        <div class="step-badge"><span class="dot"></span>Passo 8 de 11</div>
+        <h2 class="step-q">Quais seções você quer<br>na landing page?</h2>
+        <p class="step-hint">Pode marcar mais de um — todas seguem o template universal gratuito.</p>
+        <div class="options" data-step="8" data-multi="true">
+            <div class="opt" data-val="como-funciona">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Como funciona — passo a passo</div><div class="opt-sub">3 cards explicando o processo ou jornada</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="depoimentos">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Prova social — depoimentos ou cases</div><div class="opt-sub">Aumenta confiança antes do CTA</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="faq">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Perguntas frequentes — FAQ</div><div class="opt-sub">Remove objeções antes da decisão de compra</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-8">
+                <div class="opt-num">→</div>
+                <div class="opt-text"><div class="opt-label">Outra seção</div><div class="opt-sub">Descreva</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-8-wrap">
+                <input type="text" class="outro-input" id="outro-8-text" placeholder="Qual seção..." maxlength="80">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 9 — Tomador de decisão -->
+    <div class="step" id="s9">
+        <div class="step-badge"><span class="dot"></span>Passo 9 de 11</div>
+        <h2 class="step-q">Você é o tomador<br>de decisão?</h2>
+        <p class="step-hint">Escolha apenas um — ajusta a abordagem de qualificação do lead.</p>
+        <div class="options" data-step="9" data-multi="false">
+            <div class="opt" data-val="autonomia">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">Sim — decido sozinho</div><div class="opt-sub">Tenho autonomia total para contratar e investir</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="socios">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">Preciso aprovar com sócios ou diretoria</div><div class="opt-sub">Apresentarei a proposta para aprovação interna</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="pesquisador">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Estou pesquisando — ainda não decidi</div><div class="opt-sub">Levantando opções para uma decisão futura</div></div>
+                <div class="opt-check"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 10 — Cor -->
+    <div class="step" id="s10">
+        <div class="step-badge"><span class="dot"></span>Passo 10 de 11</div>
+        <h2 class="step-q">Qual cor representa<br>melhor o seu negócio?</h2>
+        <p class="step-hint">Escolha apenas uma — define a paleta da página inteira.</p>
+        <div class="options" data-step="10" data-multi="false">
+            <div class="opt" data-val="azul">
+                <div class="opt-num" style="background:rgba(29,78,216,0.2);border-color:rgba(29,78,216,0.4);color:#60A5FA;">■</div>
+                <div class="opt-text"><div class="opt-label">Azul — profissional, confiança</div><div class="opt-sub">Finanças, saúde, tecnologia, jurídico</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="verde">
+                <div class="opt-num" style="background:rgba(22,163,74,0.2);border-color:rgba(22,163,74,0.4);color:#4ADE80;">■</div>
+                <div class="opt-text"><div class="opt-label">Verde — saúde, crescimento, natural</div><div class="opt-sub">Bem-estar, sustentabilidade, agricultura</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="ambar">
+                <div class="opt-num" style="background:rgba(217,119,6,0.2);border-color:rgba(217,119,6,0.4);color:#FCD34D;">■</div>
+                <div class="opt-text"><div class="opt-label">Âmbar / Laranja — energia, ação</div><div class="opt-sub">Solar, alimentos, esportes, varejo dinâmico</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="outro-cor">
+                <div class="opt-num" style="background:rgba(124,92,191,0.2);border-color:rgba(124,92,191,0.4);color:#C4B5FD;">■</div>
+                <div class="opt-text"><div class="opt-label">Outra cor</div><div class="opt-sub">Informe o código hex ou nome da cor</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="outro-input-wrap" id="outro-cor-wrap">
+                <input type="text" class="outro-input" id="outro-cor-text" placeholder="#7C5CBF ou roxo, vermelho..." maxlength="30">
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 11 — Como prefere ser contatado -->
+    <div class="step" id="s11">
+        <div class="step-badge"><span class="dot"></span>Passo 11 de 11</div>
+        <h2 class="step-q">Como prefere<br>ser contatado?</h2>
+        <p class="step-hint">Pode marcar mais de um — configura os canais de CTA da página.</p>
+        <div class="options" data-step="11" data-multi="true">
+            <div class="opt" data-val="whatsapp">
+                <div class="opt-num">1</div>
+                <div class="opt-text"><div class="opt-label">WhatsApp — resposta rápida</div><div class="opt-sub">CTA com link direto para conversa no WhatsApp</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="email">
+                <div class="opt-num">2</div>
+                <div class="opt-text"><div class="opt-label">E-mail — retorno em até 24h</div><div class="opt-sub">Formulário ou mailto com assunto pré-preenchido</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="ligacao">
+                <div class="opt-num">3</div>
+                <div class="opt-text"><div class="opt-label">Ligação — agendamento direto</div><div class="opt-sub">CTA de ligar agora ou agendar uma chamada</div></div>
+                <div class="opt-check"></div>
+            </div>
+            <div class="opt" data-val="reuniao">
+                <div class="opt-num">4</div>
+                <div class="opt-text"><div class="opt-label">Reunião online — videoconferência</div><div class="opt-sub">Link para calendário ou Google Meet</div></div>
+                <div class="opt-check"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 12 — RESULTADO -->
+    <div class="step" id="s12">
+        <div class="result-header">
+            <div class="result-icon">✅</div>
+            <div>
+                <div class="result-title">Configuração pronta!</div>
+                <div class="result-sub" id="res-sub">Plano Gratuito · Template Universal C&L</div>
+            </div>
+        </div>
+        <div class="result-tags" id="res-tags"></div>
+        <div class="sections-list" id="res-sections"></div>
+        <div class="code-wrap">
+            <div class="code-header">
+                <span>SITE config — cole no template index.html</span>
+                <button class="btn-copy" id="btn-copy" onclick="copyConfig()">Copiar</button>
+            </div>
+            <pre id="res-code"></pre>
+        </div>
+        <div class="plan-gate">
+            <div class="plan-gate-icon">🔒</div>
+            <div>
+                <div class="plan-gate-title">Quer editar o template?</div>
+                <div class="plan-gate-desc">
+                    No plano gratuito o template HTML/CSS é universal e não pode ser alterado.
+                    Você personaliza apenas os campos da configuração acima.<br>
+                    O plano <strong style="color:#fff;">Enterprise</strong> abre o editor completo de template,
+                    cores personalizadas, layouts alternativos e sub-páginas ilimitadas.
+                </div>
+                <button class="plan-gate-cta" onclick="alert('Em breve — entre em contato: contato@podiumtec.com.br')">
+                    → Conhecer Enterprise
+                </button>
+            </div>
+        </div>
+        <div class="result-actions">
+            <a href="index.html" class="btn-action-primary">→ Ver minha landing page</a>
+            <button class="btn-restart" onclick="wizard.restart()">↺ Refazer questionário</button>
+        </div>
+    </div>
+
+</div><!-- /stage -->
+
+<!-- ── BOTTOM NAV ── -->
+<footer class="bottom-nav">
+    <button class="btn-back" id="btn-back" onclick="wizard.back()" disabled>← Voltar</button>
+    <button class="btn-next" id="btn-next" onclick="wizard.next()">Começar →</button>
+    <button class="btn-skip" id="btn-skip" onclick="wizard.skip()" style="display:none">Pular</button>
+</footer>
+
+<script>
+const TOTAL_STEPS = 12; // 0=intro, 1-11=questions, 12=result
+
+const COLOR_MAP = {
+    azul:      { primary: '#1D4ED8', light: '#60A5FA' },
+    verde:     { primary: '#16A34A', light: '#4ADE80' },
+    ambar:     { primary: '#D97706', light: '#FCD34D' },
+};
+
+const CTA_MAP = {
+    comprar:   'Comprar agora',
+    whatsapp:  'Falar no WhatsApp',
+    orcamento: 'Solicitar orçamento',
+};
+
+const SECTION_LABELS = {
+    'como-funciona': '✓ Como funciona (3 passos)',
+    depoimentos:     '✓ Depoimentos / prova social',
+    faq:             '✓ Perguntas frequentes',
+};
+
+const SUB_LABELS = {
+    'sub-produto': '✓ Sub-página: Produto / Serviço (H2)',
+    'sub-faq':     '✓ Sub-página: Contato / FAQ (H2)',
+};
+
+// ── Wizard state ──────────────────────────────────────────────────────────
+const wizard = {
+    current: 0,
+    answers: {},   // step → Set of values
+
+    init() {
+        for (let i = 1; i <= 11; i++) this.answers[i] = new Set();
+        this.render();
+        this.bindOptions();
+    },
+
+    bindOptions() {
+        document.querySelectorAll('.opt').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const group  = opt.closest('[data-step]');
+                if (!group) return;
+                const step   = parseInt(group.dataset.step);
+                const isMulti = group.dataset.multi === 'true';
+                const val    = opt.dataset.val;
+                const ans    = this.answers[step];
+
+                if (!isMulti) {
+                    // single-select: clear all then set
+                    group.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+                    ans.clear();
+                    opt.classList.add('selected');
+                    ans.add(val);
+                } else {
+                    // multi-select: toggle
+                    if (opt.classList.contains('selected')) {
+                        opt.classList.remove('selected');
+                        ans.delete(val);
+                    } else {
+                        opt.classList.add('selected');
+                        ans.add(val);
+                    }
+                }
+
+                // show/hide Outro input
+                if (val.startsWith('outro-')) {
+                    const wrapId = val + '-wrap';
+                    const wrap = document.getElementById(wrapId);
+                    if (wrap) {
+                        const isSelected = opt.classList.contains('selected');
+                        wrap.classList.toggle('visible', isSelected);
+                    }
+                }
+
+                this.updateNav();
+            });
+        });
+
+        // Intro fields — enable next when name+email filled
+        ['biz-name', 'biz-email', 'biz-tagline'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => this.updateNav());
+        });
+    },
+
+    canAdvance() {
+        if (this.current === 0) {
+            const name  = (document.getElementById('biz-name')?.value || '').trim();
+            const email = (document.getElementById('biz-email')?.value || '').trim();
+            return name.length >= 2 && email.includes('@');
+        }
+        if (this.current >= 1 && this.current <= 11) {
+            return this.answers[this.current].size > 0;
+        }
+        return false;
+    },
+
+    updateNav() {
+        const btnNext = document.getElementById('btn-next');
+        const btnBack = document.getElementById('btn-back');
+        const btnSkip = document.getElementById('btn-skip');
+
+        btnNext.disabled = !this.canAdvance();
+        btnBack.disabled = this.current === 0;
+
+        // Optional steps can be skipped (step 8 — seções extras)
+        const skippable = [8];
+        btnSkip.style.display = (skippable.includes(this.current)) ? '' : 'none';
+
+        // Result step: hide next/skip
+        if (this.current === TOTAL_STEPS) {
+            btnNext.style.display = 'none';
+            btnSkip.style.display = 'none';
+        } else {
+            btnNext.style.display = '';
+        }
+
+        // Label on next button
+        if (this.current === 0) btnNext.textContent = 'Começar →';
+        else if (this.current === 11) btnNext.textContent = 'Gerar meu site →';
+        else btnNext.textContent = 'Próximo →';
+    },
+
+    next() {
+        if (!this.canAdvance() && this.current !== 0) return;
+        const from = this.current;
+        this.current++;
+        if (this.current === TOTAL_STEPS) this.buildResult();
+        this.transition(from, this.current, 'forward');
+    },
+
+    back() {
+        if (this.current === 0) return;
+        const from = this.current;
+        this.current--;
+        this.transition(from, this.current, 'backward');
+    },
+
+    skip() {
+        const from = this.current;
+        this.current++;
+        if (this.current === TOTAL_STEPS) this.buildResult();
+        this.transition(from, this.current, 'forward');
+    },
+
+    restart() {
+        this.current = 0;
+        for (let i = 1; i <= 11; i++) this.answers[i] = new Set();
+        document.querySelectorAll('.opt.selected').forEach(o => o.classList.remove('selected'));
+        document.querySelectorAll('.outro-input-wrap.visible').forEach(w => w.classList.remove('visible'));
+        ['biz-name','biz-tagline','biz-email'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        this.render();
+    },
+
+    transition(from, to, dir) {
+        const fromEl = document.getElementById('s' + from);
+        const toEl   = document.getElementById('s' + to);
+
+        fromEl.classList.add(dir === 'forward' ? 'exit-left' : 'exit-right');
+        setTimeout(() => {
+            fromEl.classList.remove('active','exit-left','exit-right');
+            toEl.classList.add('active');
+            this.render();
+        }, 250);
+    },
+
+    render() {
+        // Progress
+        const pct = Math.round((this.current / TOTAL_STEPS) * 100);
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('step-counter').textContent =
+            this.current + ' / ' + TOTAL_STEPS;
+
+        const labels = ['Introdução','Tipo de negócio','Setor','Público','Porte',
+            'Diferencial','Orçamento','CTA','Seções','Decisor','Cor','Contato','Resultado'];
+        document.getElementById('step-label').textContent = labels[this.current] || '';
+
+        this.updateNav();
+
+        // Show active step
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        const active = document.getElementById('s' + this.current);
+        if (active) active.classList.add('active');
+    },
+
+    // ── Config generator ──────────────────────────────────────────────────
+    buildResult() {
+        const name    = document.getElementById('biz-name')?.value.trim() || 'Meu Negócio';
+        const tagline = document.getElementById('biz-tagline')?.value.trim() ||
+                        'A solução que o seu negócio estava esperando';
+        const email   = document.getElementById('biz-email')?.value.trim() ||
+                        'contato@podiumtec.com.br';
+
+        // Cor
+        const corAns = [...(this.answers[10] || [])][0] || 'verde';
+        let primaryHex = '#16A34A';
+        let accentHex  = '#D97706';
+        if (corAns === 'azul')  { primaryHex = '#1D4ED8'; accentHex = '#7C5CBF'; }
+        if (corAns === 'ambar') { primaryHex = '#D97706'; accentHex = '#16A34A'; }
+        if (corAns === 'outro-cor') {
+            const v = document.getElementById('outro-cor-text')?.value.trim();
+            if (v) primaryHex = v;
+        }
+
+        // CTA
+        const ctaVals = [...(this.answers[7] || [])];
+        const ctaKey  = ctaVals[0] || 'orcamento';
+        const cta     = CTA_MAP[ctaKey] || document.getElementById('outro-7-text')?.value || 'Entrar em contato';
+
+        // Setor
+        const setorAns = [...(this.answers[2] || [])];
+        const setorMap = { saude:'Saúde & Bem-estar', varejo:'Varejo & Comércio', 'tech-energia':'Tecnologia & Energia' };
+        const category = setorMap[setorAns[0]] || document.getElementById('outro-2-text')?.value || 'Negócio';
+
+        // Features geradas por diferencial + tipo
+        const diferenciais = this.answers[5] || new Set();
+        const tipo = [...(this.answers[1] || [])][0] || '';
+        const features = this.generateFeatures(tipo, diferenciais);
+
+        // Steps gerados por seções
+        const steps = this.generateSteps(this.answers[8]);
+
+        // Description
+        const publicoMap = { b2c:'consumidores', b2b:'empresas', profissional:'profissionais do setor' };
+        const publicoAns = [...(this.answers[3] || [])];
+        const publico = publicoMap[publicoAns[0]] || 'clientes';
+
+        const description = `${category} pensado para ${publico}. ${
+            diferenciais.has('preco')       ? 'Melhor custo-benefício do mercado.' :
+            diferenciais.has('qualidade')   ? 'Resultado comprovado e garantido.' :
+            diferenciais.has('conveniencia')? 'Rápido, simples e sem burocracia.' : ''
+        }`;
+
+        // Plano recomendado (s6)
+        const planoMap = { gratuito:'Gratuito', pro:'Pro', enterprise:'Enterprise', consultoria:'Consultoria C&L' };
+        const planoAns = [...(this.answers[6] || [])][0] || 'gratuito';
+        const planoLabel = planoMap[planoAns] || 'Gratuito';
+
+        // Canais de contato (s11)
+        const contatoLabel = { whatsapp:'WhatsApp', email:'E-mail', ligacao:'Ligação', reuniao:'Reunião online' };
+        const contatoTags = [...(this.answers[11] || [])].map(v => contatoLabel[v]).filter(Boolean);
+
+        const config = {
+            name, tagline, description, primaryHex, accentHex, category,
+            domain: name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') + '.com.br',
+            email, features, steps, cta, ctaSecondary: 'Ver como funciona',
+            partners: this.generatePartners(this.answers[3]),
+        };
+
+        // Build result UI
+        document.getElementById('res-sub').textContent =
+            'Plano ' + planoLabel + ' · Template Universal · ' + name;
+
+        // Tags
+        const tagsEl = document.getElementById('res-tags');
+        tagsEl.innerHTML = '';
+        [category, cta, 'Plano ' + planoLabel, 'LGPD ✓', 'IFRS 15 ✓'].concat(contatoTags).forEach(t => {
+            const sp = document.createElement('span');
+            sp.className = 'result-tag'; sp.textContent = t;
+            tagsEl.appendChild(sp);
+        });
+
+        // Sections checklist
+        const secEl = document.getElementById('res-sections');
+        secEl.innerHTML = '';
+        const secs8 = [...(this.answers[8] || [])];
+        ['✓ Hero (rolagem infinita)', '✓ Funcionalidades (cards)'].concat(
+            secs8.filter(s => SECTION_LABELS[s]).map(s => SECTION_LABELS[s]),
+            ['✓ Conformidade LGPD / IFRS 15', '✓ CTA final', '✓ ProteOS (barra 2)']
+        ).forEach(text => {
+            const d = document.createElement('div');
+            d.className = 'section-item';
+            d.innerHTML = `<span class="chk">→</span><span>${text}</span>`;
+            secEl.appendChild(d);
+        });
+
+        // Code
+        const code = this.generateCode(config);
+        document.getElementById('res-code').innerHTML = code;
+        window._generatedConfig = config;
+    },
+
+    generateFeatures(tipo, diferenciais) {
+        const base = [];
+        if (tipo === 'produto' || tipo === 'intermediacao') {
+            base.push({ icon:'📦', title:'Entrega rastreada', desc:'Acompanhe cada pedido em tempo real, do despacho à entrega na porta do cliente.' });
+        }
+        if (tipo === 'servico') {
+            base.push({ icon:'🤝', title:'Atendimento personalizado', desc:'Cada cliente recebe atenção individual. Sem script, sem fila, sem espera.' });
+        }
+        if (diferenciais.has('preco')) {
+            base.push({ icon:'💰', title:'Melhor custo-benefício', desc:'Compare e comprove: o mesmo padrão de qualidade, com o menor preço do mercado.' });
+        }
+        if (diferenciais.has('qualidade')) {
+            base.push({ icon:'⭐', title:'Resultado garantido', desc:'Garantia real de satisfação. Se não funcionar, a gente resolve — sem enrolação.' });
+        }
+        if (diferenciais.has('conveniencia')) {
+            base.push({ icon:'⚡', title:'Rápido e sem burocracia', desc:'Do pedido à entrega sem formulário interminável, sem esperar dias para confirmar.' });
+        }
+        base.push({ icon:'🔒', title:'Privacidade garantida', desc:'Seus dados são seus. Operamos em total conformidade com a LGPD e boas práticas internacionais.' });
+        return base.slice(0, 6);
+    },
+
+    generateSteps(secoes) {
+        return [
+            { num:'01', title:'Conheça a solução',
+              desc:'Explore as opções disponíveis e veja qual encaixa no que você precisa.',
+              tag:'Sem compromisso' },
+            { num:'02', title:'Confirme em segundos',
+              desc:'Processo ágil, sem cadastro longo e sem papelada. Pagamento seguro em um clique.',
+              tag:'Seguro e rápido' },
+            { num:'03', title:'Receba e aproveite',
+              desc:'Acompanhe tudo em tempo real. Nossa equipe cuida de cada etapa até a entrega.',
+              tag:'Resultado garantido' },
+        ];
+    },
+
+    generatePartners(publicoAns) {
+        const map = {
+            b2c: { label:'Para você', desc:'Qualquer pessoa que quer resolver esse problema de forma simples, rápida e confiável.' },
+            b2b: { label:'Para empresas', desc:'Negócios que precisam de um parceiro confiável para escalar sem perder qualidade.' },
+            profissional: { label:'Para profissionais', desc:'Especialistas do setor que querem oferecer mais para os seus próprios clientes.' },
+        };
+        const keys = [...publicoAns || []].filter(k => map[k]);
+        if (!keys.length) keys.push('b2c');
+        const partners = keys.map(k => map[k]);
+        if (partners.length < 3) {
+            partners.push({ label:'Para quem indica', desc:'Conheça nosso programa de indicações e ganhe benefícios ao recomendar para amigos e colegas.' });
+        }
+        return partners.slice(0, 3);
+    },
+
+    generateCode(c) {
+        const j = JSON.stringify;
+        const features = c.features.map(f =>
+            `\n        { <span class="kw">icon</span>:<span class="str">"${f.icon}"</span>, <span class="kw">title</span>:<span class="str">"${f.title}"</span>, <span class="kw">desc</span>:<span class="str">"${f.desc}"</span> },`
+        ).join('');
+        const steps = c.steps.map(s =>
+            `\n        { <span class="kw">num</span>:<span class="str">"${s.num}"</span>, <span class="kw">title</span>:<span class="str">"${s.title}"</span>, <span class="kw">desc</span>:<span class="str">"${s.desc}"</span>, <span class="kw">tag</span>:<span class="str">"${s.tag}"</span> },`
+        ).join('');
+        const partners = c.partners.map(p =>
+            `\n        { <span class="kw">label</span>:<span class="str">"${p.label}"</span>, <span class="kw">desc</span>:<span class="str">"${p.desc}"</span> },`
+        ).join('');
+
+        return `<span class="cmt">// Cole este bloco no &lt;script&gt; do index.html (plano gratuito)</span>
+<span class="kw">const</span> SITE = {
+    <span class="kw">name</span>:         <span class="str">"${c.name}"</span>,
+    <span class="kw">tagline</span>:     <span class="str">"${c.tagline}"</span>,
+    <span class="kw">description</span>: <span class="str">"${c.description}"</span>,
+    <span class="kw">primaryHex</span>:  <span class="str">"${c.primaryHex}"</span>,
+    <span class="kw">accentHex</span>:   <span class="str">"${c.accentHex}"</span>,
+    <span class="kw">category</span>:    <span class="str">"${c.category}"</span>,
+    <span class="kw">domain</span>:      <span class="str">"${c.domain}"</span>,
+    <span class="kw">email</span>:       <span class="str">"${c.email}"</span>,
+    <span class="kw">cta</span>:         <span class="str">"${c.cta}"</span>,
+    <span class="kw">ctaSecondary</span>:<span class="str">"${c.ctaSecondary}"</span>,
+    <span class="kw">navLinks</span>: [
+        { <span class="kw">label</span>:<span class="str">"Como funciona"</span>, <span class="kw">href</span>:<span class="str">"#como-funciona"</span> },
+        { <span class="kw">label</span>:<span class="str">"Para quem é"</span>,   <span class="kw">href</span>:<span class="str">"#parceiros"</span> },
+        { <span class="kw">label</span>:<span class="str">"Conformidade"</span>,  <span class="kw">href</span>:<span class="str">"#conformidade"</span> },
+    ],
+    <span class="kw">features</span>: [${features}
+    ],
+    <span class="kw">steps</span>: [${steps}
+    ],
+    <span class="kw">partners</span>: [${partners}
+    ],
+};`;
+    },
+};
+
+// Copy config to clipboard
+function copyConfig() {
+    if (!window._generatedConfig) return;
+    const raw = document.getElementById('res-code').textContent;
+    navigator.clipboard.writeText(raw).then(() => {
+        const btn = document.getElementById('btn-copy');
+        btn.textContent = 'Copiado ✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2500);
+    });
+}
+
+// Init
+wizard.init();
+</script>
+</body>
+</html>

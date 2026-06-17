@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+    const SITE = {
+        name:        "EscambOS",
+        tagline:     "O marketplace que transforma atenção em renda",
+        description: "Plataforma de marketplace para quem precisa gerar renda. Tecnologia que conecta o produto certo com quem realmente quer comprar — sem burocracia, sem custo inicial.",
+        descEN:      "AI-powered marketplace for income generation. No upfront cost. No hidden fees. Real sales.",
+        primaryHex:  "#16A34A",
+        accentHex:   "#4ADE80",
+        category:    "Marketplace",
+        domain:      "podiumtec.com.br/escambos",
+        email:       "contato@podiumtec.com.br",
+        proteosUrl:  "#proteos",
+        navLinks: [
+            { label: "Como funciona", href: "#como-funciona" },
+            { label: "Para parceiros", href: "#parceiros" },
+            { label: "Conformidade",  href: "#conformidade" },
+        ],
+        features: [
+            { icon: "⚡", title: "Inteligência de atenção",    desc: "A plataforma aprende quais produtos geram interesse real e os posiciona automaticamente para quem está pronto para comprar." },
+            { icon: "🔄", title: "Repasse direto",             desc: "O valor da venda chega para o parceiro sem desvios ou tarifas ocultas. Transparência total no extrato." },
+            { icon: "📊", title: "Painel em tempo real",       desc: "Desempenho, alcance e conversões num único painel. Sem exportar planilha, sem esperar relatório." },
+            { icon: "🔒", title: "Privacidade por design",     desc: "Nenhum dado pessoal identificável armazenado. LGPD ativa desde a primeira transação." },
+            { icon: "🌐", title: "Multi-canal",                desc: "Shopify, app mobile ou link direto. Venda de onde já vende, sem migrar de plataforma." },
+            { icon: "📦", title: "Logística integrada",        desc: "Conexão com esteiras de fulfillment nacionais. Cadastre, a plataforma despacha." },
+        ],
+        steps: [
+            { num:"01", title:"Cadastre seu negócio",    desc:"Processo guiado em menos de 10 minutos. Sem burocracia, sem documentação impressa.", tag:"Onboarding digital" },
+            { num:"02", title:"Ative seu catálogo",      desc:"Importe produtos do estoque atual. A plataforma organiza e otimiza a apresentação.", tag:"Catálogo inteligente" },
+            { num:"03", title:"Receba e gerencie",       desc:"Pedidos chegam no painel. Repasse automático após confirmação de entrega.", tag:"Repasse automático" },
+        ],
+        cta:          "Quero ser parceiro",
+        ctaSecondary: "Ver como funciona",
+        partners: [
+            { label:"Pequenos negócios",        desc:"Lojas físicas que querem vender online sem montar estrutura de e-commerce do zero." },
+            { label:"Produtores locais",         desc:"Artesãos, produtores rurais e fabricantes que precisam de vitrine digital com logística resolvida." },
+            { label:"Prestadores de serviço",   desc:"Profissionais que querem oferecer produtos complementares ao seu serviço principal." },
+        ],
+    };
+    </script>
+
+    <title>EscambOS — Marketplace de Renda · C&L</title>
+    <meta name="description" content="Plataforma de marketplace para geração de renda. Tecnologia que conecta o produto certo com quem quer comprar.">
+    <meta property="og:title" content="EscambOS — O marketplace que transforma atenção em renda">
+    <meta property="og:description" content="AI-powered marketplace. No upfront cost. Real sales.">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://podiumtec.com.br/escambos/">
+
+    <style>
+        :root {
+            --bg: #F5F0E8; --hero: #0D1A0D; --card: #FFFFFF;
+            --primary: #16A34A; --primary-light: #4ADE80;
+            --accent: #D97706; --text: #111827; --text-muted: #6B7280;
+            --border: rgba(17,24,39,0.08);
+        }
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+
+        /* LGPD Banner */
+        #lgpd-banner { position:fixed; bottom:0; left:0; right:0; z-index:9999; background:rgba(10,26,10,0.97); backdrop-filter:blur(8px); padding:1rem 2rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; border-top:1px solid rgba(74,222,128,0.15); }
+        #lgpd-banner p { flex:1; margin:0; font-size:0.78rem; color:rgba(255,255,255,0.6); line-height:1.65; }
+        #lgpd-banner a { color:var(--primary-light); }
+        #lgpd-ok { background:var(--primary); color:#fff; border:none; padding:0.5rem 1.25rem; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.78rem; white-space:nowrap; }
+
+        /* BARRAS */
+        .bar-1 { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:1.1rem 2.5rem; background:rgba(13,26,13,0.92); backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.06); }
+        .bar-1-logo { font-size:1.1rem; font-weight:800; color:#fff; letter-spacing:-0.02em; display:flex; align-items:center; gap:0.4rem; text-decoration:none; }
+        .bar-1-logo .os { color:var(--primary-light); }
+        .bar-1-nav { display:flex; gap:2rem; list-style:none; }
+        .bar-1-nav a { color:rgba(255,255,255,0.5); text-decoration:none; font-size:0.85rem; font-weight:500; transition:color 0.2s; }
+        .bar-1-nav a:hover { color:#fff; }
+        .bar-1-actions a { background:var(--primary); color:#fff; font-size:0.8rem; font-weight:700; padding:0.5rem 1.1rem; border-radius:8px; text-decoration:none; }
+        .bar-2 { position:fixed; top:56px; left:0; right:0; z-index:190; display:flex; align-items:center; justify-content:center; gap:2rem; padding:0.5rem 2.5rem; background:rgba(17,24,39,0.96); border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.75rem; }
+        .bar-2-label { color:rgba(255,255,255,0.3); font-weight:500; letter-spacing:0.04em; }
+        .bar-2-tab { color:rgba(255,255,255,0.4); font-weight:600; font-size:0.75rem; padding:0.3rem 1rem; text-decoration:none; border-bottom:2px solid transparent; transition:color 0.2s, border-color 0.2s; }
+        .bar-2-tab:hover, .bar-2-tab.active { color:var(--primary-light); border-bottom-color:var(--primary-light); }
+        .bar-2-cta { margin-left:auto; background:rgba(22,163,74,0.15); color:var(--primary-light); font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:0.3rem 0.875rem; border-radius:6px; text-decoration:none; border:1px solid rgba(22,163,74,0.25); }
+        .page-offset { padding-top:96px; }
+
+        /* HERO */
+        .hero { background:var(--hero); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:6rem 2rem 5rem; position:relative; overflow:hidden; }
+        .hero::before { content:''; position:absolute; width:700px; height:700px; background:radial-gradient(circle, rgba(22,163,74,0.09) 0%, transparent 68%); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; }
+        .hero-badge { display:inline-flex; align-items:center; gap:0.5rem; background:rgba(22,163,74,0.12); border:1px solid rgba(22,163,74,0.28); color:var(--primary-light); font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.35rem 0.9rem; border-radius:100px; margin-bottom:2.5rem; }
+        .dot-pulse { width:6px; height:6px; background:var(--primary-light); border-radius:50%; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)} }
+        .hero h1 { font-size:clamp(2.2rem,5.5vw,4rem); font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1.1; margin-bottom:0.75rem; max-width:800px; }
+        .hero h1 em { font-style:normal; color:var(--primary-light); }
+        .hero-en { font-size:0.9rem; color:rgba(255,255,255,0.28); margin-bottom:1.25rem; letter-spacing:0.02em; }
+        .hero-sub { font-size:clamp(0.95rem,1.8vw,1.1rem); color:rgba(255,255,255,0.48); max-width:520px; margin-bottom:2.75rem; line-height:1.75; }
+        .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+        .btn-hero-primary { display:inline-flex; align-items:center; gap:0.6rem; background:var(--primary); color:#fff; font-size:0.9rem; font-weight:700; padding:0.875rem 1.625rem; border-radius:12px; text-decoration:none; }
+        .btn-hero-ghost { display:inline-flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.5); font-size:0.85rem; font-weight:500; padding:0.875rem 1.5rem; border-radius:12px; border:1px solid rgba(255,255,255,0.14); text-decoration:none; }
+        .hero-scroll { position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.2); font-size:0.68rem; letter-spacing:0.08em; }
+        .scroll-line { width:1px; height:32px; background:linear-gradient(to bottom, rgba(255,255,255,0.2), transparent); }
+
+        /* SECTIONS */
+        .section { padding:6rem 2.5rem; }
+        .section-inner { max-width:1100px; margin:0 auto; }
+        .section-label { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--primary); margin-bottom:0.875rem; }
+        .section-title { font-size:clamp(1.6rem,3vw,2.4rem); font-weight:800; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1.1rem; }
+        .section-desc { font-size:1rem; color:var(--text-muted); line-height:1.75; max-width:540px; }
+        .fade { opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease; }
+        .fade.on { opacity:1; transform:translateY(0); }
+        .fade-d1{transition-delay:0.1s} .fade-d2{transition-delay:0.2s} .fade-d3{transition-delay:0.3s} .fade-d4{transition-delay:0.4s}
+
+        /* FEATURES */
+        .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+        .feature-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.625rem; transition:transform 0.2s, box-shadow 0.2s; }
+        .feature-card:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.06); }
+        .f-icon { font-size:1.25rem; width:40px; height:40px; display:flex; align-items:center; justify-content:center; background:var(--bg); border-radius:10px; margin-bottom:1rem; }
+        .f-title { font-size:0.9rem; font-weight:700; margin-bottom:0.4rem; }
+        .f-desc { font-size:0.8rem; color:var(--text-muted); line-height:1.6; }
+
+        /* COMO FUNCIONA */
+        .how-section { background:var(--hero); }
+        .how-section .section-label { color:var(--primary-light); }
+        .how-section .section-title, .how-section .section-desc { color:#fff; }
+        .how-section .section-desc { color:rgba(255,255,255,0.42); }
+        .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3.5rem; }
+        .step-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:18px; padding:1.75rem; }
+        .step-num { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; font-size:0.78rem; font-weight:800; background:rgba(22,163,74,0.18); color:var(--primary-light); border:1px solid rgba(22,163,74,0.35); margin-bottom:1.25rem; }
+        .step-title { font-size:1rem; font-weight:700; color:#fff; margin-bottom:0.6rem; }
+        .step-desc { font-size:0.82rem; color:rgba(255,255,255,0.42); line-height:1.65; }
+        .step-tag { display:inline-block; margin-top:1.1rem; font-size:0.63rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.25rem 0.7rem; border-radius:100px; background:rgba(22,163,74,0.18); color:var(--primary-light); }
+
+        /* PARCEIROS */
+        .partners-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin-top:3.5rem; }
+        .partner-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.5rem; border-top:3px solid var(--primary); }
+        .partner-label { font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; }
+        .partner-desc { font-size:0.8rem; color:var(--text-muted); line-height:1.6; }
+
+        /* CONFORMIDADE */
+        .compliance-section { background:var(--hero); }
+        .compliance-section .section-label { color:var(--primary-light); }
+        .compliance-section .section-title { color:#fff; }
+        .compliance-section .section-desc { color:rgba(255,255,255,0.42); }
+        .compliance-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.25rem; margin-top:3.5rem; }
+        .compliance-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:1.5rem; }
+        .compliance-title { font-size:0.85rem; font-weight:700; color:#fff; margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem; }
+        .compliance-badge { font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:5px; background:rgba(22,163,74,0.2); color:var(--primary-light); }
+        .compliance-body { font-size:0.79rem; color:rgba(255,255,255,0.4); line-height:1.7; }
+
+        /* PROTEOS */
+        .proteos-section { background:#0A1508; border-top:1px solid rgba(22,163,74,0.15); padding:4rem 2.5rem; }
+        .proteos-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+        .proteos-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(22,163,74,0.12); border:1px solid rgba(22,163,74,0.25); color:var(--primary-light); font-size:0.65rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:100px; margin-bottom:1.25rem; }
+        .proteos-title { font-size:1.75rem; font-weight:800; color:#fff; letter-spacing:-0.03em; line-height:1.15; margin-bottom:1rem; }
+        .proteos-desc { font-size:0.9rem; color:rgba(255,255,255,0.42); line-height:1.7; margin-bottom:2rem; }
+        .proteos-card { background:rgba(255,255,255,0.03); border:1px solid rgba(22,163,74,0.18); border-radius:16px; padding:2rem; }
+        .proteos-card-title { font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:1rem; }
+        .proteos-login-btn { display:flex; align-items:center; justify-content:center; gap:0.6rem; background:var(--primary); color:#fff; font-size:0.9rem; font-weight:700; padding:0.875rem; border-radius:12px; text-decoration:none; width:100%; margin-bottom:0.875rem; }
+        .proteos-login-note { font-size:0.72rem; color:rgba(255,255,255,0.2); text-align:center; line-height:1.6; }
+        .proteos-modules { display:flex; flex-direction:column; gap:0.6rem; }
+        .proteos-module { display:flex; align-items:center; gap:0.75rem; font-size:0.82rem; color:rgba(255,255,255,0.55); }
+        .proteos-module-dot { width:6px; height:6px; border-radius:50%; background:var(--primary-light); flex-shrink:0; }
+
+        /* CTA */
+        .cta-section { background:var(--hero); padding:6rem 2.5rem; text-align:center; position:relative; overflow:hidden; }
+        .cta-section::before { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle, rgba(22,163,74,0.10) 0%, transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); }
+        .cta-title { font-size:clamp(1.75rem,3.5vw,2.75rem); font-weight:800; color:#fff; letter-spacing:-0.03em; margin-bottom:1rem; position:relative; }
+        .cta-desc { font-size:1rem; color:rgba(255,255,255,0.42); max-width:480px; margin:0 auto 2.75rem; line-height:1.7; position:relative; }
+        .cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; position:relative; }
+        .btn-cta { display:inline-flex; align-items:center; gap:0.6rem; background:var(--primary); color:#fff; font-size:0.95rem; font-weight:700; padding:0.95rem 1.875rem; border-radius:13px; text-decoration:none; }
+        .btn-cta-ghost { display:inline-flex; align-items:center; gap:0.5rem; color:rgba(255,255,255,0.45); font-size:0.85rem; font-weight:500; padding:0.95rem 1.625rem; border-radius:13px; border:1px solid rgba(255,255,255,0.13); text-decoration:none; }
+
+        /* FOOTER */
+        footer { background:#070F07; padding:2.5rem; border-top:1px solid rgba(255,255,255,0.04); }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:2rem; flex-wrap:wrap; }
+        .footer-logo { font-size:0.95rem; font-weight:800; color:rgba(255,255,255,0.55); }
+        .footer-logo .os { color:var(--primary-light); }
+        .footer-legal { font-size:0.68rem; color:rgba(255,255,255,0.18); line-height:1.7; }
+        .footer-links { display:flex; gap:1.5rem; list-style:none; }
+        .footer-links a { font-size:0.72rem; color:rgba(255,255,255,0.28); text-decoration:none; }
+        .footer-links a:hover { color:rgba(255,255,255,0.55); }
+
+        @media (max-width:768px) {
+            .bar-1-nav, .bar-2 { display:none; }
+            .page-offset { padding-top:58px; }
+            .features-grid, .steps-grid, .partners-grid, .compliance-grid { grid-template-columns:1fr; }
+            .proteos-inner { grid-template-columns:1fr; gap:2.5rem; }
+            .footer-inner { flex-direction:column; text-align:center; }
+        }
+    </style>
+</head>
+<body class="page-offset">
+
+<!-- LGPD -->
+<div id="lgpd-banner">
+    <p>Usamos cookies técnicos essenciais para funcionamento do site. Nenhum dado pessoal identificável é armazenado sem sua autorização. Ao continuar, você aceita nossa <a href="https://podiumtec.com.br/privacy-policy.html">Política de Privacidade</a> em conformidade com a LGPD (Lei 13.709/2018).</p>
+    <button id="lgpd-ok" onclick="aceitarLGPD()">Entendido ✓</button>
+</div>
+
+<!-- BAR 1 -->
+<nav class="bar-1">
+    <a href="/" class="bar-1-logo">Escamb<span class="os">OS</span></a>
+    <ul class="bar-1-nav" id="bar1-nav"></ul>
+    <div class="bar-1-actions">
+        <a href="criar.html">Criar meu site →</a>
+    </div>
+</nav>
+
+<!-- BAR 2 -->
+<div class="bar-2">
+    <span class="bar-2-label">Ecossistema C&L</span>
+    <nav style="display:flex;gap:0;">
+        <a href="#hero" class="bar-2-tab active">EscambOS</a>
+        <a href="#proteos" class="bar-2-tab">ProteOS</a>
+    </nav>
+    <a href="#proteos" class="bar-2-cta">Entrar no app →</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-badge"><span class="dot-pulse"></span>Marketplace · Carvalho &amp; Leite</div>
+    <h1>O marketplace que transforma<br><em>atenção em renda.</em></h1>
+    <p class="hero-en">AI-powered marketplace for income generation. No upfront cost. Real sales.</p>
+    <p class="hero-sub">Plataforma para quem precisa gerar renda hoje. Tecnologia que conecta o produto certo com quem quer comprar — sem burocracia, sem custo inicial.</p>
+    <div class="hero-btns">
+        <a href="criar.html" class="btn-hero-primary">→ Quero ser parceiro</a>
+        <a href="#como-funciona" class="btn-hero-ghost">Ver como funciona</a>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>ROLAR</div>
+</section>
+
+<!-- FUNCIONALIDADES -->
+<section class="section" id="funcionalidades">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Funcionalidades</div>
+            <h2 class="section-title">Tudo que o seu negócio precisa, <em style="font-style:normal;color:var(--primary)">sem</em> o que não precisa.</h2>
+            <p class="section-desc">Plataforma pensada para quem vende, não para quem processa dados.</p>
+        </div>
+        <div class="features-grid" id="features-grid"></div>
+    </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="section how-section" id="como-funciona">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Como funciona</div>
+            <h2 class="section-title">Três passos. Resultado imediato.</h2>
+            <p class="section-desc">Sem treinamento, sem integrador, sem custo de implantação.</p>
+        </div>
+        <div class="steps-grid" id="steps-grid"></div>
+    </div>
+</section>
+
+<!-- PARA PARCEIROS -->
+<section class="section" id="parceiros">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Para quem é</div>
+            <h2 class="section-title">Feito para quem vende de verdade.</h2>
+            <p class="section-desc">Não é para e-commerce de escala. É para negócios reais que precisam de resultado real.</p>
+        </div>
+        <div class="partners-grid" id="partners-grid"></div>
+    </div>
+</section>
+
+<!-- CONFORMIDADE -->
+<section class="section compliance-section" id="conformidade">
+    <div class="section-inner">
+        <div class="fade">
+            <div class="section-label">Conformidade</div>
+            <h2 class="section-title">Construído com responsabilidade.</h2>
+            <p class="section-desc">Cada decisão técnica tem um fundamento legal por trás.</p>
+        </div>
+        <div class="compliance-grid">
+            <div class="compliance-card fade fade-d1">
+                <div class="compliance-title">LGPD <span class="compliance-badge">Ativo</span></div>
+                <div class="compliance-body">Nenhum dado pessoal identificável armazenado. Análise de comportamento opera sobre identificadores anonimizados. Política de privacidade disponível e auditável.</div>
+            </div>
+            <div class="compliance-card fade fade-d2">
+                <div class="compliance-title">Conformidade fiscal <span class="compliance-badge">IFRS 15</span></div>
+                <div class="compliance-body">A plataforma separa automaticamente as obrigações fiscais entre prestação de serviço tecnológico e comercialização de produto. Parceiro não acumula obrigações indevidas.</div>
+            </div>
+            <div class="compliance-card fade fade-d3">
+                <div class="compliance-title">Intermediação regulada <span class="compliance-badge">CNAE 74.90-1-04</span></div>
+                <div class="compliance-body">A Carvalho &amp; Leite opera como agente tecnológico neutro de intermediação, sem assumir propriedade sobre os produtos comercializados pelos parceiros.</div>
+            </div>
+            <div class="compliance-card fade fade-d4">
+                <div class="compliance-title">KYC &amp; Segurança <span class="compliance-badge">Lei 8.934/94</span></div>
+                <div class="compliance-body">Identificação do vendedor por CPF hash (SHA-256) conforme exigência legal. Dado nunca armazenado em texto claro. Autenticação multifator. Acesso auditado continuamente.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <h2 class="cta-title fade">Pronto para começar com EscambOS?</h2>
+    <p class="cta-desc fade fade-d1">Plataforma de marketplace para geração de renda. Sem custo inicial, sem burocracia.</p>
+    <div class="cta-btns fade fade-d2">
+        <a href="criar.html" class="btn-cta">→ Quero ser parceiro</a>
+        <a href="#conformidade" class="btn-cta-ghost">Ver conformidade</a>
+    </div>
+</section>
+
+<!-- PROTEOS -->
+<section class="proteos-section" id="proteos">
+    <div class="proteos-inner">
+        <div class="fade">
+            <div class="proteos-badge"><span class="dot-pulse"></span>ProteOS · Sistema Operacional</div>
+            <h2 class="proteos-title">O cérebro por trás<br>de todos os projetos C&L.</h2>
+            <p class="proteos-desc">ProteOS conecta todos os produtos da Carvalho &amp; Leite. Acesse o painel de gestão, relatórios e configurações do seu projeto.</p>
+            <div class="proteos-modules">
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Painel de gestão do parceiro</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Relatórios de desempenho e ranking</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Extrato de repasses</div>
+                <div class="proteos-module"><span class="proteos-module-dot"></span>Suporte técnico integrado</div>
+            </div>
+        </div>
+        <div class="fade fade-d2">
+            <div class="proteos-card">
+                <div class="proteos-card-title">Acesso ao painel</div>
+                <a href="https://podiumtec.com.br" class="proteos-login-btn">→ Entrar no ProteOS</a>
+                <p class="proteos-login-note">Acesso exclusivo para parceiros cadastrados.<br>Solicite: <a href="mailto:contato@podiumtec.com.br" style="color:rgba(255,255,255,0.3)">contato@podiumtec.com.br</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-logo">Escamb<span class="os">OS</span></div>
+        <div class="footer-legal">Carvalho &amp; Leite Gestora de Recursos Ltda · CNPJ 41.191.506/0001-02<br>Belo Horizonte, MG · CNAE 74.90-1-04</div>
+        <ul class="footer-links">
+            <li><a href="https://podiumtec.com.br/privacy-policy.html">Privacidade</a></li>
+            <li><a href="https://podiumtec.com.br/terms.html">Termos</a></li>
+            <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+(function(){
+    // LGPD
+    function aceitarLGPD(){ document.getElementById('lgpd-banner').style.display='none'; localStorage.setItem('lgpd_ok','1'); }
+    window.aceitarLGPD = aceitarLGPD;
+    if(localStorage.getItem('lgpd_ok')) document.getElementById('lgpd-banner').style.display='none';
+
+    // CSS vars
+    document.documentElement.style.setProperty('--primary', SITE.primaryHex);
+    document.documentElement.style.setProperty('--primary-light', SITE.accentHex);
+
+    // Bar nav
+    const nav = document.getElementById('bar1-nav');
+    SITE.navLinks.forEach(l => {
+        const li = document.createElement('li');
+        li.innerHTML = '<a href="' + l.href + '">' + l.label + '</a>';
+        nav.appendChild(li);
+    });
+
+    // Features
+    const fg = document.getElementById('features-grid');
+    SITE.features.forEach((f, i) => {
+        const d = document.createElement('div');
+        d.className = 'feature-card fade' + (i ? ' fade-d' + Math.min(i,4) : '');
+        d.innerHTML = '<div class="f-icon">' + f.icon + '</div><div class="f-title">' + f.title + '</div><div class="f-desc">' + f.desc + '</div>';
+        fg.appendChild(d);
+    });
+
+    // Steps
+    const sg = document.getElementById('steps-grid');
+    SITE.steps.forEach((s, i) => {
+        const d = document.createElement('div');
+        d.className = 'step-card fade fade-d' + (i+1);
+        d.innerHTML = '<div class="step-num">' + s.num + '</div><div class="step-title">' + s.title + '</div><div class="step-desc">' + s.desc + '</div><span class="step-tag">' + s.tag + '</span>';
+        sg.appendChild(d);
+    });
+
+    // Partners
+    const pg = document.getElementById('partners-grid');
+    SITE.partners.forEach((p, i) => {
+        const d = document.createElement('div');
+        d.className = 'partner-card fade fade-d' + (i+1);
+        d.innerHTML = '<div class="partner-label">' + p.label + '</div><div class="partner-desc">' + p.desc + '</div>';
+        pg.appendChild(d);
+    });
+
+    // IntersectionObserver
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), { threshold:0.12 });
+    document.querySelectorAll('.fade').forEach(el => obs.observe(el));
+
+    // HVP dwell tracking
+    const _start = Date.now();
+    let _clicks = 0;
+    document.addEventListener('click', () => _clicks++);
+    window.addEventListener('beforeunload', () => {
+        const dwell = Date.now() - _start;
+        if(dwell < 1000) return;
+        navigator.sendBeacon('/v1/ingestao', JSON.stringify({ tipo:'HVP_ESCAMBOS', dwell_ms: dwell, clicks: _clicks }));
+    });
+})();
+</script>
+</body>
+</html>
