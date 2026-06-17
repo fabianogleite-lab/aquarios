@@ -1,0 +1,16 @@
+# robots.txt para podiumtec.com.br
+# Permite crawling de todas as páginas e submetedomínios
+
+User-agent: *
+Allow: /
+Allow: /escambos/
+Allow: /heysky/
+Disallow: /backoffice/
+Disallow: /.well-known/
+
+# Crawl-delay (em segundos) — permite crawling rápido
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://podiumtec.com.br/sitemap.xml
+Sitemap: https://podiumtec.com.br/escambos/sitemap.xml
