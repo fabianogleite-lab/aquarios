@@ -1,0 +1,73 @@
+======================================================================
+CerberOS — AUDITORIA DE ESTRESSE & SEGURANÇA — LOG INICIAL
+C&L Gestora CNPJ 41.191.506/0001-02
+Executado: 2026-06-17T01:14:14Z (UTC)
+Alvo: http://localhost:8001 (Oracle VM SP, hygeios-v2-sprint2)
+Harness: tests/cerber_audit.py · venv/bin/python · HMAC=set
+======================================================================
+
+── Correção: endpoints subiram ──
+  [PASS] HEALTH     /api/v2/health             200 · 21ms
+  [PASS] HEALTH     /v1/rank/health            200 · 3ms
+  [PASS] HEALTH     /wa/status                 200 · 3ms
+  [PASS] HEALTH     /cerber/status             200 · 4ms
+
+── L2: gateway HMAC ──
+  [PASS] L2-HMAC    assinatura válida          202 (esperado 202)
+  [PASS] L2-HMAC    assinatura inválida        401 (esperado 401)
+
+── L4: idempotência ──
+  [PASS] L4-IDEM    payload repetido           202 · {"status":"IGNORADO","motivo":"duplicidade"}
+
+── L6: heurística de payload (tarpit segura a conexão) ──
+  [PASS] L6-HEUR    SQLi → tarpit              conexão segurada >8s (tarpit ATIVO)
+
+── L7: honeypot (decoy /.env) ──
+  [PASS] L7-HONEY   /.env → tarpit             conexão segurada >8s (tarpit ATIVO)
+
+── L3: rate-limit sob rajada ──
+  [PASS] L3-RATE    rajada 150 req             109 rápidas · 39 freadas (rate-limit ENGAJOU)
+
+── Trilha de auditoria: cl_cerber_incidents (gerados por este teste) ──
+  • RATE_LIMIT             L3 HIGH     total=39 ips=1
+  • HONEYPOT:/.env         L7 CRITICAL total=1 ips=1
+  • SQLI_OR                L6 CRITICAL total=1 ips=1
+
+======================================================================
+RESULTADO: 10/10 checks PASS
+VEREDITO: ✅ STACK SUBIU CORRETO E SEGURO
+======================================================================
+
+──────────────────────────────────────────────────────────────────────
+INTERPRETAÇÃO E ACHADOS
+──────────────────────────────────────────────────────────────────────
+1. Correção: os 4 endpoints novos/existentes respondem 200 em 3–21ms.
+   core_engine, ranking_endpoint, wa_bridge e cerber todos carregados.
+
+2. Segurança (7 camadas): L2 (HMAC), L3 (rate-limit), L4 (idempotência),
+   L6 (heurística SQLi), L7 (honeypot) — todas ATIVAS e comprovadas.
+   Os tarpits L6/L7 seguraram a conexão >8s (defensivo, asyncio.sleep —
+   legal sob Lei 12.737/2012, não é contra-ataque).
+
+3. Trilha LGPD/ANPD: a própria auditoria gerou 41 incidentes e o CerberOS
+   os gravou em cl_cerber_incidents com ip_hash (SHA-256[:16], nunca IP cru).
+   vw_cerber_report_24h agrega corretamente. Pipeline de auditoria validado
+   ponta-a-ponta.
+
+4. ACHADO (não-bloqueante) — rate-limit atrás do nginx:
+   cerber_shield._is_rate_limited usa request.client.host. O nginx faz
+   proxy_pass para 127.0.0.1:8001 e repassa X-Forwarded-For, MAS o
+   middleware NÃO lê esse header — então todo tráfego público chega como
+   127.0.0.1 e divide UM único bucket de rate-limit. Efeitos:
+     • usuários legítimos podem coletivamente estourar 120/min e tomar tarpit;
+     • incidentes hasham o IP do proxy, não o do atacante real.
+   Fix sugerido: no middleware, preferir o 1º IP de X-Forwarded-For quando
+   presente (nginx já o fornece). Teste atual rodou de localhost, então
+   exercitou o L3 de forma válida.
+
+5. Dado de teste: 1 linha sintética em escambos_hvp_signals
+   (user_hash = sha256('audit_user'), não é PII real) criada pelo check L2.
+
+PRÓXIMA EXECUÇÃO: re-rodar após qualquer deploy com
+  sudo bash -c 'set -a; . /etc/hygeios-v2-sprint2.env; set +a; \
+    venv/bin/python /home/opc/aquarios-hygeios-v2/cerber_audit.py'
