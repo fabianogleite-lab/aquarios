@@ -103,6 +103,14 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
+        name="backoffice-user"
+        options={{
+          title: 'Meu Backoffice',
+          tabBarLabel: 'Negócio',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'💼'}</Text>,
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: 'Configurações',
