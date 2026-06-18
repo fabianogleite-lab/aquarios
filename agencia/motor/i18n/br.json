@@ -1,0 +1,25 @@
+{
+  "pais": "Brasil",
+  "locale": "pt-BR",
+  "onda": 1,
+  "variants": {
+    "A": {
+      "label": "A pergunta",
+      "headline": "Quem é você quando ninguém vê?",
+      "body": "Doze aplicativos medem seus passos, seu sono, seu dinheiro. Nenhum pergunta como você está de verdade. O AquariOS mede sua vitalidade em 4 dimensões — corpo, mente, sentido e vínculo — e mostra onde agir.",
+      "cta": "Volte para você → pré-registro grátis"
+    },
+    "B": {
+      "label": "O número",
+      "headline": "Você tem um score de vitalidade.",
+      "body": "iVi: um único número, em tempo real, integrando físico, mental, espiritual e social. Sem gráficos soltos, sem ruído — e com um diário que nem a nossa IA consegue ler.",
+      "cta": "Descubra seu iVi → grátis, sem cartão"
+    },
+    "C": {
+      "label": "A origem",
+      "headline": "Nasceu de um pré-infarto. Virou um recomeço.",
+      "body": "Um cirurgião-dentista, 36 anos de prática, e a pergunta que mudou tudo: \"onde foi que eu me perdi de mim?\" A resposta virou o primeiro Sistema Operacional Pessoal de saúde integral.",
+      "cta": "Conheça a história → aquarios"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  meta-agente:
+    build: .
+    ports: ["8000:8000"]
+    volumes: ["./data:/data"]
+    environment:
+      - QDRANT_PATH=/data/data_lake.db
+      - LOG_FILE=/data/auditoria.log

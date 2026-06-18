@@ -1,0 +1,13 @@
+name: Deploy Global
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v1
+        with: { creds: ${{ secrets.AZURE_CREDENTIALS }} }
+      - run: az acr build --registry ${{ secrets.ACR_NAME }} --image meta-agente:${{ github.sha }} .
+      - run: az containerapp update --name meta-agente --resource-group rg-aquarios-free --image ${{ secrets.ACR_NAME }}.azurecr.io/meta-agente:${{ github.sha }}

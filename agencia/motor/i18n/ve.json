@@ -1,0 +1,25 @@
+{
+  "pais": "Venezuela",
+  "locale": "es-VE",
+  "onda": 1,
+  "variants": {
+    "A": {
+      "label": "La pregunta",
+      "headline": "¿Quién eres cuando nadie te ve?",
+      "body": "Doce aplicaciones miden tus pasos, tu sueño, tu dinero. Ninguna pregunta cómo estás de verdad. AquariOS mide tu vitalidad en 4 dimensiones — cuerpo, mente, sentido y vínculo — y te muestra dónde actuar.",
+      "cta": "Vuelve a ti → preinscripción gratis"
+    },
+    "B": {
+      "label": "El número",
+      "headline": "Tienes un puntaje de vitalidad.",
+      "body": "iVi: un único número, en tiempo real, que integra lo físico, mental, espiritual y social. Sin gráficos sueltos, sin ruido — y con un diario que ni nuestra IA puede leer.",
+      "cta": "Descubre tu iVi → gratis, sin tarjeta"
+    },
+    "C": {
+      "label": "El origen",
+      "headline": "Nació de un preinfarto. Se convirtió en un nuevo comienzo.",
+      "body": "Un odontólogo, 36 años de práctica, y la pregunta que lo cambió todo: \"¿dónde fue que me perdí de mí mismo?\" La respuesta se convirtió en el primer Sistema Operativo Personal de salud integral.",
+      "cta": "Conoce la historia → aquarios"
+    }
+  }
+}

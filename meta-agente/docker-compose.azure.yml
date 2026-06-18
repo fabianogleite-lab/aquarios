@@ -1,0 +1,22 @@
+services:
+  meta-agente:
+    image: ${ACR_NAME}.azurecr.io/meta-agente:v1
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 512M
+    environment:
+      QDRANT_PATH: /data/data_lake.db
+      LOG_FILE: /data/auditoria.log
+    volumes:
+      - data:/data
+    ports:
+      - target: 8000
+        published: 8000
+volumes:
+  data:
+    driver: azure_file
+    driver_opts:
+      share_name: files-free-100gb
+      storage_account_name: ${STORAGE_ACCOUNT}
