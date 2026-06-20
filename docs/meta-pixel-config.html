@@ -1,0 +1,76 @@
+<!-- Meta Pixel Configuration Fragment
+     Copie e cole em podiumtec.com.br <head> tag
+     Rastreia: PageView, ViewContent, AddToCart, Purchase
+     Funil: impression → trial → conversion
+-->
+
+<!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/pt_BR/fbevents.js');
+
+  // SUBSTITUA COM SEU PIXEL ID (gerado em Meta Business Manager)
+  fbq('init', '[PIXEL_ID_AQUI]');
+  fbq('track', 'PageView');
+</script>
+
+<noscript>
+  <img height="1" width="1" style="display:none"
+       src="https://www.facebook.com/tr?id=[PIXEL_ID_AQUI]&ev=PageView&noscript=1" />
+</noscript>
+
+<!-- Eventos customizados para funil AquariOS -->
+<script>
+// Quando usuário vê landing page
+document.addEventListener('DOMContentLoaded', () => {
+  fbq('track', 'ViewContent', {
+    content_name: 'AquariOS Landing',
+    content_type: 'website',
+    currency: 'BRL',
+    value: 0.00
+  });
+});
+
+// Quando usuário clica "Baixar App"
+document.getElementById('btn-download-apk')?.addEventListener('click', () => {
+  fbq('track', 'AddToCart', {
+    content_name: 'AquariOS APK Download',
+    content_type: 'product',
+    currency: 'BRL',
+    value: 0.00
+  });
+});
+
+// Quando usuário se registra (conversion)
+// Chamar isso após sucesso no Supabase
+function track_signup(user_id, country, plan) {
+  fbq('track', 'Purchase', {
+    content_name: 'AquariOS Signup: ' + plan,
+    content_type: 'product',
+    currency: 'BRL',
+    value: plan === 'free' ? 0 : 29.90,
+    content_id: user_id,
+    custom_data: {
+      country: country,
+      plan: plan
+    }
+  });
+}
+</script>
+
+<!-- Instruções -->
+<!--
+1. Ir a: Meta Business Manager → Assets → Data Sources → Pixels
+2. Criar novo Pixel "AquariOS"
+3. Copiar o Pixel ID (número tipo 1234567890123456)
+4. Substitua [PIXEL_ID_AQUI] acima
+5. Cole este fragmento em podiumtec.com.br <head>
+6. Teste com: Facebook Pixel Helper (extensão Chrome)
+7. Quando conversion acontecer, chamar track_signup() em JavaScript
+-->
