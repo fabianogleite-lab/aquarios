@@ -60,6 +60,13 @@ def _detect_attack(body: bytes) -> Optional[str]:
     return None
 
 
+# Endpoints que carregam payload de VOZ (áudio binário no STT, fala do assistente
+# no TTS). A heurística de texto L6 (SQLi/XSS/template) não se aplica a esse
+# conteúdo e geraria falso-positivo (bytes de áudio quase sempre casam TEMPLATE_INJ).
+# L3 (rate-limit) e o JWT Supabase do voice_proxy seguem protegendo essas rotas.
+_L6_EXEMPT_PREFIXES = ("/v1/tts", "/v1/stt")
+
+
 # ── Layer 3: Rate limiter in-process ─────────────────────────────────────────
 _rate: dict[str, list[float]] = {}
 _RATE_LIMIT  = 120     # req/min por IP
@@ -132,8 +139,8 @@ class CerberShieldMiddleware(BaseHTTPMiddleware):
             asyncio.create_task(_log_incident(ip_h, "RATE_LIMIT", 3, "HIGH"))
             return await _tarpit(5.0)
 
-        # L6: payload heuristics (POST only)
-        if request.method == "POST":
+        # L6: payload heuristics (POST only) — exceto rotas de voz (payload binário/fala)
+        if request.method == "POST" and not request.url.path.startswith(_L6_EXEMPT_PREFIXES):
             body    = await request.body()   # cacheado em request._body; call_next reutiliza
             pattern = _detect_attack(body)
             if pattern:
