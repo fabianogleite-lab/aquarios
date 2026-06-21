@@ -26,3 +26,9 @@ Thumbs.db
 # Handoffs/memória de sessão — nunca versionar (podem conter segredos em texto puro)
 memory/
 mobile/memory/
+
+# SandeirOS — dados do Motor de Humanização: NUNCA versionar (heurística proprietária)
+backend/sandeiros/data/hl1_*.json
+backend/sandeiros/data/hl2_*.json
+backend/sandeiros/data/hl3_*.json
+backend/sandeiros/data/hl4_*.json
