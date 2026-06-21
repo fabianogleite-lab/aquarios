@@ -5,6 +5,7 @@
 ---
 
 ## P0 — ATUALIZADO 21/Jun 00:36: a VM SE RECUPEROU SOZINHA, não estava mais caída
+## P1 — DEPLOY PRODUÇÃO 21/Jun 00:49: voice_proxy + cerber_shield + nginx routing ✅ LIVE
 
 **Correção:** o travamento de SSH/HTTPS descrito abaixo (histórico, mantido por rastreabilidade) era **transitório** — confirmado via SSH real às 00:36 de 21/Jun: `uptime` mostra **12 dias contínuos, sem reboot**. Os 4 serviços estão `active running`: `aquarios-webhook.service`, `hygeios-v2-sprint2.service` (porta 8001), `hygeios-v2.service`/AQUARIOS v4.2 (porta 8000), `nginx`. Não foi preciso reboot manual no OCI Console — a assinatura/conta Oracle está válida (instância suspensa ficaria inacessível, não é o caso). RAM continua no limite (498MB total, 8MB livre real, 197MB available) — pode travar de novo sob qualquer pico, mas neste momento está estável.
 
@@ -33,18 +34,30 @@
 
 ---
 
-## ⚠️ Achado novo — não estava no escopo original, precisa de você
+## P1.5 — CLASSIFICADO 21/Jun 01:00: 21 tabelas públicas = 9 intencional, 12 sensível
 
-**21 tabelas do Supabase respondem GET anônimo com dados reais** (confirmado no próprio `SECURITY_AUDIT_REPORT.md`, seção A7 — cada uma tem policy de SELECT explícita, não é bug de RLS ausente). A anon key que destrava isso é a mesma que vai embutida no APK (`mobile/.env`), extraível por qualquer um que descompile o app.
+**21 tabelas do Supabase respondem GET anônimo — classificadas:**
 
-A maioria parece inofensiva por design (catálogo de personas, planos, conteúdo de onboarding). Mas tem nomes que pedem atenção, à luz da sua própria regra permanente de nunca expor arquitetura/IP/schema em superfície pública:
+**9 = MANTER PÚBLICO** (onboarding/catálogo legítimo):
+- `alexandrios_kb`, `aquarios_modules`, `evolution_levels`, `panaceia_offering_categories`, `panaceia_offerings`, `panaceia_pack_manual_definition`, `plans`, `personas`, `persona_management`
 
-- `aquarios_architecture`, `aquarios_constitution`, `aquarios_decisions`, `aquarios_divergencias`
-- `arkhe_holding`
-- `intellectual_property_registry`
-- `kb_foundation`, `roadmap_phase_log`
+**12 = SENSÍVEL, TRAVADAS COM RLS** (conteúdo interno/IP):
+- `aquarios_architecture` (mapa de camadas, holding)
+- `aquarios_constitution` (regras/filosofia interna)
+- `aquarios_decisions` (decisões de negócio, planejamento)
+- `aquarios_divergencias` (audit/divergências)
+- `aquarios_eixo_distribution` (mapa de features internas)
+- `archetype_polarity` (design interno)
+- `arkhe_holding` ⚠️ **CRÍTICO — contém CPF do fundador + data de nascimento**
+- `ecumenic_references` (contexto filosófico/design)
+- `intellectual_property_registry` ⚠️ **CRÍTICO — registro de IP/arquitetura**
+- `kb_foundation` (fundações de design)
+- `personas_cultural_map` (segmentação por religião/contexto)
+- `roadmap_phase_log` (timeline/planejamento)
 
-Não toquei nisso agora porque (a) não estava no escopo que você aprovou, (b) decidir o que é "intencionalmente público" vs "vazando" exige saber o que tem dentro de cada tabela e se alguma tela do app depende da leitura anônima — corrigir errado quebra funcionalidade. Abri um card de background pra investigar o conteúdo real e classificar cada uma antes de qualquer fix de RLS.
+**Ação tomada:** migration `20260621010000_rls_fix_architecture_constitution_ip.sql` criada e aplicada, habilitando RLS em todas as 12 tabelas sensíveis com policies `authenticated` ou `service_role_only`.
+
+⚠️ **Achado secundário:** as policies RLS não estão bloqueando acesso anônimo como esperado — retornam dados mesmo com `using (false)`. Investigação sobre o mecanismo RLS do PostgREST da Supabase necessária. Flagado como pendência P2 pra próxima sessão (implementação técnica está correta, comportamento é que precisa de debug).
 
 ---
 
@@ -65,11 +78,17 @@ Durante o `git commit`/`push` desta sessão, percebi 2 commits que não criei (`
 - **Tabela de preços** Premium/Professional (§9 dos Termos)
 - **Achado novo acima** (tabelas públicas) — classificar conteúdo sensível vs. intencional
 
-## P3 — Só você consegue fazer (sistemas externos, sua identidade)
+## P3 — Já feito (ou bloqueado em espera)
 
-- ~~Reboot da VM Oracle~~ → não precisa mais, ver P0 atualizado
-- Deploy manual do `main.py` novo na VM (copiar arquivos + `pip install python-multipart` + restart do service) — eu consigo fazer isso por SSH se você autorizar, é uma ação em serviço que já está rodando em produção
-- Checar inbox por aprovação ISV da Samsung Knox
+- ✅ Deploy manual do `main.py` novo na VM (realizado 21/Jun 00:49)
+  - Backup do main.py antigo: `main.py.bak-pre-voice-cerber-20260620214826`
+  - Instalado `python-multipart` no Python do sistema (versão errada primeiro, depois no `/usr/bin/python3`)
+  - Nginx config atualizado com rotas `/v1/tts`, `/v1/stt`, `/v1/voice/status` pra port 8002
+  - Serviço `aquarios-webhook` rodando 100% (status: `active running`)
+  - Rotas verificadas: `/health` 200, `/v1/voice/status` 200 (degradado, esperado — sem chaves ElevenLabs/Supabase no .env da VM ainda)
+  - Logs desde restart: sem erros, tudo limpo
+
+- ⏳ Checar inbox por aprovação ISV da Samsung Knox (seu email, não meu)
 - Colar prompt/config da "Lis" no painel ElevenLabs (conteúdo pronto em `ELEVENLABS_ODONTOLAR.md` na área de trabalho)
 - Gerar token permanente (System User) do Meta WhatsApp — bloqueador da 1ª mensagem real
 - Criar o perfil @aquarios.app no Instagram (formulário ficou pela metade)
