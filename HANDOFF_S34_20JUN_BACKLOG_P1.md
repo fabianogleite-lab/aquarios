@@ -4,13 +4,15 @@
 
 ---
 
-## P0 — BLOQUEADOR, precisa de você (não mudou)
+## P0 — ATUALIZADO 21/Jun 00:36: a VM SE RECUPEROU SOZINHA, não estava mais caída
 
-**VM Oracle (137.131.158.242) sem resposta** — SSH e HTTPS travam na troca de protocolo (TCP sobe, banner/TLS não completa). Diagnóstico: esgotamento de recursos do SO (E2.1.Micro, 498MB RAM), não é firewall/rede. Não existe CLI/credencial OCI local para resolver isso programaticamente.
+**Correção:** o travamento de SSH/HTTPS descrito abaixo (histórico, mantido por rastreabilidade) era **transitório** — confirmado via SSH real às 00:36 de 21/Jun: `uptime` mostra **12 dias contínuos, sem reboot**. Os 4 serviços estão `active running`: `aquarios-webhook.service`, `hygeios-v2-sprint2.service` (porta 8001), `hygeios-v2.service`/AQUARIOS v4.2 (porta 8000), `nginx`. Não foi preciso reboot manual no OCI Console — a assinatura/conta Oracle está válida (instância suspensa ficaria inacessível, não é o caso). RAM continua no limite (498MB total, 8MB livre real, 197MB available) — pode travar de novo sob qualquer pico, mas neste momento está estável.
 
-**Ação necessária:** Reboot/Reset manual via **OCI Console** (web). Sem isso, nada que toca a VM (webhook WhatsApp, API api.podiumtec.com.br, voice proxy) funciona.
+~~Diagnóstico histórico (20/Jun, quando ainda estava travada):~~ SSH e HTTPS travavam na troca de protocolo (TCP subia, banner/TLS não completava) — esgotamento de recursos do SO, não rede/firewall.
 
-**Atenção ao religar:** o `main.py` agora importa `python-multipart` (rota `/v1/stt` do voice proxy usa `File`/`Form`). A VM só tinha `fastapi uvicorn httpx python-dotenv` instalados — **vai crashar no boot do serviço** até rodar `pip install python-multipart` lá. Adicionar isso ao playbook de reconexão (`infra/oracle/reconnect_and_verify.sh`).
+**Achado importante ao confirmar via SSH:** o `aquarios-webhook.service` rodando agora é a versão **ANTIGA** de `main.py` (rotas: só `/webhook/whatsapp`, `/health`, `/config` — nada do wiring de hoje). O deploy nessa VM é **cópia manual de arquivo**, não `git pull` (`/home/opc/business-agent` não é repositório git) — então o push de hoje pro GitHub não chegou lá automaticamente. Confirmado também: `python-multipart` **realmente não está instalado** no venv (`/home/opc/business-agent/venv`) — exatamente o bloqueio previsto abaixo, agora verificado direto no servidor.
+
+**Próximo passo real (não é mais "religar"):** fazer o deploy manual do `main.py` atualizado (com voice_proxy + cerber_shield) — copiar os arquivos novos pra `/home/opc/business-agent/`, rodar `pip install python-multipart` no venv, e `sudo systemctl restart aquarios-webhook.service`.
 
 ---
 
@@ -65,7 +67,8 @@ Durante o `git commit`/`push` desta sessão, percebi 2 commits que não criei (`
 
 ## P3 — Só você consegue fazer (sistemas externos, sua identidade)
 
-- Reboot da VM Oracle (P0, urgente)
+- ~~Reboot da VM Oracle~~ → não precisa mais, ver P0 atualizado
+- Deploy manual do `main.py` novo na VM (copiar arquivos + `pip install python-multipart` + restart do service) — eu consigo fazer isso por SSH se você autorizar, é uma ação em serviço que já está rodando em produção
 - Checar inbox por aprovação ISV da Samsung Knox
 - Colar prompt/config da "Lis" no painel ElevenLabs (conteúdo pronto em `ELEVENLABS_ODONTOLAR.md` na área de trabalho)
 - Gerar token permanente (System User) do Meta WhatsApp — bloqueador da 1ª mensagem real
