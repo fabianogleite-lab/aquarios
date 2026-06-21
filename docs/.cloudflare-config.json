@@ -1,0 +1,26 @@
+{
+  "rules": [
+    {
+      "zone": "podiumtec.com.br",
+      "settings": {
+        "cache_level": "cache_everything",
+        "browser_cache_ttl": 14400,
+        "cache_ttl_by_status": {
+          "200": 86400,
+          "301": 3600,
+          "404": 300
+        },
+        "minify": {
+          "javascript": true,
+          "css": true,
+          "html": true
+        },
+        "rocket_loader": true,
+        "auto_minify": true,
+        "brotli": true,
+        "image_resizing": "on",
+        "webp": "on"
+      }
+    }
+  ]
+}
