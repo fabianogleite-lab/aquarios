@@ -56,7 +56,7 @@
   - 7 camadas de defesa, ETERNAL MAZE, HygeiOS Data Gate
   - Salvo na memoria do projeto (nao no repo)
 - PDF Memorial ARKHE v0.005: arquitetura completa do ecossistema
-  - 7 principios hermeticos, SandeirOS, modelo de negocio
+  - 7 principios estruturais, SandeirOS, modelo de negocio
 - PDF ARKHE V1.0613: auditoria, higienizacao, suite de testes
   - 155+ testes, OWASP, LGPD compliance
 

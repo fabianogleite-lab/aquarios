@@ -228,7 +228,7 @@ O que FUNCIONA:
 - Hafez → também aceito culturalmente
 - Sufismo como "dimensão interior do Islam"
 - Filosofia islâmica (Avicena, Al-Ghazali)
-- O "Quarto Caminho" de Gurdjieff tem raízes sufi → CONEXÃO VÁLIDA
+- Uma das fontes basais tem raízes sufi → CONEXÃO VÁLIDA
 
 EcumenicOS Iran = "Sabedoria do Oriente Médio" (frame seguro)
 ```
@@ -245,7 +245,7 @@ O que FUNCIONA:
 - Hassidismo (histórias de Baal Shem Tov)
 - Mussar (ética judaica)
 - Shabbat integration (modo silencioso)
-- Conexão com Quarto Caminho: Gurdjieff estudou tradições judaicas
+- Conexão com uma fonte basal: raízes em tradições judaicas
 - Calendário hebraico integrado ao app
 
 EcumenicOS Israel = "Sabedoria da Tradição Hebraica" (frame respeitoso)

@@ -23,10 +23,10 @@
 
 | Aspecto | Manual | DEVPACK | Código |
 |---|---|---|---|
-| **7 Leis Herméticas** | "Estrutura semântica oculta — usuário NÃO precisa conhecer" | "Base estrutural pública do ecossistema" | `aquarios_constitution` com `is_public=false` ✅ alinhado ao Manual |
-| **Quarto Caminho (Gurdjieff)** | Listado em §06 (fundamento tríplice) | Listado em M-01 | `aquarios_constitution.sandeiros[1]` ✅ |
-| **Bardo Thodol** | Listado em §06 | Listado em M-01 | `aquarios_constitution.sandeiros[3]` ✅ |
-| **A Voz do Silêncio (Blavatsky)** | Listado em §06 | Listado em M-01 | `aquarios_constitution.sandeiros[2]` ✅ |
+| **7 princípios estruturais** | "Estrutura semântica oculta — usuário NÃO precisa conhecer" | "Base estrutural pública do ecossistema" | `aquarios_constitution` com `is_public=false` ✅ alinhado ao Manual |
+| **Fonte basal A** | Listado em §06 (fundamento tríplice) | Listado em M-01 | `aquarios_constitution.sandeiros[1]` ✅ |
+| **Fonte basal B** | Listado em §06 | Listado em M-01 | `aquarios_constitution.sandeiros[3]` ✅ |
+| **Fonte basal C** | Listado em §06 | Listado em M-01 | `aquarios_constitution.sandeiros[2]` ✅ |
 | **Pilar 2 Psicologia Social** (Vigotski/Foucault/Freire/Butler) | ❌ Não mencionado | ❌ Não mencionado | ✅ Implementado em migration 10 (10 itens públicos) |
 
 **Pergunta:** Pilar 2 PS foi adição do código sem ratificação. Manter? ☐
@@ -198,7 +198,7 @@
 | 2 | AquariOS como "SO do Ser Humano" | ⚠ na splash não está claro |
 | 3 | ProteOS roteamento por intenção | ⚠ chat existe, roteamento parcial |
 | 4 | SandeirOS engine 22 arcanos | ❌ não implementado |
-| 5 | Correspondência 7 leis ↔ 22 arcanos | ⚠ leis em constitution, arcanos faltam |
+| 5 | Correspondência 7 princípios ↔ 22 arcanos | ⚠ princípios em constitution, arcanos faltam |
 | 6 | HygeiOS pipeline ETL + IVI | ❌ pipeline ETL não implementado |
 | 7 | AsclepiOS risk_score algorithm | ❌ não implementado |
 | 8 | EcumenicOS 13×3 oráculo oculto | ✅ migration 08 |

@@ -165,13 +165,13 @@
 
 #### 14. `aquarios_constitution` (20 linhas) 🚨 CRÍTICO
 - **Conteúdo:**
-  - 10 linhas pillar='sandeiros' com `is_public=false` (as 7 leis herméticas, Quarto Caminho, Bardo Thodol, Voz do Silêncio)
+  - 10 linhas pillar='sandeiros' com `is_public=false` (os 7 princípios estruturais e as fontes basais)
   - 10 linhas pillar='psicologia_social' com `is_public=true` (Vigotski, Foucault, Freire, etc.)
 - **Risco:** CRÍTICO
-  - ✅ Expõe as 7 leis herméticas (segredo de design, nunca deve ser visto pelo usuário per design intent)
+  - ✅ Expõe os 7 princípios estruturais (segredo de design, nunca deve ser visto pelo usuário per design intent)
   - ❌ A coluna `is_public=false` é **ignorada** pela policy `Anyone can read constitution`
   - Policy atualmente usa `USING (true)` — faz leitura não-discriminatória
-- **Compliance:** Viola princípio de design: "oracle_modern + oracle_label NUNCA expostos como label"; essas leis herméticas são equivalente (oculto)
+- **Compliance:** Viola princípio de design: "oracle_modern + oracle_label NUNCA expostos como label"; esses princípios estruturais são equivalentes (oculto)
 - **Uso no app:** NENHUM em runtime (SandeirOS usa as leis como constantes no código, não lê da tabela)
 - **Policy:** `Anyone can read constitution` ✅ (linha 84, migration 10)
 - **Fix pending:** ✅ **Migration 23 JÁ FIXA ISTO** (06/Jun) — muda policy pra `USING (is_public IS TRUE)`
@@ -260,7 +260,7 @@
 
 #### 18. `kb_foundation` (12 linhas) 🟡 SENSÍVEL
 - **Conteúdo:** 12 referências acadêmicas com Qualis levels
-  - 7 livros filosóficos/canônicos (Blavatsky, Padmasambhava, Ouspensky, Três Iniciados, etc.) — Qualis A1
+  - 7 livros filosóficos/canônicos (fontes basais, etc.) — Qualis A1
   - 5 livros de psicologia social (Freire, Foucault, Almeida, Butler, Han) — Qualis A1/A2
   - Cada um: `slug`, `title`, `author`, `qualis_level`, `abstract`, `related_modules`
 - **Sensibilidade:** **BAIXA-MÉDIA** — bibliografias são tipicamente públicas (estão no livro definitivo AQUARIOS_LIVRO.md também)
@@ -406,7 +406,7 @@
 | Nunca expõe SAFE/IPO | N/A | ✅ OK | Nenhuma tabela tem valuation |
 | Nunca expõe schema DB | `intellectual_property_registry` | ❌ FALHA | code_anchor aponta pra migrations |
 | Nunca expõe arquitetura | `aquarios_architecture` | ❌ FALHA | estrutura holding/camadas exposta |
-| Nunca expõe segredos internos | `aquarios_constitution` | ❌ FALHA | 7 leis herméticas (is_public ignorado) |
+| Nunca expõe segredos internos | `aquarios_constitution` | ❌ FALHA | 7 princípios estruturais (is_public ignorado) |
 
 ---
 

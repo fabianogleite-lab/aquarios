@@ -44,7 +44,7 @@
 
 8. **Código tem coisas MAIS sofisticadas que o DEVPACK em alguns pontos:**
    - Pilar 2 da Constituição (Vigotski/Foucault/Freire/Butler — 10 itens de Psicologia Social) é INOVAÇÃO do código.
-   - 7 Leis Herméticas ocultas (is_public=false) — alinhamento melhor com filosofia hermética real.
+   - 7 princípios estruturais ocultos (is_public=false) — alinhamento melhor com a base proprietária.
    - `SECURITY DEFINER` functions (`hygeios_log_content_audit`, `panaceia_deliver_tokens`) — arquitetura mais robusta.
    - 130 personas culturais (13 países × 10 arquétipos) vs 3 personas FAQ do DEVPACK.
 
@@ -68,7 +68,7 @@
 **Opções:**
 
 - **(A) Manter código** — HermeOS = finanças pessoais. Criar NOVO módulo `aquarios_dashboard` para o conceito do DEVPACK. Recomendado se finanças é prioridade real.
-- **(B) Reposicionar HermeOS conforme DEVPACK** — transformar em dashboard executivo total. Migrar conceito financeiro para novo módulo "FinanceOS". Mais alinhado à filosofia hermética (Hermes = mensageiro/integrador).
+- **(B) Reposicionar HermeOS conforme DEVPACK** — transformar em dashboard executivo total. Migrar conceito financeiro para novo módulo "FinanceOS". Mais alinhado ao HermeOS (Hermes = mensageiro/integrador).
 - **(C) Híbrido** — HermeOS como **integrador** (dashboard + alertas financeiros). Mantém referência mitológica mas amplia escopo.
 
 **Esforço:** M-L · **Risco:** alto (afeta UI/UX e percepção de usuários alfa)
@@ -359,7 +359,7 @@
 
 | Campo | Valor |
 |---|---|
-| DEVPACK | M-01 cita 7 Leis Herméticas + Quarto Caminho + Bardo Thodol. Sem Pilar 2. |
+| DEVPACK | M-01 cita 7 princípios estruturais + fontes basais. Sem Pilar 2. |
 | Código (migration 10) | 10 itens de Psicologia Social: Vigotski, Foucault, Freire, Almeida, Butler, Han, Bauman, Basaglia, Pichon-Rivière, Ciampa |
 | Tipo | Inovação do código (mais sofisticada) |
 
@@ -372,7 +372,7 @@
 
 ---
 
-### D-20 ⭐ 7 Leis Herméticas ocultas — Mais alinhada
+### D-20 ⭐ 7 princípios estruturais ocultos — Mais alinhada
 
 | Campo | Valor |
 |---|---|
@@ -380,7 +380,7 @@
 | Código | `is_public=false` em todos os 10 itens SandeirOS · nunca expostas ao usuário |
 | Tipo | Decisão filosófica do código mais sólida |
 
-**Esforço:** 0 — alinhado com Hermetismo real (esotérico = oculto).
+**Esforço:** 0 — alinhado com a base proprietária (estrutura simbólica oculta).
 
 ---
 
@@ -419,7 +419,7 @@
 | Campo | Valor |
 |---|---|
 | DEVPACK | Não detalha SandeirOS |
-| Código | `aquarios_modules.slug='sandeiros'` description: "22 arcanos + 3 livros basais + 7 leis herméticas" |
+| Código | `aquarios_modules.slug='sandeiros'` description: "22 arcanos + 3 fontes basais + 7 princípios estruturais" |
 | Tipo | Conceito proprietário do código |
 
 **Esforço:** 0 — documentar no DEVPACK v5.
@@ -432,7 +432,7 @@
 |---|---|
 | DEVPACK | Não menciona |
 | Código (migration 08) | `ecumenic_traditions.oracle_modern` + `oracle_label` ocultos ao usuário |
-| Tipo | Sistema esotérico proprietário |
+| Tipo | Sistema simbólico proprietário |
 
 **Esforço:** 0 — documentar.
 
@@ -505,7 +505,7 @@
 | D-17 | NicoChat/Shopify | 🟢 | Ignorar |
 | D-18 | 3 × 130 personas | 🟡 | SIM — documentar |
 | D-19 | Pilar 2 PS | ⭐ | Doc only |
-| D-20 | 7 Leis ocultas | ⭐ | Doc only |
+| D-20 | 7 princípios ocultos | ⭐ | Doc only |
 | D-21 | 4 vs 5 níveis plano | 🟢 | Opcional |
 | D-22 | profile_data_removed | 🟢 | LGPD enhancement |
 | D-23 | SandeirOS 22 arcanos | ⭐ | Doc only |
