@@ -1,0 +1,89 @@
+# Handoff — 20/Jun/2026 — Execução do backlog P1
+
+> Sessão anterior ficou bloqueada na VM Oracle caída (P0). Fundador pediu: "me oriente como atender todas estas demandas" → escopo confirmado = pendências abertas do projeto → categorizei em P0-P4 e executei tudo que dava pra fazer sem decisão do fundador (P1). Este documento é o estado real no fim dessa execução.
+
+---
+
+## P0 — BLOQUEADOR, precisa de você (não mudou)
+
+**VM Oracle (137.131.158.242) sem resposta** — SSH e HTTPS travam na troca de protocolo (TCP sobe, banner/TLS não completa). Diagnóstico: esgotamento de recursos do SO (E2.1.Micro, 498MB RAM), não é firewall/rede. Não existe CLI/credencial OCI local para resolver isso programaticamente.
+
+**Ação necessária:** Reboot/Reset manual via **OCI Console** (web). Sem isso, nada que toca a VM (webhook WhatsApp, API api.podiumtec.com.br, voice proxy) funciona.
+
+**Atenção ao religar:** o `main.py` agora importa `python-multipart` (rota `/v1/stt` do voice proxy usa `File`/`Form`). A VM só tinha `fastapi uvicorn httpx python-dotenv` instalados — **vai crashar no boot do serviço** até rodar `pip install python-multipart` lá. Adicionar isso ao playbook de reconexão (`infra/oracle/reconnect_and_verify.sh`).
+
+---
+
+## P1 — CONCLUÍDO nesta sessão (commitado + pushed em `main`)
+
+| # | O que | Commit |
+|---|---|---|
+| 1 | `voice_proxy` (ElevenLabs server-side) e `cerber_shield` (defesa ativa) estavam escritos mas nunca importados em `main.py` — agora registrados na ordem certa (voice antes, pra rotas existirem antes do middleware envolver tudo) | [2044d13](business-agent/main.py) |
+| 2 | `mobile/lib/elevenlabs.ts` mandava `language_code: 'pt'` fixo no STT — agora usa o idioma ativo do i18n (`pt-BR`→`pt`, `en-US`→`en` etc.) | [a32b24b](mobile/lib/elevenlabs.ts) |
+| 3 | `existential_xp_log` sem RLS (FAIL do audit) — confirmado live (GET anônimo voltava 200 sem restrição), corrigido com policy owner-only (`auth.uid() = user_id`), aplicado em produção via `supabase db push` | [422a8cf](supabase/migrations/20260620120000_rls_fix_existential_xp_log.sql) |
+| 4 | CNPJ (41.191.506/0001-02) e endereço da C&L preenchidos em `legal/POLITICA_DE_PRIVACIDADE.md` e `legal/TERMOS_DE_USO.md` — eram os únicos placeholders 100% factuais já confirmados em memória | [d6ef55d](legal/POLITICA_DE_PRIVACIDADE.md) |
+| 5 | Release pública `v0.1.0-beta` (APK debug) marcada `prerelease: true` + nota explícita de debug build no corpo da release, pra não aparecer como "Latest" pronta pra uso | `gh release edit` (sem commit — ação direta na API do GitHub) |
+| 6 | `__pycache__/` e `*.pyc` faltavam no `.gitignore` — adicionado | [2044d13](.gitignore) |
+
+**`panaceia_currencies`** (o outro FAIL do audit): não existe em produção — confirmado via probe REST direto (404 `PGRST205`). Sem ação; só vira relevante se/quando alguém de fato criar essa tabela.
+
+**Secret-scan:** varri todo o conteúdo untracked (business-agent/, legal/, agencia/, marketing-global/, infra/azure/, scripts/, os .md novos da raiz) por padrões de chave/token real (Anthropic, AWS, Google, GitHub, Meta, ElevenLabs, Supabase service_role, private keys) e por substring literal das chaves reais desta sessão — **nada encontrado**. Os 4 hits do grep de padrão eram falsos-positivos (a palavra "service_role" em prosa, e o header HTTP `xi-api-key` no código, não um valor de chave).
+
+---
+
+## ⚠️ Achado novo — não estava no escopo original, precisa de você
+
+**21 tabelas do Supabase respondem GET anônimo com dados reais** (confirmado no próprio `SECURITY_AUDIT_REPORT.md`, seção A7 — cada uma tem policy de SELECT explícita, não é bug de RLS ausente). A anon key que destrava isso é a mesma que vai embutida no APK (`mobile/.env`), extraível por qualquer um que descompile o app.
+
+A maioria parece inofensiva por design (catálogo de personas, planos, conteúdo de onboarding). Mas tem nomes que pedem atenção, à luz da sua própria regra permanente de nunca expor arquitetura/IP/schema em superfície pública:
+
+- `aquarios_architecture`, `aquarios_constitution`, `aquarios_decisions`, `aquarios_divergencias`
+- `arkhe_holding`
+- `intellectual_property_registry`
+- `kb_foundation`, `roadmap_phase_log`
+
+Não toquei nisso agora porque (a) não estava no escopo que você aprovou, (b) decidir o que é "intencionalmente público" vs "vazando" exige saber o que tem dentro de cada tabela e se alguma tela do app depende da leitura anônima — corrigir errado quebra funcionalidade. Abri um card de background pra investigar o conteúdo real e classificar cada uma antes de qualquer fix de RLS.
+
+---
+
+## 🔀 Achado operacional — outra sessão Claude Code ativa no mesmo repo
+
+Durante o `git commit`/`push` desta sessão, percebi 2 commits que não criei (`1f60af3` "docs(handoff): atualizado com ProteOS inteligente" e `23c3b7b` "docs(seo): relatorio completo fase 1+2+3") aparecerem no histórico e já indo pro `origin/main` — sinal de que **tem outra sessão rodando em paralelo nesta mesma pasta**, fazendo trabalho de SEO/handoff. Não causou perda de dados (confirmei que meu wiring em `main.py` e todos os meus commits estão intactos), mas o índice do git colidiu uma vez (meus arquivos staged acabaram dentro do commit dela, só a mensagem ficou diferente da que eu escrevi). Se isso não for intencional (duas janelas suas abertas ao mesmo tempo), vale fechar uma antes de continuar — commits concorrentes na mesma working tree podem causar isso de novo.
+
+---
+
+## P2 — Decisão sua (ou do seu advogado), não é algo que eu deva inventar
+
+- **DPO formal:** nome + CPF do contador como encarregado (`legal/ATO_DESIGNACAO_ENCARREGADO_DPO.md` e §1/§19 da Política de Privacidade ainda em branco)
+- **Retenção de dados:** períodos exatos por categoria (§10) — hoje todos `[A CONFIRMAR juridicamente]`
+- **Parecer OFAC/Irã:** gate absoluto pra qualquer release lá (§17) — zero investimento em farsi antes disso, conforme já decidido na S33
+- **Idade mínima por país** (§15 + Anexo A) — default 18, pisos legais por país não validados
+- **Representante local UE/Nigéria/Coreia** (Anexo A) — `[A VALIDAR]`
+- **Foro/comarca** dos Termos de Uso (§16) — não inferi Belo Horizonte automaticamente; é uma escolha contratual, não um fato
+- **Tabela de preços** Premium/Professional (§9 dos Termos)
+- **Achado novo acima** (tabelas públicas) — classificar conteúdo sensível vs. intencional
+
+## P3 — Só você consegue fazer (sistemas externos, sua identidade)
+
+- Reboot da VM Oracle (P0, urgente)
+- Checar inbox por aprovação ISV da Samsung Knox
+- Colar prompt/config da "Lis" no painel ElevenLabs (conteúdo pronto em `ELEVENLABS_ODONTOLAR.md` na área de trabalho)
+- Gerar token permanente (System User) do Meta WhatsApp — bloqueador da 1ª mensagem real
+- Criar o perfil @aquarios.app no Instagram (formulário ficou pela metade)
+- Submeter os docs de `legal/` à Meta AI item a item, como os próprios docs pedem no cabeçalho
+
+## P4 — Bloqueado por fator externo, sem ação possível agora
+
+- Build de release assinado (AAB/APK de produção) — precisa de credenciais EAS, é follow-up separado da mitigação de hoje
+- A1.Flex Oracle — capacidade esgotada em SP e Ashburn
+- Multi-cloud GCP/Alibaba — gated no A1.Flex ou 2+ semanas de FastAPI estável
+- Fase 0 do plano de recuperação Azure — aguarda seu OK explícito (incidente de 12/Jun)
+- Colisão contratual GeoCredi/Paytime (XI/XVI.4) — precisa revisão jurídica
+
+---
+
+## Arquivos-chave desta sessão
+
+📖 **LER:** [business-agent/main.py](business-agent/main.py) (wiring novo) · [supabase/migrations/20260620120000_rls_fix_existential_xp_log.sql](supabase/migrations/20260620120000_rls_fix_existential_xp_log.sql) · este handoff
+
+🚫 **SÓ REFERÊNCIA:** `SECURITY_AUDIT_REPORT.md` (gerado 12/Jun, já com os 2 FAIL corrigidos hoje) · `legal/*.md` (rascunhos, cabeçalho de cada um explica o fluxo de revisão)
