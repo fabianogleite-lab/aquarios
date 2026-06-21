@@ -1,0 +1,92 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte ng feed · conceito: "strength begins within" -->
+  <!-- Performance OS — pilares de força ascendentes, nunca fraqueza -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="80%">
+      <stop offset="0%" stop-color="#1C0E08"/>
+      <stop offset="50%" stop-color="#0E0806"/>
+      <stop offset="100%" stop-color="#050302"/>
+    </radialGradient>
+    <radialGradient id="orange-glow" cx="50%" cy="44%" r="50%">
+      <stop offset="0%" stop-color="#E07B54" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#E07B54" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="11" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="pillar-glow">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="txt">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="420" r="320" fill="url(#orange-glow)"/>
+
+  <!-- Pilares ascendentes — força que sobe de dentro para fora -->
+  <!-- Pilar central (mais alto) -->
+  <rect x="510" y="220" width="60" height="260" rx="6" fill="#E07B54" opacity="0.15"/>
+  <rect x="510" y="220" width="60" height="8" rx="4" fill="#E07B54" opacity="0.90" filter="url(#pillar-glow)"/>
+  <rect x="515" y="228" width="50" height="250" rx="4" fill="url(#bg)" opacity="0.6"/>
+
+  <!-- Pilar esquerdo (médio) -->
+  <rect x="390" y="290" width="48" height="190" rx="6" fill="#5B8DEF" opacity="0.12"/>
+  <rect x="390" y="290" width="48" height="7" rx="3" fill="#5B8DEF" opacity="0.85" filter="url(#pillar-glow)"/>
+  <rect x="394" y="297" width="40" height="183" rx="3" fill="url(#bg)" opacity="0.6"/>
+
+  <!-- Pilar direito (médio) -->
+  <rect x="642" y="290" width="48" height="190" rx="6" fill="#52C98A" opacity="0.12"/>
+  <rect x="642" y="290" width="48" height="7" rx="3" fill="#52C98A" opacity="0.85" filter="url(#pillar-glow)"/>
+  <rect x="646" y="297" width="40" height="183" rx="3" fill="url(#bg)" opacity="0.6"/>
+
+  <!-- Pilar esquerda exterior (menor) -->
+  <rect x="278" y="348" width="36" height="132" rx="5" fill="#7C5CBF" opacity="0.10"/>
+  <rect x="278" y="348" width="36" height="6" rx="3" fill="#7C5CBF" opacity="0.75" filter="url(#pillar-glow)"/>
+
+  <!-- Pilar direita exterior (menor) -->
+  <rect x="766" y="348" width="36" height="132" rx="5" fill="#7C5CBF" opacity="0.10"/>
+  <rect x="766" y="348" width="36" height="6" rx="3" fill="#7C5CBF" opacity="0.75" filter="url(#pillar-glow)"/>
+
+  <!-- Linha de base dos pilares -->
+  <line x1="200" y1="480" x2="880" y2="480" stroke="rgba(224,123,84,0.25)" stroke-width="1.5"/>
+
+  <!-- 4D Arc ring -->
+  <path d="M540,290 A150,150 0 0,1 690,440" fill="none" stroke="#E07B54" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <path d="M690,440 A150,150 0 0,1 540,590" fill="none" stroke="#5B8DEF" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <path d="M540,590 A150,150 0 0,1 390,440" fill="none" stroke="#7C5CBF" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <path d="M390,440 A150,150 0 0,1 540,290" fill="none" stroke="#52C98A" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+
+  <!-- Centro -->
+  <circle cx="540" cy="440" r="50" fill="rgba(14,8,6,0.88)" stroke="rgba(224,123,84,0.18)" stroke-width="1"/>
+  <circle cx="540" cy="440" r="8" fill="#E07B54" filter="url(#pillar-glow)" opacity="0.90"/>
+
+  <!-- Pontos dimensões -->
+  <circle cx="540" cy="293" r="5" fill="#E07B54" filter="url(#glow)" opacity="0.90"/>
+  <circle cx="687" cy="440" r="5" fill="#5B8DEF" filter="url(#glow)" opacity="0.90"/>
+  <circle cx="540" cy="587" r="5" fill="#7C5CBF" filter="url(#glow)" opacity="0.90"/>
+  <circle cx="393" cy="440" r="5" fill="#52C98A" filter="url(#glow)" opacity="0.90"/>
+
+  <text x="540" y="448" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="16" font-weight="700" fill="white" opacity="0.65" letter-spacing="2">iVi</text>
+
+  <!-- HEADLINE — bold, direct, empowering -->
+  <text x="540" y="700" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="78" font-weight="800" fill="white" opacity="0.96" filter="url(#txt)">Strength</text>
+  <text x="540" y="782" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="78" font-weight="800" fill="#E07B54" opacity="0.95">begins within.</text>
+
+  <!-- Sub -->
+  <text x="540" y="846" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="26" font-weight="300" fill="white" opacity="0.55">Who's checking on you?</text>
+
+  <!-- Dimension labels -->
+  <text x="540" y="902" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="18" fill="white" opacity="0.38" letter-spacing="4">PHYSICAL · MENTAL · MEANING · SOCIAL</text>
+
+  <!-- CTA -->
+  <rect x="320" y="928" width="440" height="52" rx="26" fill="rgba(224,123,84,0.16)" stroke="rgba(224,123,84,0.45)" stroke-width="1"/>
+  <text x="540" y="960" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="20" font-weight="600" fill="#E07B54">Know your vitality score → free</text>
+
+  <!-- Wordmark -->
+  <text x="540" y="1042" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="21" font-weight="700" fill="white" letter-spacing="5" opacity="0.50">AquariOS</text>
+</svg>

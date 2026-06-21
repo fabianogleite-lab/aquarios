@@ -1,0 +1,50 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+  <title>AquariOS — Logo Perfil Instagram</title>
+  <defs>
+    <clipPath id="circle"><circle cx="200" cy="200" r="200"/></clipPath>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#121C42"/>
+      <stop offset="100%" stop-color="#060C1E"/>
+    </radialGradient>
+    <filter id="g1" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="200" cy="200" r="200" fill="url(#bg)"/>
+
+  <!-- Físico #E07B54 — quadrante topo-direita -->
+  <path d="M200,200 L200,44 A156,156 0 0,1 356,200 Z" fill="#E07B54" opacity="0.18"/>
+  <path d="M200,44 A156,156 0 0,1 356,200" fill="none" stroke="#E07B54" stroke-width="6" opacity="0.9" stroke-linecap="round" filter="url(#g1)"/>
+
+  <!-- Mental #5B8DEF — quadrante baixo-direita -->
+  <path d="M200,200 L356,200 A156,156 0 0,1 200,356 Z" fill="#5B8DEF" opacity="0.18"/>
+  <path d="M356,200 A156,156 0 0,1 200,356" fill="none" stroke="#5B8DEF" stroke-width="6" opacity="0.9" stroke-linecap="round" filter="url(#g1)"/>
+
+  <!-- Espiritual #7C5CBF — quadrante baixo-esquerda -->
+  <path d="M200,200 L200,356 A156,156 0 0,1 44,200 Z" fill="#7C5CBF" opacity="0.18"/>
+  <path d="M200,356 A156,156 0 0,1 44,200" fill="none" stroke="#7C5CBF" stroke-width="6" opacity="0.9" stroke-linecap="round" filter="url(#g1)"/>
+
+  <!-- Social #52C98A — quadrante topo-esquerda -->
+  <path d="M200,200 L44,200 A156,156 0 0,1 200,44 Z" fill="#52C98A" opacity="0.18"/>
+  <path d="M44,200 A156,156 0 0,1 200,44" fill="none" stroke="#52C98A" stroke-width="6" opacity="0.9" stroke-linecap="round" filter="url(#g1)"/>
+
+  <!-- Anéis internos -->
+  <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <circle cx="200" cy="200" r="58" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+
+  <!-- Símbolo central -->
+  <text x="200" y="192" text-anchor="middle" font-family="Georgia, serif" font-size="62" fill="white" opacity="0.95" filter="url(#g1)">🌊</text>
+
+  <!-- Wordmark -->
+  <text x="200" y="248" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="22" font-weight="700" fill="white" letter-spacing="3" opacity="0.90">AquariOS</text>
+  <text x="200" y="272" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="10" fill="rgba(255,255,255,0.40)" letter-spacing="1.5">AI · BEM-ESTAR</text>
+
+  <!-- Pontos das 4 dimensões -->
+  <circle cx="200" cy="56" r="5" fill="#E07B54" filter="url(#g1)" opacity="0.9"/>
+  <circle cx="344" cy="200" r="5" fill="#5B8DEF" filter="url(#g1)" opacity="0.9"/>
+  <circle cx="200" cy="344" r="5" fill="#7C5CBF" filter="url(#g1)" opacity="0.9"/>
+  <circle cx="56" cy="200" r="5" fill="#52C98A" filter="url(#g1)" opacity="0.9"/>
+</svg>

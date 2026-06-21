@@ -1,0 +1,98 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte us feed · conceito: "da fragmentação à integração" -->
+  <!-- 12 apps = pontos dispersos · AquariOS = o centro que conecta tudo -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#0D1635"/>
+      <stop offset="60%" stop-color="#080E22"/>
+      <stop offset="100%" stop-color="#040810"/>
+    </radialGradient>
+    <radialGradient id="center-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#5B8DEF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#5B8DEF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="24" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textglow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+
+  <!-- Center radial glow (Mental dimension dominant) -->
+  <circle cx="540" cy="430" r="320" fill="url(#center-glow)"/>
+
+  <!-- Scattered dots (12 apps — fragmentation) -->
+  <!-- Each dot = a health app that tracks ONE thing -->
+  <circle cx="220" cy="190" r="6" fill="#5B8DEF" opacity="0.35"/>
+  <circle cx="310" cy="155" r="4" fill="#E07B54" opacity="0.30"/>
+  <circle cx="160" cy="310" r="5" fill="#52C98A" opacity="0.28"/>
+  <circle cx="390" cy="130" r="7" fill="#7C5CBF" opacity="0.32"/>
+  <circle cx="130" cy="410" r="4" fill="#5B8DEF" opacity="0.25"/>
+  <circle cx="870" cy="195" r="6" fill="#E07B54" opacity="0.35"/>
+  <circle cx="920" cy="310" r="5" fill="#52C98A" opacity="0.28"/>
+  <circle cx="950" cy="190" r="4" fill="#7C5CBF" opacity="0.30"/>
+  <circle cx="840" cy="140" r="7" fill="#5B8DEF" opacity="0.32"/>
+  <circle cx="960" cy="420" r="4" fill="#E07B54" opacity="0.25"/>
+  <circle cx="750" cy="160" r="5" fill="#52C98A" opacity="0.30"/>
+  <circle cx="200" cy="520" r="4" fill="#7C5CBF" opacity="0.25"/>
+
+  <!-- Thin connection lines to center (540, 430) — fragmented → integrated -->
+  <line x1="220" y1="190" x2="440" y2="380" stroke="#5B8DEF" stroke-width="0.8" opacity="0.20"/>
+  <line x1="310" y1="155" x2="460" y2="370" stroke="#E07B54" stroke-width="0.8" opacity="0.18"/>
+  <line x1="160" y1="310" x2="430" y2="400" stroke="#52C98A" stroke-width="0.8" opacity="0.18"/>
+  <line x1="390" y1="130" x2="490" y2="360" stroke="#7C5CBF" stroke-width="0.8" opacity="0.20"/>
+  <line x1="870" y1="195" x2="640" y2="380" stroke="#E07B54" stroke-width="0.8" opacity="0.20"/>
+  <line x1="920" y1="310" x2="650" y2="400" stroke="#52C98A" stroke-width="0.8" opacity="0.18"/>
+  <line x1="840" y1="140" x2="600" y2="360" stroke="#5B8DEF" stroke-width="0.8" opacity="0.18"/>
+  <line x1="750" y1="160" x2="580" y2="360" stroke="#7C5CBF" stroke-width="0.8" opacity="0.20"/>
+
+  <!-- 4D Arc ring (brand identity) -->
+  <!-- Physical #E07B54 — top-right -->
+  <path d="M540,280 A150,150 0 0,1 690,430" fill="none" stroke="#E07B54" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <!-- Mental #5B8DEF — bottom-right -->
+  <path d="M690,430 A150,150 0 0,1 540,580" fill="none" stroke="#5B8DEF" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <!-- Spiritual #7C5CBF — bottom-left -->
+  <path d="M540,580 A150,150 0 0,1 390,430" fill="none" stroke="#7C5CBF" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+  <!-- Social #52C98A — top-left -->
+  <path d="M390,430 A150,150 0 0,1 540,280" fill="none" stroke="#52C98A" stroke-width="5" stroke-linecap="round" opacity="0.90" filter="url(#glow)"/>
+
+  <!-- Center dot (integration point) -->
+  <circle cx="540" cy="430" r="48" fill="rgba(11,16,38,0.85)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <circle cx="540" cy="430" r="8" fill="#5B8DEF" filter="url(#softglow)" opacity="0.9"/>
+
+  <!-- Dimension dots at compass points -->
+  <circle cx="540" cy="283" r="5" fill="#E07B54" filter="url(#glow)" opacity="0.9"/>
+  <circle cx="687" cy="430" r="5" fill="#5B8DEF" filter="url(#glow)" opacity="0.9"/>
+  <circle cx="540" cy="577" r="5" fill="#7C5CBF" filter="url(#glow)" opacity="0.9"/>
+  <circle cx="393" cy="430" r="5" fill="#52C98A" filter="url(#glow)" opacity="0.9"/>
+
+  <!-- iVi label inside ring -->
+  <text x="540" y="438" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="18" font-weight="700" fill="white" letter-spacing="2" opacity="0.70">iVi</text>
+
+  <!-- MAIN HEADLINE -->
+  <text x="540" y="700" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="68" font-weight="800" fill="white" opacity="0.95" filter="url(#textglow)">You track</text>
+  <text x="540" y="776" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="68" font-weight="800" fill="white" opacity="0.95">everything.</text>
+
+  <!-- Subheadline -->
+  <text x="540" y="836" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="32" font-weight="300" fill="white" opacity="0.60">When did you last understand yourself?</text>
+
+  <!-- Dimension labels -->
+  <text x="540" y="900" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="20" fill="white" opacity="0.45" letter-spacing="4">PHYSICAL · MENTAL · MEANING · SOCIAL</text>
+
+  <!-- CTA bar -->
+  <rect x="340" y="928" width="400" height="52" rx="26" fill="rgba(91,141,239,0.18)" stroke="rgba(91,141,239,0.45)" stroke-width="1"/>
+  <text x="540" y="960" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="20" font-weight="600" fill="#5B8DEF">Discover your iVi → free</text>
+
+  <!-- Wordmark -->
+  <text x="540" y="1042" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="22" font-weight="700" fill="white" letter-spacing="5" opacity="0.55">AquariOS</text>
+</svg>

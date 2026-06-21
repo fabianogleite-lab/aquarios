@@ -1,0 +1,88 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte ve feed · conceito: "lo que nadie te puede quitar" -->
+  <!-- Chama interior — a única luz que nenhuma crise apaga -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="85%">
+      <stop offset="0%" stop-color="#140C04"/>
+      <stop offset="50%" stop-color="#0A0703"/>
+      <stop offset="100%" stop-color="#050402"/>
+    </radialGradient>
+    <radialGradient id="flame-glow" cx="50%" cy="55%" r="45%">
+      <stop offset="0%" stop-color="#F5B800" stop-opacity="0.22"/>
+      <stop offset="60%" stop-color="#7C5CBF" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#7C5CBF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="11" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="flame">
+      <feGaussianBlur stdDeviation="20" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="txt">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="430" r="340" fill="url(#flame-glow)"/>
+
+  <!-- A chama interior — 4 pétalas de cor que formam uma chama -->
+  <!-- Dimensão Espiritual — pétala central alta (ouro/violeta) -->
+  <ellipse cx="540" cy="350" rx="28" ry="90" fill="#7C5CBF" opacity="0.50" filter="url(#flame)"/>
+  <ellipse cx="540" cy="360" rx="16" ry="70" fill="#F5B800" opacity="0.70" filter="url(#flame)"/>
+  <ellipse cx="540" cy="375" rx="8" ry="48" fill="white" opacity="0.85" filter="url(#flame)"/>
+
+  <!-- Dimensão Física — pétala direita -->
+  <ellipse cx="580" cy="410" rx="20" ry="55" fill="#E07B54" opacity="0.45" filter="url(#flame)" transform="rotate(25,580,410)"/>
+
+  <!-- Dimensão Mental — pétala esquerda -->
+  <ellipse cx="500" cy="410" rx="20" ry="55" fill="#5B8DEF" opacity="0.45" filter="url(#flame)" transform="rotate(-25,500,410)"/>
+
+  <!-- Dimensão Social — base da chama -->
+  <ellipse cx="540" cy="460" rx="35" ry="30" fill="#52C98A" opacity="0.30" filter="url(#flame)"/>
+
+  <!-- Base da vela — âncora -->
+  <rect x="524" y="488" width="32" height="60" rx="4" fill="rgba(255,255,255,0.08)"/>
+  <rect x="520" y="544" width="40" height="8" rx="4" fill="rgba(255,255,255,0.15)"/>
+
+  <!-- 4D Arc ring -->
+  <path d="M540,278 A162,162 0 0,1 702,440" fill="none" stroke="#E07B54" stroke-width="4.5" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M702,440 A162,162 0 0,1 540,602" fill="none" stroke="#5B8DEF" stroke-width="4.5" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M540,602 A162,162 0 0,1 378,440" fill="none" stroke="#7C5CBF" stroke-width="4.5" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M378,440 A162,162 0 0,1 540,278" fill="none" stroke="#52C98A" stroke-width="4.5" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+
+  <!-- Anel interior -->
+  <circle cx="540" cy="440" r="90" fill="none" stroke="rgba(245,184,0,0.08)" stroke-width="1"/>
+
+  <!-- Pontos dimensões -->
+  <circle cx="540" cy="281" r="5" fill="#E07B54" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="699" cy="440" r="5" fill="#5B8DEF" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="540" cy="599" r="5" fill="#7C5CBF" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="381" cy="440" r="5" fill="#52C98A" filter="url(#glow)" opacity="0.88"/>
+
+  <!-- iVi — abaixo da chama, na base -->
+  <text x="540" y="582" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="15" font-weight="700" fill="white" opacity="0.50" letter-spacing="2">iVi</text>
+
+  <!-- HEADLINE — honesto, cálido, sem promessas falsas -->
+  <text x="540" y="700" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="62" font-weight="800" fill="white" opacity="0.96" filter="url(#txt)">Lo que nadie</text>
+  <text x="540" y="772" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="62" font-weight="800" fill="#F5B800" opacity="0.95">te puede quitar.</text>
+
+  <!-- Sub -->
+  <text x="540" y="832" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="26" font-weight="300" fill="white" opacity="0.55">Tu bienestar interior, pase lo que pase afuera.</text>
+
+  <!-- Dimension labels -->
+  <text x="540" y="886" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="17" fill="white" opacity="0.36" letter-spacing="3.5">FÍSICO · MENTAL · ESPIRITUAL · SOCIAL</text>
+
+  <!-- CTA — free tier, sem barreira -->
+  <rect x="290" y="910" width="500" height="52" rx="26" fill="rgba(245,184,0,0.12)" stroke="rgba(245,184,0,0.38)" stroke-width="1"/>
+  <text x="540" y="942" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="20" font-weight="600" fill="#F5B800">Conócete → siempre gratis</text>
+
+  <!-- Small anchor text — autenticidade VE -->
+  <text x="540" y="990" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="16" fill="white" opacity="0.32">Sin cobros. Sin promesas vacías. Solo tú.</text>
+
+  <!-- Wordmark -->
+  <text x="540" y="1044" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="21" font-weight="700" fill="white" letter-spacing="5" opacity="0.46">AquariOS</text>
+</svg>

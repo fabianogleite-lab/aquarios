@@ -1,0 +1,73 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte pt feed · conceito: "saudade de si próprio" -->
+  <!-- Tom: reservado, filosófico, a beleza do silêncio -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="85%">
+      <stop offset="0%" stop-color="#130D2A"/>
+      <stop offset="55%" stop-color="#0A0818"/>
+      <stop offset="100%" stop-color="#04030C"/>
+    </radialGradient>
+    <radialGradient id="purple-glow" cx="50%" cy="42%" r="50%">
+      <stop offset="0%" stop-color="#7C5CBF" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#7C5CBF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="22" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="txt">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="410" r="340" fill="url(#purple-glow)"/>
+
+  <!-- A onda única — saudade, contemplação, silêncio -->
+  <!-- Uma linha de onda suave horizontal que atravessa o centro -->
+  <path d="M80,410 C180,340 260,480 360,410 C460,340 530,480 620,410 C710,340 780,480 880,410 C930,375 970,395 1000,410"
+        fill="none" stroke="#7C5CBF" stroke-width="2.5" opacity="0.40" stroke-linecap="round"/>
+  <path d="M80,430 C200,355 280,505 400,430 C490,370 560,500 660,430 C750,365 820,500 940,430 C970,413 990,422 1000,430"
+        fill="none" stroke="#7C5CBF" stroke-width="1.5" opacity="0.20" stroke-linecap="round"/>
+
+  <!-- 4D Arc ring (mais fino, mais contido) -->
+  <path d="M540,268 A162,162 0 0,1 702,430" fill="none" stroke="#E07B54" stroke-width="4" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M702,430 A162,162 0 0,1 540,592" fill="none" stroke="#5B8DEF" stroke-width="4" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M540,592 A162,162 0 0,1 378,430" fill="none" stroke="#7C5CBF" stroke-width="4" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+  <path d="M378,430 A162,162 0 0,1 540,268" fill="none" stroke="#52C98A" stroke-width="4" stroke-linecap="round" opacity="0.85" filter="url(#glow)"/>
+
+  <!-- Anel interior subtil -->
+  <circle cx="540" cy="430" r="80" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+  <!-- Ponto central — quieto, presente -->
+  <circle cx="540" cy="430" r="52" fill="rgba(8,6,20,0.88)" stroke="rgba(124,92,191,0.20)" stroke-width="1"/>
+  <circle cx="540" cy="430" r="7" fill="#7C5CBF" filter="url(#soft)" opacity="0.85"/>
+
+  <!-- Pontos das dimensões -->
+  <circle cx="540" cy="271" r="4.5" fill="#E07B54" filter="url(#glow)" opacity="0.85"/>
+  <circle cx="699" cy="430" r="4.5" fill="#5B8DEF" filter="url(#glow)" opacity="0.85"/>
+  <circle cx="540" cy="589" r="4.5" fill="#7C5CBF" filter="url(#glow)" opacity="0.85"/>
+  <circle cx="381" cy="430" r="4.5" fill="#52C98A" filter="url(#glow)" opacity="0.85"/>
+
+  <!-- iVi interior -->
+  <text x="540" y="438" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="17" fill="white" opacity="0.60" letter-spacing="2">iVi</text>
+
+  <!-- HEADLINE principal — pt-PT rigoroso, filosófico -->
+  <text x="540" y="706" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="54" font-weight="400" fill="white" opacity="0.95" filter="url(#txt)">Há quanto tempo</text>
+  <text x="540" y="771" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="54" font-weight="400" fill="white" opacity="0.95">não te perguntas</text>
+  <text x="540" y="836" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="54" font-style="italic" fill="#7C5CBF" opacity="0.95">como estás, de verdade?</text>
+
+  <!-- Sub -->
+  <text x="540" y="898" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="19" fill="white" opacity="0.40" letter-spacing="4">FÍSICO · MENTAL · ESPIRITUAL · SOCIAL</text>
+
+  <!-- CTA — mais reservado, sem barra agressiva -->
+  <text x="540" y="952" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="21" font-weight="500" fill="#7C5CBF" opacity="0.90">Descobre o teu iVi → registo gratuito</text>
+
+  <!-- Wordmark -->
+  <text x="540" y="1040" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="20" font-weight="700" fill="white" letter-spacing="6" opacity="0.45">AquariOS</text>
+</svg>

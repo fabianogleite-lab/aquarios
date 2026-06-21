@@ -1,0 +1,93 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte brasil feed · conceito: "da fragmentação à integração" -->
+  <!-- 4 dimensões convergindo no anel iVi · A Estrela como ponto de esperança -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="85%">
+      <stop offset="0%" stop-color="#141A3C"/>
+      <stop offset="55%" stop-color="#0B1026"/>
+      <stop offset="100%" stop-color="#060818"/>
+    </radialGradient>
+    <linearGradient id="fisico" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E07B54"/><stop offset="100%" stop-color="#E07B54" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="mental" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#5B8DEF"/><stop offset="100%" stop-color="#5B8DEF" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="espiritual" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7C5CBF"/><stop offset="100%" stop-color="#7C5CBF" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="social" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#52C98A"/><stop offset="100%" stop-color="#52C98A" stop-opacity="0.25"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="26" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+
+  <!-- linhas-guia concêntricas: o sistema que organiza o caos -->
+  <g stroke="#FFFFFF" fill="none" opacity="0.05">
+    <circle cx="540" cy="330" r="300" stroke-width="1"/>
+    <circle cx="540" cy="330" r="380" stroke-width="1"/>
+    <circle cx="540" cy="330" r="460" stroke-width="1"/>
+  </g>
+
+  <!-- fragmentos dispersos (a vida em 12 apps) fluindo para o centro -->
+  <g opacity="0.85">
+    <circle cx="128" cy="150" r="10" fill="#E07B54" opacity="0.5"/>
+    <circle cx="214" cy="96"  r="6"  fill="#E07B54" opacity="0.35"/>
+    <circle cx="952" cy="142" r="10" fill="#5B8DEF" opacity="0.5"/>
+    <circle cx="876" cy="84"  r="6"  fill="#5B8DEF" opacity="0.35"/>
+    <circle cx="120" cy="540" r="9"  fill="#7C5CBF" opacity="0.5"/>
+    <circle cx="80"  cy="430" r="5"  fill="#7C5CBF" opacity="0.35"/>
+    <circle cx="962" cy="520" r="9"  fill="#52C98A" opacity="0.5"/>
+    <circle cx="1000" cy="408" r="5" fill="#52C98A" opacity="0.35"/>
+    <path d="M138 158 Q330 250 410 296" stroke="#E07B54" stroke-width="1.5" fill="none" opacity="0.28"/>
+    <path d="M942 152 Q748 252 672 298" stroke="#5B8DEF" stroke-width="1.5" fill="none" opacity="0.28"/>
+    <path d="M132 532 Q320 460 408 380" stroke="#7C5CBF" stroke-width="1.5" fill="none" opacity="0.28"/>
+    <path d="M952 512 Q760 458 674 378" stroke="#52C98A" stroke-width="1.5" fill="none" opacity="0.28"/>
+  </g>
+
+  <!-- ANEL iVi: 4 arcos, 4 dimensões, um círculo só -->
+  <g transform="rotate(-45 540 330)" stroke-linecap="round" fill="none" filter="url(#glow)">
+    <path d="M 540 130 A 200 200 0 0 1 740 330" stroke="url(#fisico)"     stroke-width="26"/>
+    <path d="M 740 330 A 200 200 0 0 1 540 530" stroke="url(#mental)"     stroke-width="26"/>
+    <path d="M 540 530 A 200 200 0 0 1 340 330" stroke="url(#espiritual)" stroke-width="26"/>
+    <path d="M 340 330 A 200 200 0 0 1 540 130" stroke="url(#social)"     stroke-width="26"/>
+  </g>
+
+  <!-- núcleo: o ser integrado -->
+  <circle cx="540" cy="330" r="84" fill="#0B1026" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5"/>
+  <circle cx="540" cy="330" r="56" fill="none" stroke="#FFFFFF" stroke-opacity="0.10" stroke-width="1"/>
+
+  <!-- A Estrela (esperança e cura) no núcleo -->
+  <g filter="url(#softglow)">
+    <path d="M540 282 L552 318 L590 318 L560 340 L572 376 L540 354 L508 376 L520 340 L490 318 L528 318 Z"
+          fill="#FFFFFF" opacity="0.92"/>
+  </g>
+
+  <!-- pontos cardeais das dimensões sobre o anel -->
+  <g filter="url(#glow)">
+    <circle cx="540" cy="116" r="13" fill="#E07B54"/>
+    <circle cx="754" cy="330" r="13" fill="#5B8DEF"/>
+    <circle cx="540" cy="544" r="13" fill="#7C5CBF"/>
+    <circle cx="326" cy="330" r="13" fill="#52C98A"/>
+  </g>
+
+  <!-- ÁREAS DE TEXTO (placeholders nomeados — texto real entra no Figma) -->
+  <g>
+    <rect id="logo"     x="80" y="80"  width="280" height="44"  fill="none" stroke="#FFFFFF" stroke-opacity="0.0"/>
+    <rect id="headline" x="80" y="620" width="920" height="170" fill="none" stroke="#FFFFFF" stroke-opacity="0.0"/>
+    <rect id="body"     x="80" y="810" width="920" height="140" fill="none" stroke="#FFFFFF" stroke-opacity="0.0"/>
+    <rect id="cta"      x="80" y="956" width="430" height="72"  rx="36" fill="#52C98A" opacity="0.96"/>
+  </g>
+
+  <!-- respiro inferior: linha de horizonte sutil -->
+  <line x1="80" y1="588" x2="1000" y2="588" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"/>
+</svg>

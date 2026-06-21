@@ -1,0 +1,86 @@
+<svg width="1080" height="1080" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- AGÊNCIA ARKHE · /arte pe feed · conceito: "empieza contigo" -->
+  <!-- Raízes que sustentam a todos — coletivismo peruano, familia, tejido -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="82%">
+      <stop offset="0%" stop-color="#081A10"/>
+      <stop offset="55%" stop-color="#050E09"/>
+      <stop offset="100%" stop-color="#020604"/>
+    </radialGradient>
+    <radialGradient id="green-glow" cx="50%" cy="44%" r="52%">
+      <stop offset="0%" stop-color="#52C98A" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#52C98A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="11" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="root-glow">
+      <feGaussianBlur stdDeviation="16" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="txt">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <circle cx="540" cy="420" r="330" fill="url(#green-glow)"/>
+
+  <!-- Tejido de raízes — sistema de sustentação que parte do centro -->
+  <!-- Raiz principal para baixo -->
+  <line x1="540" y1="480" x2="540" y2="620" stroke="#52C98A" stroke-width="2.5" opacity="0.35"/>
+  <!-- Raízes secundárias -->
+  <line x1="540" y1="530" x2="460" y2="620" stroke="#52C98A" stroke-width="1.8" opacity="0.25"/>
+  <line x1="540" y1="530" x2="620" y2="620" stroke="#52C98A" stroke-width="1.8" opacity="0.25"/>
+  <line x1="540" y1="560" x2="390" y2="660" stroke="#52C98A" stroke-width="1.2" opacity="0.18"/>
+  <line x1="540" y1="560" x2="690" y2="660" stroke="#52C98A" stroke-width="1.2" opacity="0.18"/>
+  <line x1="540" y1="590" x2="320" y2="690" stroke="#52C98A" stroke-width="0.8" opacity="0.12"/>
+  <line x1="540" y1="590" x2="760" y2="690" stroke="#52C98A" stroke-width="0.8" opacity="0.12"/>
+
+  <!-- Ramos que sobem — o que a raiz sustenta, a família cresce -->
+  <line x1="540" y1="270" x2="540" y2="320" stroke="#52C98A" stroke-width="2.0" opacity="0.30"/>
+  <line x1="540" y1="300" x2="480" y2="240" stroke="#52C98A" stroke-width="1.5" opacity="0.22"/>
+  <line x1="540" y1="300" x2="600" y2="240" stroke="#52C98A" stroke-width="1.5" opacity="0.22"/>
+  <line x1="480" y1="240" x2="440" y2="195" stroke="#52C98A" stroke-width="1.0" opacity="0.15"/>
+  <line x1="600" y1="240" x2="640" y2="195" stroke="#52C98A" stroke-width="1.0" opacity="0.15"/>
+  <line x1="480" y1="240" x2="510" y2="190" stroke="#52C98A" stroke-width="0.8" opacity="0.12"/>
+  <line x1="600" y1="240" x2="570" y2="190" stroke="#52C98A" stroke-width="0.8" opacity="0.12"/>
+
+  <!-- 4D Arc ring -->
+  <path d="M540,278 A162,162 0 0,1 702,440" fill="none" stroke="#E07B54" stroke-width="5" stroke-linecap="round" opacity="0.88" filter="url(#glow)"/>
+  <path d="M702,440 A162,162 0 0,1 540,602" fill="none" stroke="#5B8DEF" stroke-width="5" stroke-linecap="round" opacity="0.88" filter="url(#glow)"/>
+  <path d="M540,602 A162,162 0 0,1 378,440" fill="none" stroke="#7C5CBF" stroke-width="5" stroke-linecap="round" opacity="0.88" filter="url(#glow)"/>
+  <path d="M378,440 A162,162 0 0,1 540,278" fill="none" stroke="#52C98A" stroke-width="5" stroke-linecap="round" opacity="0.88" filter="url(#glow)"/>
+
+  <!-- Centro -->
+  <circle cx="540" cy="440" r="52" fill="rgba(5,14,9,0.90)" stroke="rgba(82,201,138,0.20)" stroke-width="1"/>
+  <circle cx="540" cy="440" r="8" fill="#52C98A" filter="url(#root-glow)" opacity="0.88"/>
+
+  <!-- Pontos dimensões -->
+  <circle cx="540" cy="281" r="5" fill="#E07B54" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="699" cy="440" r="5" fill="#5B8DEF" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="540" cy="599" r="5" fill="#7C5CBF" filter="url(#glow)" opacity="0.88"/>
+  <circle cx="381" cy="440" r="5" fill="#52C98A" filter="url(#glow)" opacity="0.88"/>
+
+  <text x="540" y="448" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="17" font-weight="700" fill="white" opacity="0.62" letter-spacing="2">iVi</text>
+
+  <!-- HEADLINE — cálido, collectivista -->
+  <text x="540" y="706" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="46" font-weight="700" fill="white" opacity="0.95" filter="url(#txt)">¿Cuándo fue la última vez</text>
+  <text x="540" y="758" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="46" font-weight="700" fill="white" opacity="0.95">que te preguntaste</text>
+  <text x="540" y="818" text-anchor="middle" font-family="system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif" font-size="54" font-weight="800" fill="#52C98A" opacity="0.95">cómo estás tú?</text>
+
+  <!-- Sub -->
+  <text x="540" y="876" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="22" font-weight="300" fill="white" opacity="0.50">Para cuidar de todos, primero empieza contigo.</text>
+
+  <!-- Dimension labels -->
+  <text x="540" y="916" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="17" fill="white" opacity="0.36" letter-spacing="3.5">FÍSICO · MENTAL · ESPIRITUAL · SOCIAL</text>
+
+  <!-- CTA -->
+  <rect x="310" y="938" width="460" height="52" rx="26" fill="rgba(82,201,138,0.14)" stroke="rgba(82,201,138,0.42)" stroke-width="1"/>
+  <text x="540" y="970" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="20" font-weight="600" fill="#52C98A">Empieza contigo → gratis, sin tarjeta</text>
+
+  <!-- Wordmark -->
+  <text x="540" y="1042" text-anchor="middle" font-family="system-ui,-apple-system,Arial,sans-serif" font-size="21" font-weight="700" fill="white" letter-spacing="5" opacity="0.48">AquariOS</text>
+</svg>

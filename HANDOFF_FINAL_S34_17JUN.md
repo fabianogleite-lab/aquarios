@@ -92,11 +92,36 @@
 | Peça | Status | Bloqueador | Próximo |
 |---|---|---|---|
 | **WhatsApp Bridge** | 🟡 em análise | aprovação Meta | P1: ativar WA_TOKEN |
+| **ProteOS Inteligência** | ✅ RESOLVIDO (21/Jun) | ~~ANTHROPIC_API_KEY missing~~ | pronto para Onda 1 |
 | **APK build** | 🔄 buildando | EAS | test no device |
 | **Web export** | ✅ pronto | zero | mount GitHub Pages |
 | **Backoffice** | ✅ código | zero | test + UI polish |
 | **Migrations** | ✅ aplicadas | zero | queries prontas |
 | **Sites** | ✅ ao vivo | zero | SEO meta/google |
+
+---
+
+---
+
+## 🤖 ADDENDUM (21/Jun) — ProteOS Inteligência Ativada
+
+**Bloqueador resolvido:** ProteOS estava retornando resposta estática ("Bem-vindo ao AquariOS") — não processava texto do usuário nem chamava LLM.
+
+**Causa:** `ANTHROPIC_API_KEY` não estava configurada em `/etc/aquarios-webhook.env` do Oracle VM.
+
+**Fix aplicado:**
+- ✅ Atualizada `/etc/aquarios-webhook.env` com chave Anthropic válida
+- ✅ Service `aquarios-webhook` reiniciado
+- ✅ Teste: mensagem "Como posso melhorar meu foco mental?" → Claude gerou resposta inteligente → entregue via WhatsApp
+- ✅ Commit `a0d0d8f` — "fix(proteos): ANTHROPIC_API_KEY agora obrigatória"
+
+**Impacto:** ProteOS agora responde **inteligentemente** para cada usuário. Meta Business Agent destrancado. Onda 1 (BR/PT/US/NG/PE/VE) pronta para F3 (Presença global).
+
+**Verificação dos logs (Oracle VM, 21/Jun 00:17 UTC):**
+```
+💬 Mensagem do usuário: Como posso melhorar meu foco mental?
+✅ Resposta enviada para 553199***
+```
 
 ---
 
@@ -163,6 +188,8 @@ f635d0e - docs(sdk): handoff — backoffice user + APK build ba466f16 + web expo
 ## 🏆 CITAÇÃO HISTÓRICA
 
 > **Sessão S34 (17/Jun/2026):** Primeiro Meta Business Agent com Anthropic Claude integrado ao WhatsApp. ProteOS agora fala com o mundo via voice. Pioneiros. — *Fabiano Gomes Leite*
+
+> **Update (21/Jun/2026):** ProteOS respondendo inteligentemente via Claude. Meta Business Agent destrancado. Onda 1 pronta para escalar. — *Claude Code*
 
 ---
 
