@@ -32,3 +32,15 @@ backend/sandeiros/data/hl1_*.json
 backend/sandeiros/data/hl2_*.json
 backend/sandeiros/data/hl3_*.json
 backend/sandeiros/data/hl4_*.json
+
+# Infra docs — contêm IP/topologia/logins de contas; repo é PÚBLICO.
+# Mantidos local-only (igual memory/). Ver feedback_sites_pro_template.
+INFRA_HARDWARE_MAP.md
+INFRA_FREE_TIER_EXPIRY.md
+
+# Terraform — state/vars podem conter segredos; nunca versionar
+infra/**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+crash.log
