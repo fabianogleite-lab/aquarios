@@ -278,6 +278,27 @@
         /* Empty state */
         .empty { text-align: center; padding: 3rem; color: var(--text-muted); }
         .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* ===== Config-first toggles + Servidores + Ajuda AlexandriOS (WS2/WS2b) ===== */
+        .cfg-row { display:flex; align-items:center; gap:1rem; padding:0.9rem 1.1rem; background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:0.7rem; flex-wrap:wrap; }
+        .cfg-row .cfg-key { font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--accent); min-width:230px; }
+        .cfg-row .cfg-meta { font-size:0.72rem; color:var(--text-muted); width:100%; }
+        .cfg-row code { background:var(--surface2); padding:1px 5px; border-radius:4px; }
+        .cfg-input { padding:0.5rem 0.8rem; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font:inherit; font-size:0.85rem; min-width:140px; }
+        .switch { position:relative; width:46px; height:26px; flex:0 0 auto; display:inline-block; }
+        .switch input { opacity:0; width:0; height:0; }
+        .slider { position:absolute; inset:0; cursor:pointer; background:var(--surface3); border-radius:26px; transition:.3s; }
+        .slider:before { content:''; position:absolute; height:20px; width:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.3s; }
+        .switch input:checked + .slider { background:linear-gradient(135deg,var(--primary),var(--accent)); }
+        .switch input:checked + .slider:before { transform:translateX(20px); }
+        .help-btn { cursor:pointer; color:var(--accent); font-size:1rem; margin-left:.4rem; user-select:none; }
+        .help-fab { position:fixed; bottom:24px; right:24px; width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; border:none; font-size:1.4rem; font-weight:700; cursor:pointer; z-index:9000; box-shadow:0 4px 20px var(--glow-blue); }
+        .help-fab:hover { transform:translateY(-2px); }
+        .help-drawer { position:fixed; top:0; right:-440px; width:420px; max-width:94vw; height:100vh; background:var(--surface); border-left:1px solid var(--border); z-index:9500; transition:right .3s; display:flex; flex-direction:column; padding:1.5rem; overflow-y:auto; }
+        .help-drawer.open { right:0; box-shadow:-8px 0 40px rgba(0,0,0,.45); }
+        .help-item { border-bottom:1px solid var(--border); padding-bottom:0.7rem; margin-bottom:0.7rem; }
+        .help-q { font-size:0.92rem; color:var(--accent); margin-bottom:0.3rem; font-weight:600; }
+        .help-a { font-size:0.84rem; color:var(--text); line-height:1.5; }
     </style>
     <link rel="canonical" href="https://podiumtec.com.br/backoffice.html">
         <script type="application/ld+json">
@@ -326,6 +347,12 @@
             <div class="nav-item" data-page="hermes"><span class="icon">&#x1F504;</span><span>HermeOS Sync</span></div>
             <div class="nav-item" data-page="lgpd"><span class="icon">&#x1F512;</span><span>LGPD</span></div>
             <div class="nav-item" data-page="auditoria"><span class="icon">&#x1F4CB;</span><span>Auditoria</span></div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Operacao</div>
+            <div class="nav-item" data-page="config"><span class="icon">&#x2699;</span><span>Configuracoes</span></div>
+            <div class="nav-item" data-page="servidores"><span class="icon">&#x1F5A7;</span><span>Servidores</span></div>
         </div>
 
         <div class="sidebar-footer">
@@ -565,7 +592,53 @@
             </div>
         </div>
 
+        <!-- PAGE: CONFIGURACOES (config-first) -->
+        <div class="page" id="page-config" data-anchor="admin/settings">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Configuracoes <span class="help-btn" onclick="openHelp('admin/settings')" title="Ajuda">&#x2753;</span></div>
+                    <div class="content-subtitle">Config-first: toda decisao com &gt;2 opcoes vira um ajuste aqui (por tempo/usuario/regiao)</div>
+                </div>
+                <div class="header-actions"><button class="btn" onclick="loadConfig()">&#x1F504; Recarregar</button></div>
+            </div>
+            <div id="cfgList"><div class="loading"><div class="spinner"></div>Carregando admin_settings...</div></div>
+            <div style="margin-top:1.5rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;">
+                <input id="newCfgKey" class="cfg-input" placeholder="nova_chave">
+                <input id="newCfgVal" class="cfg-input" placeholder="valor">
+                <button class="btn btn-primary" onclick="addSetting()">+ Adicionar setting</button>
+            </div>
+            <p id="cfgMsg" style="color:var(--text-muted);font-size:.82rem;margin-top:1rem;min-height:1.2em;"></p>
+        </div>
+
+        <!-- PAGE: SERVIDORES (trocar de servidor trilha a trilha) -->
+        <div class="page" id="page-servidores" data-anchor="admin/server-switch">
+            <div class="content-header">
+                <div>
+                    <div class="content-title">Servidores <span class="help-btn" onclick="openHelp('admin/server-switch')" title="Ajuda">&#x2753;</span></div>
+                    <div class="content-subtitle">Failover / rotacao 1 no por vez — aponte cada trilha (modulo/rota/pais) a um no</div>
+                </div>
+                <div class="header-actions"><button class="btn" onclick="loadServers()">&#x1F504; Recarregar</button></div>
+            </div>
+            <div class="card" style="margin-bottom:1.2rem;border-color:var(--warning);">
+                <div class="card-desc">&#x26A0; Regra de ouro: mova <b>uma trilha por vez</b>, verifique a saude no Dashboard, e so entao a proxima. Evita migracao em bloco e isola risco. O roteador consome as chaves <code>rota_servidor:*</code> de admin_settings.</div>
+            </div>
+            <div id="srvList"><div class="loading"><div class="spinner"></div>Carregando trilhas...</div></div>
+            <p id="srvMsg" style="color:var(--text-muted);font-size:.82rem;margin-top:1rem;min-height:1.2em;"></p>
+        </div>
+
     </main>
+</div>
+
+<!-- AJUDA CONTEXTUAL (AlexandriOS) -->
+<button class="help-fab" onclick="openHelp(HELP_ANCHOR)" title="Ajuda (AlexandriOS)">&#x2753;</button>
+<div class="help-drawer" id="helpDrawer">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+        <h3 style="font-family:'Cormorant Garamond',serif;color:var(--accent);font-size:1.3rem;">Ajuda — AlexandriOS</h3>
+        <button class="btn" onclick="closeHelp()">Fechar</button>
+    </div>
+    <input id="helpQuery" class="cfg-input" style="width:100%;margin-bottom:1rem;" placeholder="Buscar na ajuda do admin..." oninput="renderHelp(this.value, HELP_ANCHOR)">
+    <div id="helpBody"></div>
+    <p style="color:var(--text-muted);font-size:.7rem;margin-top:1rem;">Conteudo publico de ajuda (publico=admin). Detalhes sensiveis (segredos/IPs/runbook) ficam em docs internos gated.</p>
 </div>
 
 <!-- ADMIN CONSOLE (Konami Code) -->
@@ -608,8 +681,8 @@
             <h3>> SECURITY (CerberOS)</h3>
             <div class="ln">Layer 1: <span>Supabase Auth + RLS</span> <span class="val-ok">&#x2713;</span></div>
             <div class="ln">Layer 2: <span>Edge Function validation</span> <span class="val-ok">&#x2713;</span></div>
-            <div class="ln">Layer 3: <span>Konami Code (BackOffice)</span> <span class="val-ok">&#x2713;</span></div>
-            <div class="ln">Layer 4: <span>5-tap admin (mobile)</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 3: <span>Acesso restrito (console)</span> <span class="val-ok">&#x2713;</span></div>
+            <div class="ln">Layer 4: <span>Gate administrativo (app)</span> <span class="val-ok">&#x2713;</span></div>
             <div class="ln">Layer 5: <span>ETERNAL MAZE</span> <span class="val-warn">STANDBY</span></div>
             <div class="ln">Layer 6: <span>HygeiOS Data Gate</span> <span class="val-warn">PLANNED</span></div>
             <div class="ln">Layer 7: <span>Aprisionamento Ativo</span> <span class="val-err">OFF</span></div>
@@ -632,7 +705,9 @@
 <script>
 const SB_URL = 'https://agebsmjsjrmazbozphnh.supabase.co';
 const SB_KEY = 'sb_publishable_ZGPfiFo6dBXgnyi4Xq_UYw_7o8R4Kob';
+const API_BASE = 'https://aquarios-hygeios-api.icystone-7ee8586d.brazilsouth.azurecontainerapps.io';
 let token = null;
+let HELP_ANCHOR = 'backoffice';
 
 // === AUTH ===
 async function doLogin() {
@@ -841,7 +916,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         item.classList.add('active');
         document.getElementById('page-' + item.dataset.page).classList.add('active');
-        if (item.dataset.page === 'modulos') loadModulos();
+        if (item.dataset.page === 'modulos') { loadModulos(); HELP_ANCHOR = 'admin/modules'; }
+        if (item.dataset.page === 'config') { loadConfig(); HELP_ANCHOR = 'admin/settings'; }
+        if (item.dataset.page === 'servidores') { loadServers(); HELP_ANCHOR = 'admin/server-switch'; }
+        if (item.dataset.page === 'dashboard') HELP_ANCHOR = 'admin/slo';
+        if (item.dataset.page === 'hermes') HELP_ANCHOR = 'admin/deploy';
     });
 });
 
@@ -914,6 +993,106 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeConsole();
 });
 function closeConsole() { document.getElementById('adminConsole').classList.remove('active'); }
+
+// === CONFIG-FIRST (admin_settings) ===
+// upsert seguro: RLS so deixa admin com grant ativo escrever (service_role no servidor). Sem grant -> fallback.
+async function settingUpsert(chave, valor, descricao){
+    try{
+        const r = await fetch(`${SB_URL}/rest/v1/admin_settings?on_conflict=chave`, {
+            method:'POST',
+            headers:{ apikey:SB_KEY, Authorization:`Bearer ${token||SB_KEY}`, 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify([{ chave, valor:String(valor), descricao: descricao||null }])
+        });
+        return r.ok;
+    }catch(e){ return false; }
+}
+async function loadConfig(){
+    const list = document.getElementById('cfgList'); if(!list) return;
+    list.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando admin_settings...</div>';
+    try{
+        const { data } = await sb('admin_settings', '?select=chave,valor,descricao,tipo&order=chave.asc');
+        const rows = (data||[]).filter(s => !String(s.chave).startsWith('rota_servidor:'));
+        if(!rows.length){ list.innerHTML = '<p class="empty">Nenhuma configuracao ainda. Adicione abaixo.</p>'; return; }
+        list.innerHTML = rows.map(s => {
+            const isBool = s.tipo==='bool' || s.valor==='true' || s.valor==='false';
+            const ctrl = isBool
+                ? `<label class="switch"><input type="checkbox" ${s.valor==='true'?'checked':''} onchange="saveSetting('${s.chave}', this.checked?'true':'false')"><span class="slider"></span></label>`
+                : `<input class="cfg-input" value="${(s.valor||'').replace(/"/g,'&quot;')}" onchange="saveSetting('${s.chave}', this.value)">`;
+            return `<div class="cfg-row"><span class="cfg-key">${s.chave}</span>${ctrl}<span class="cfg-meta">${s.descricao||''} ${s.tipo?('&middot; '+s.tipo):''}</span></div>`;
+        }).join('');
+    }catch(e){ list.innerHTML = '<p class="empty">Erro ao carregar admin_settings.</p>'; }
+}
+async function saveSetting(chave, valor){
+    const ok = await settingUpsert(chave, valor);
+    document.getElementById('cfgMsg').textContent = ok ? `✓ ${chave} = ${valor} (salvo)` : `⚠ ${chave}: nao salvou — entre como admin (grant ativo) para persistir.`;
+}
+async function addSetting(){
+    const k = (document.getElementById('newCfgKey').value||'').trim();
+    const v = (document.getElementById('newCfgVal').value||'').trim();
+    if(!k){ document.getElementById('cfgMsg').textContent='Informe a chave.'; return; }
+    const ok = await settingUpsert(k, v, 'criado no console');
+    document.getElementById('cfgMsg').textContent = ok ? `✓ ${k} criado` : `⚠ ${k}: nao salvou — login admin necessario.`;
+    if(ok){ document.getElementById('newCfgKey').value=''; document.getElementById('newCfgVal').value=''; loadConfig(); }
+}
+
+// === SERVIDORES — trocar de servidor trilha a trilha (config-first; 1 no por vez) ===
+const NODES = ['auto','sirios','oracle-sp','oracle-ashburn','azure-aca','gcp-cloudrun','alibaba','supabase','github-pages'];
+const TRILHAS = [
+    {id:'modulo:sandeiros',  label:'Modulo &middot; SandeirOS (cascata)'},
+    {id:'modulo:hygeios',    label:'Modulo &middot; HygeiOS (sinais)'},
+    {id:'modulo:alexandrios',label:'Modulo &middot; AlexandriOS (ajuda)'},
+    {id:'rota:/skin-b',      label:'Rota &middot; Skin B (Tool Bus)'},
+    {id:'rota:/shopify',     label:'Rota &middot; Shopify (webhook)'},
+    {id:'pais:BR', label:'Pais &middot; Brasil'},
+    {id:'pais:US', label:'Pais &middot; EUA'},
+    {id:'pais:PT', label:'Pais &middot; Portugal'},
+];
+async function loadServers(){
+    const box = document.getElementById('srvList'); if(!box) return;
+    let current = {};
+    try{
+        const { data } = await sb('admin_settings', '?select=chave,valor&chave=like.rota_servidor:*');
+        (data||[]).forEach(s => current[s.chave.replace('rota_servidor:','')] = s.valor);
+    }catch(e){}
+    box.innerHTML = TRILHAS.map(t => {
+        const cur = current[t.id] || 'auto';
+        const opts = NODES.map(n => `<option value="${n}"${n===cur?' selected':''}>${n}</option>`).join('');
+        return `<div class="cfg-row"><span class="cfg-key">${t.label}</span>
+            <select class="cfg-input" onchange="saveServerRoute('${t.id}', this.value)">${opts}</select>
+            <span class="cfg-meta">trilha <code>${t.id}</code> &rarr; no atual: <b>${cur}</b></span></div>`;
+    }).join('');
+}
+async function saveServerRoute(trilha, node){
+    document.getElementById('srvMsg').textContent = `Aplicando ${trilha} → ${node}... (mova 1 trilha por vez, depois verifique a saude)`;
+    const ok = await settingUpsert('rota_servidor:'+trilha, node, 'failover/rotacao por trilha');
+    document.getElementById('srvMsg').textContent = ok ? `✓ ${trilha} → ${node} (salvo; o roteador consome rota_servidor:*)` : `⚠ ${trilha}: nao salvou — login admin (grant) necessario.`;
+}
+
+// === AJUDA CONTEXTUAL (AlexandriOS via API Azure) ===
+async function openHelp(anchor){
+    HELP_ANCHOR = anchor || HELP_ANCHOR;
+    document.getElementById('helpDrawer').classList.add('open');
+    document.getElementById('helpQuery').value='';
+    renderHelp('', HELP_ANCHOR);
+}
+function closeHelp(){ document.getElementById('helpDrawer').classList.remove('open'); }
+async function renderHelp(q, anchor){
+    const body = document.getElementById('helpBody');
+    body.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando ajuda...</div>';
+    // Supabase REST direto (CORS-safe no navegador; alexandrios_kb tem leitura publica).
+    // A API Azure /alexandrios/search e o caminho canonico do mobile/integrador (server-side).
+    const H = { apikey:SB_KEY, Authorization:`Bearer ${SB_KEY}` };
+    const base = `${SB_URL}/rest/v1/alexandrios_kb?select=question,answer,anchor&publico=eq.admin`;
+    try{
+        let url = base;
+        if(q){ url += `&or=(question.ilike.*${encodeURIComponent(q)}*,answer.ilike.*${encodeURIComponent(q)}*)`; }
+        else if(anchor){ url += `&anchor=eq.${encodeURIComponent(anchor)}`; }
+        let rows = await (await fetch(url, { headers:H })).json();
+        if((!Array.isArray(rows)||!rows.length) && anchor && !q){ rows = await (await fetch(base, { headers:H })).json(); }
+        body.innerHTML = (Array.isArray(rows)&&rows.length) ? rows.map(x=>`<div class="help-item"><div class="help-q">${(x.question||'').replace(/</g,'&lt;')}</div><div class="help-a">${(x.answer||'').replace(/</g,'&lt;')}</div></div>`).join('')
+            : '<p class="help-a">Sem ajuda para esta tela ainda.</p>';
+    }catch(e){ body.innerHTML = '<p class="help-a">Ajuda indisponivel.</p>'; }
+}
 
 // Enter on auth
 document.getElementById('authPass').addEventListener('keypress', e => { if(e.key==='Enter') doLogin(); });

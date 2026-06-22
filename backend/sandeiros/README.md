@@ -20,7 +20,14 @@ roda na VM Oracle (FastAPI); o envio para a VM é **passo manual separado** (sem
   **gitignored**, não versionados). Ausentes → cada camada degrada sem quebrar.
 - `data/README_HL.md` — schema dos nós + como colocar a data privada na VM.
 
-**NÃO está aqui (F3+):** roteador/cascata N2-N4, fallout, agente autônomo, ferramentas, conversor.
+**N2 — Llama local (dev-only, opt-in):**
+- `n2_llama.py` — chama Ollama local (`OLLAMA_URL`, default `http://localhost:11434`;
+  `OLLAMA_MODEL`, default `llama3:8b`). Só roda se `usar_llama_local=True` no
+  `/sandeiros/responder` — desligado por padrão, produção (Oracle/Azure) não tem Ollama
+  acessível e nunca aciona isto. Hoje só faz sentido em GPU local (ver `INFRA_HARDWARE_MAP.md`
+  na raiz — nó SIRIOS). Degrada pra `MISS` normal se Ollama não responder.
+
+**NÃO está aqui ainda (F3+):** N3 playbook, N4 Claude, fallout, agente autônomo, ferramentas, conversor.
 
 ## Deploy do banco (precisa de credencial — não automatizado)
 ```bash

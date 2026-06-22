@@ -19,11 +19,13 @@ def responder(
     categoria: Optional[str] = None,
     historico: Optional[list] = None,
     humanizar: bool = False,
+    usar_llama_local: bool = False,
 ) -> dict:
     """Resolve um prompt pelo SandeirOS.
 
     HIT  -> {fonte:'CACHE', custo_tokens:0, output:..., [humanizado:...]}
-    MISS -> {fonte:'MISS',  custo_tokens:0, output:None, cascata:'pendente_F3'}
+    MISS -> tenta N2 (Llama local, só se usar_llama_local=True) -> senão
+            {fonte:'MISS', custo_tokens:0, output:None, cascata:'pendente_F3'}
     """
     prompt = (prompt or "").strip()
     if not prompt:
@@ -31,11 +33,22 @@ def responder(
 
     hit = cache.get(prompt, idioma=idioma, categoria=categoria)
     if hit is None:
+        if usar_llama_local:
+            from .n2_llama import gerar
+
+            texto = gerar(prompt, idioma=idioma)
+            if texto:
+                return {
+                    "fonte": "N2_LLAMA",
+                    "output": texto,
+                    "custo_tokens": 0,
+                    "cascata": "n2_llama_local",
+                }
         return {
             "fonte": "MISS",
             "output": None,
             "custo_tokens": 0,
-            "cascata": "pendente_F3",  # N2 Llama / N3 playbook / N4 Claude entram no F3
+            "cascata": "pendente_F3",  # N3 playbook / N4 Claude entram no F3
         }
 
     resposta = {

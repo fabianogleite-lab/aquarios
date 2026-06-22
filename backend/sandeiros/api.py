@@ -31,6 +31,7 @@ class ResponderIn(BaseModel):
     categoria: Optional[str] = None
     historico: Optional[list] = None
     humanizar: bool = False
+    usar_llama_local: bool = False
 
 
 @lru_cache(maxsize=1)
@@ -59,6 +60,7 @@ def responder_endpoint(body: ResponderIn) -> dict:
         categoria=body.categoria,
         historico=body.historico,
         humanizar=body.humanizar,
+        usar_llama_local=body.usar_llama_local,
     )
 
 
