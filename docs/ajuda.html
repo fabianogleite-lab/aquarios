@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquariOS — Central de Ajuda (AlexandriOS)</title>
+    <meta name="description" content="Central de ajuda do AquariOS: respostas para usuários, administradores e integradores. Motor AlexandriOS.">
+    <meta property="og:title" content="Central de Ajuda — AlexandriOS">
+    <meta property="og:description" content="Ajuda conversacional do AquariOS para usuário, admin e integrador.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://podiumtec.com.br/ajuda.html">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #090c14; color: #e0e0e0; line-height: 1.7; padding: 2rem 1.2rem; max-width: 860px; margin: 0 auto; }
+        h1 { color: #00d4aa; margin-bottom: 0.3rem; font-size: 1.9rem; }
+        .date { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
+        .nav { font-size: 0.85rem; margin-bottom: 1.5rem; }
+        a { color: #00d4aa; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .lead { color: #cdd5e0; font-size: 1rem; border-left: 3px solid #00d4aa; padding-left: 1rem; margin: 1.2rem 0; }
+        .tabs { display: flex; gap: .5rem; margin: 1.5rem 0 1rem; flex-wrap: wrap; }
+        .tab { padding: .55rem 1.1rem; border-radius: 100px; border: 1px solid #1c2230; background: rgba(255,255,255,.02); color: #9aa4b2; cursor: pointer; font-size: .9rem; font-weight: 600; transition: all .2s; }
+        .tab:hover { border-color: #00d4aa; color: #cdd5e0; }
+        .tab.active { background: rgba(0,212,170,.14); color: #00d4aa; border-color: rgba(0,212,170,.5); }
+        .search { width: 100%; padding: .8rem 1rem; background: #0d1320; border: 1px solid #1c2230; border-radius: 10px; color: #e0e0e0; font: inherit; font-size: .95rem; outline: none; margin-bottom: 1.2rem; }
+        .search:focus { border-color: #00d4aa; }
+        .count { font-size: .8rem; color: #9aa4b2; margin-bottom: 1rem; }
+        .item { border: 1px solid #1c2230; border-radius: 12px; padding: 1.1rem 1.3rem; margin-bottom: .9rem; background: rgba(255,255,255,.015); }
+        .item .q { color: #fff; font-weight: 700; font-size: 1rem; margin-bottom: .4rem; }
+        .item .a { color: #cdd5e0; font-size: .92rem; }
+        .item .meta { margin-top: .6rem; font-size: .7rem; color: #6b7689; letter-spacing: .03em; }
+        .item .meta code { background: #0d1320; padding: 1px 6px; border-radius: 5px; color: #8aa; }
+        .loading, .empty { color: #9aa4b2; padding: 2rem 0; text-align: center; }
+        .spinner { width: 28px; height: 28px; border: 3px solid #1c2230; border-top-color: #00d4aa; border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto .8rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .disclaimer { color: #888; font-size: 0.8rem; margin-top: 2.5rem; border-top: 1px solid #1c2230; padding-top: 1rem; }
+    </style>
+    <link rel="canonical" href="https://podiumtec.com.br/ajuda.html">
+</head>
+<body>
+    <h1>Central de Ajuda</h1>
+    <p class="date">Motor <strong>AlexandriOS</strong> · AquariOS · respostas ao vivo da base de conhecimento</p>
+    <p class="nav"><a href="index.html">← Início</a> · <a href="engenharia.html">Engenharia</a> · <a href="privacy-policy.html">Privacidade</a> · <a href="terms.html">Termos</a></p>
+
+    <p class="lead">Escolha o seu perfil e busque. As respostas vêm da mesma base que alimenta a ajuda contextual ("?") dentro do app e do console — para que <strong>usuários, administradores e integradores</strong> entendam o sistema sem caixa-preta.</p>
+
+    <div class="tabs">
+        <div class="tab active" data-publico="usuario">👤 Usuário</div>
+        <div class="tab" data-publico="admin">🛠️ Administrador</div>
+        <div class="tab" data-publico="integrador">🔌 Integrador</div>
+    </div>
+
+    <input class="search" id="q" placeholder="Buscar na ajuda… (ex: SUS, deploy, webhook, servidores)">
+    <div class="count" id="count"></div>
+    <div id="results"><div class="loading"><div class="spinner"></div>Carregando…</div></div>
+
+    <p class="disclaimer">PodiumTec é marca de CARVALHO &amp; LEITE GESTORA DE RECURSOS LIMITADA · CNPJ 41.191.506/0001-02 · Belo Horizonte/MG. Conteúdo de ajuda público; detalhes operacionais sensíveis (segredos, IPs, runbook) ficam em documentação interna restrita.</p>
+
+    <script>
+        const SB_URL = 'https://agebsmjsjrmazbozphnh.supabase.co';
+        const SB_KEY = 'sb_publishable_ZGPfiFo6dBXgnyi4Xq_UYw_7o8R4Kob';
+        const H = { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY };
+        let publico = 'usuario';
+        let timer = null;
+
+        function esc(s){ return (s||'').replace(/</g,'&lt;'); }
+
+        async function load(){
+            const q = document.getElementById('q').value.trim();
+            const results = document.getElementById('results');
+            const count = document.getElementById('count');
+            results.innerHTML = '<div class="loading"><div class="spinner"></div>Carregando…</div>';
+            let url = `${SB_URL}/rest/v1/alexandrios_kb?select=question,answer,category,anchor,persona&publico=eq.${publico}&order=category.asc&limit=200`;
+            if(q){ url += `&or=(question.ilike.*${encodeURIComponent(q)}*,answer.ilike.*${encodeURIComponent(q)}*)`; }
+            try{
+                const rows = await (await fetch(url, { headers: H })).json();
+                if(!Array.isArray(rows) || !rows.length){
+                    count.textContent = '';
+                    results.innerHTML = '<div class="empty">Nenhuma resposta encontrada. Tente outra busca ou outro perfil.</div>';
+                    return;
+                }
+                count.textContent = `${rows.length} resposta${rows.length>1?'s':''}`;
+                results.innerHTML = rows.map(r => `
+                    <div class="item">
+                        <div class="q">${esc(r.question)}</div>
+                        <div class="a">${esc(r.answer)}</div>
+                        <div class="meta">${r.category?('categoria: '+esc(r.category)):''}${r.anchor?(' · tela: <code>'+esc(r.anchor)+'</code>'):''}${r.persona?(' · persona: '+esc(r.persona)):''}</div>
+                    </div>`).join('');
+            }catch(e){
+                results.innerHTML = '<div class="empty">Ajuda temporariamente indisponível. Tente novamente.</div>';
+            }
+        }
+
+        document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            publico = t.dataset.publico;
+            load();
+        }));
+        document.getElementById('q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(load, 250); });
+        load();
+    </script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 const APP_VERSION = Constants.expoConfig?.version ?? '4.7.0';
 const PRIVACY_POLICY_URL = 'https://fabianogleite-lab.github.io/aquarios/privacy-policy.html';
 import { FadeInView } from '../../components/FadeInView';
+import { HelpButton } from '../../components/HelpButton';
 import { colors, fontSize, spacing, radius } from '../../lib/theme';
 
 // Planos V1.0512 com valores reais
@@ -191,6 +192,22 @@ export default function SettingsScreen() {
         </View>
       </FadeInView>
 
+      <FadeInView delay={125}>
+        <View style={s.section}>
+          <View style={s.titleRow}>
+            <Text style={[s.sectionTitle, { marginBottom: 0 }]}>{'Ajuda & Suporte'}</Text>
+            <HelpButton anchor="settings" label="Configurações" />
+          </View>
+          <TouchableOpacity style={s.actionRow} onPress={() => Linking.openURL('https://podiumtec.com.br/ajuda.html')}>
+            <View>
+              <Text style={s.actionLabel}>Central de Ajuda</Text>
+              <Text style={s.actionDesc}>Perguntas e respostas (AlexandriOS). Toque no “?” para ajuda desta tela.</Text>
+            </View>
+            <Text style={s.actionArrow}>→</Text>
+          </TouchableOpacity>
+        </View>
+      </FadeInView>
+
       <FadeInView delay={150}>
         <View style={s.section}>
           <Text style={s.sectionTitle}>Privacidade (LGPD)</Text>
@@ -259,6 +276,7 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
   section: { paddingHorizontal: spacing.xl, paddingTop: spacing.xxl },
   sectionTitle: { color: colors.primary, fontSize: fontSize.body, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: spacing.md },
+  titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.md },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: colors.border },
   label: { color: colors.text, fontSize: fontSize.lg },
   value: { color: colors.textSecondary, fontSize: fontSize.lg },
