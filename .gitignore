@@ -32,6 +32,8 @@ backend/sandeiros/data/hl1_*.json
 backend/sandeiros/data/hl2_*.json
 backend/sandeiros/data/hl3_*.json
 backend/sandeiros/data/hl4_*.json
+# ... e as cópias dentro de qualquer pasta de versão (mvp0/mvp1/mvp2…)
+mvp*/**/hl[1-4]_*.json
 
 # Infra docs — contêm IP/topologia/logins de contas; repo é PÚBLICO.
 # Mantidos local-only (igual memory/). Ver feedback_sites_pro_template.
