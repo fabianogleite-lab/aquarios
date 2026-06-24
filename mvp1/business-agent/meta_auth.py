@@ -8,7 +8,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(HERE, ".env")
 
 META_APP_ID = "1891936851469173"
-META_APP_SECRET = "2d70a01dddd70f5ad1befdf1da7047c9"
+META_APP_SECRET = os.environ.get("META_APP_SECRET", "")  # rotate at Meta dashboard; never hardcode
 META_BUSINESS_ID = "2274467833382298"
 REDIRECT_URI = "http://localhost:8765/callback"
 
