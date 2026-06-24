@@ -60,6 +60,9 @@
       "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
+    "experiments": {
+      "baseUrl": "/aquarios/app"
+    },
     "updates": {
       "url": "https://u.expo.dev/d2385f57-b0ab-49f6-a29e-d0d82b92df55",
       "fallbackToCacheTimeout": 0
