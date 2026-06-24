@@ -49,8 +49,10 @@ export default function NutricaoNovoScreen() {
   };
 
   const save = async () => {
+    console.log('[Nutrição] Save clicked:', { name, calories, protein, carbs, fat });
+
     if (!name.trim()) { Alert.alert('Erro', 'Informe o nome da refeição'); return; }
-    if (!calories.trim() || isNaN(Number(calories))) { Alert.alert('Erro', 'Informe as calorias'); return; }
+    // Calorias e macros agora são opcionais (estimativa)
 
     setSaving(true);
 
@@ -65,24 +67,37 @@ export default function NutricaoNovoScreen() {
       return;
     }
 
-    const { error } = await supabase.from('meals').insert({
-      user_id: user?.id,
-      name: '[encrypted]',
-      name_encrypted: encName.ciphertext,
-      name_nonce: encName.nonce,
-      calories: Number(calories),
-      protein: protein ? Number(protein) : null,
-      carbs: carbs ? Number(carbs) : null,
-      fat: fat ? Number(fat) : null,
-      meal_type: mealType,
-      notes: encNotes ? '[encrypted]' : null,
-      notes_encrypted: encNotes?.ciphertext ?? null,
-      notes_nonce: encNotes?.nonce ?? null,
-    });
+    try {
+      console.log('[Nutrição] Inserting meal into database...');
+      const { error } = await supabase.from('meals').insert({
+        user_id: user?.id,
+        name: '[encrypted]',
+        name_encrypted: encName.ciphertext,
+        name_nonce: encName.nonce,
+        calories: calories ? Number(calories) : null,
+        protein: protein ? Number(protein) : null,
+        carbs: carbs ? Number(carbs) : null,
+        fat: fat ? Number(fat) : null,
+        meal_type: mealType,
+        notes: encNotes ? '[encrypted]' : null,
+        notes_encrypted: encNotes?.ciphertext ?? null,
+        notes_nonce: encNotes?.nonce ?? null,
+      });
 
-    setSaving(false);
-    if (error) { Alert.alert('Erro', 'Não foi possível salvar'); return; }
-    router.back();
+      console.log('[Nutrição] Insert result:', { error });
+      setSaving(false);
+      if (error) {
+        console.error('[Nutrição] Error details:', error);
+        Alert.alert('Erro', `Não foi possível salvar: ${error.message}`);
+        return;
+      }
+      Alert.alert('✅ Sucesso', 'Refeição registrada!');
+      router.back();
+    } catch (err) {
+      console.error('[Nutrição] Exception:', err);
+      setSaving(false);
+      Alert.alert('Erro', String(err));
+    }
   };
 
   return (
@@ -98,8 +113,8 @@ export default function NutricaoNovoScreen() {
           <Text style={s.label}>Refeição *</Text>
           <TextInput style={s.input} placeholder="Ex: Frango com arroz" placeholderTextColor={colors.textMuted} value={name} onChangeText={setName} />
 
-          <Text style={s.label}>Calorias *</Text>
-          <TextInput style={s.input} placeholder="kcal" placeholderTextColor={colors.textMuted} value={calories} onChangeText={setCalories} keyboardType="numeric" />
+          <Text style={s.label}>Calorias (opcional)</Text>
+          <TextInput style={s.input} placeholder="kcal (estimativa)" placeholderTextColor={colors.textMuted} value={calories} onChangeText={setCalories} keyboardType="numeric" />
         </FadeInView>
 
         <FadeInView delay={200}>
