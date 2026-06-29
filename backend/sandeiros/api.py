@@ -34,6 +34,17 @@ class ResponderIn(BaseModel):
     usar_llama_local: bool = False
 
 
+class RegistrarIn(BaseModel):
+    prompt: str
+    idioma: str = "pt"
+    categoria: Optional[str] = None
+    funcao: Optional[str] = None
+    resposta: str
+    fonte: str = "CLAUDE"
+    tokens_input: int = 0
+    tokens_output: int = 0
+
+
 @lru_cache(maxsize=1)
 def _cache() -> SemanticCache:
     """Singleton do cliente Supabase + SemanticCache. Levanta se faltar credencial
@@ -62,6 +73,28 @@ def responder_endpoint(body: ResponderIn) -> dict:
         humanizar=body.humanizar,
         usar_llama_local=body.usar_llama_local,
     )
+
+
+@router.post("/registrar")
+def registrar_endpoint(body: RegistrarIn) -> dict:
+    """Fecha o ciclo MISS->Claude->cache: chamado pelo cliente (edge function `chat`)
+    depois de uma resposta vinda do Claude, pra próxima chamada igual virar HIT.
+    Subagente Bob (Operador do Cache Semântico) é o responsável conceitual por este passo."""
+    try:
+        cache = _cache()
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    cache.set(
+        prompt=body.prompt,
+        idioma=body.idioma,
+        categoria=body.categoria,
+        funcao=body.funcao,
+        resposta=body.resposta,
+        fonte=body.fonte,
+        tokens_input=body.tokens_input,
+        tokens_output=body.tokens_output,
+    )
+    return {"ok": True, "registrado_por": "bob"}
 
 
 @router.get("/health")
