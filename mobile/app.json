@@ -82,6 +82,7 @@
       [
         "expo-splash-screen",
         {
+          "image": "./assets/splash-optimized.jpg",
           "backgroundColor": "#090c14",
           "resizeMode": "contain"
         }
@@ -110,7 +111,8 @@
         }
       ],
       "./plugins/withAssistant.js",
-      "expo-audio"
+      "expo-audio",
+      "expo-asset"
     ]
   }
 }
