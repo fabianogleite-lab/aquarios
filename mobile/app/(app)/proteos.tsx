@@ -13,7 +13,10 @@
   Platform,
 } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import { useVoice } from '../../hooks/useVoice';
 import Markdown from 'react-native-markdown-display';
 import { getDeviceLocale } from '../../lib/locale';
@@ -44,6 +47,12 @@ interface Message {
 interface SelectedImage {
   base64: string;
   mimeType: string;
+}
+
+interface SelectedDocument {
+  base64: string;
+  mimeType: string;
+  name: string;
 }
 
 function generateUUID(): string {
@@ -100,15 +109,25 @@ export default function ProteosScreen() {
   const [conversationId, setConversationId] = useState<string>('');
   const [persona, setPersona] = useState<PersonaKey>('default');
   const [selectedImage, setSelectedImage] = useState<SelectedImage | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<SelectedDocument | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const { user } = useAuthStore();
   const { logXP } = useXP();
   const { voiceState, isAvailable: voiceAvailable, startRecording, stopRecordingAndTranscribe, speakResponse, stopSpeaking, error: voiceError } = useVoice();
+  const params = useLocalSearchParams<{ autoCamera?: string; autoGallery?: string; autoDocument?: string; initialText?: string }>();
 
   useEffect(() => {
     loadConversationHistory();
   }, []);
+
+  // Atalhos vindos da barra do ProteOS na home (botão "+" → câmera/foto/arquivo)
+  useEffect(() => {
+    if (params.autoCamera === '1') openCamera();
+    else if (params.autoGallery === '1') openGallery();
+    else if (params.autoDocument === '1') pickDocument();
+    if (params.initialText) setMessage(String(params.initialText));
+  }, [params.autoCamera, params.autoGallery, params.autoDocument, params.initialText]);
 
   const loadConversationHistory = async () => {
     if (!user?.id) return;
@@ -141,9 +160,10 @@ export default function ProteosScreen() {
   };
 
   const pickImage = () => {
-    Alert.alert('Adicionar imagem', 'Escolha a origem', [
+    Alert.alert('Anexar', 'Escolha o que enviar', [
       { text: 'Câmera', onPress: openCamera },
-      { text: 'Galeria', onPress: openGallery },
+      { text: 'Foto/Vídeo', onPress: openGallery },
+      { text: 'Arquivo', onPress: pickDocument },
       { text: 'Cancelar', style: 'cancel' },
     ]);
   };
@@ -174,17 +194,36 @@ export default function ProteosScreen() {
     }
   };
 
+  const pickDocument = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: ['application/pdf', 'text/plain', 'text/csv'],
+      copyToCacheDirectory: true,
+    });
+    if (result.canceled || !result.assets?.[0]) return;
+    const asset = result.assets[0];
+    try {
+      const base64 = await FileSystem.readAsStringAsync(asset.uri, { encoding: FileSystem.EncodingType.Base64 });
+      setSelectedDocument({ base64, mimeType: asset.mimeType || 'application/pdf', name: asset.name });
+    } catch {
+      Alert.alert('Ops', 'Não consegui ler esse arquivo. Tente outro.');
+    }
+  };
+
   const sendMessage = async () => {
-    if ((!message.trim() && !selectedImage) || !user?.id) return;
+    if ((!message.trim() && !selectedImage && !selectedDocument) || !user?.id) return;
 
     setLoading(true);
     const userInput = message;
     const capturedImage = selectedImage;
+    const capturedDocument = selectedDocument;
     setMessage('');
     setSelectedImage(null);
+    setSelectedDocument(null);
 
     const now = new Date().toISOString();
-    const displayText = capturedImage
+    const displayText = capturedDocument
+      ? (userInput.trim() ? `📄 ${capturedDocument.name}: ${userInput.trim()}` : `📄 Analisar ${capturedDocument.name}`)
+      : capturedImage
       ? (userInput.trim() ? `📷 ${userInput.trim()}` : '📷 Analisar imagem')
       : userInput;
 
@@ -198,7 +237,18 @@ export default function ProteosScreen() {
 
       const history = messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
 
-      const userApiContent = capturedImage
+      const userApiContent = capturedDocument
+        ? [
+            {
+              type: 'document',
+              source: { type: 'base64', media_type: capturedDocument.mimeType, data: capturedDocument.base64 },
+            },
+            {
+              type: 'text',
+              text: userInput.trim() || `Leia o documento "${capturedDocument.name}" e resuma os pontos principais.`,
+            },
+          ]
+        : capturedImage
         ? [
             {
               type: 'image',
@@ -338,6 +388,16 @@ export default function ProteosScreen() {
         </View>
       )}
 
+      {selectedDocument && (
+        <View style={s.imagePreview}>
+          <Text style={{ fontSize: 22 }}>📄</Text>
+          <TouchableOpacity style={s.removeImgBtn} onPress={() => setSelectedDocument(null)}>
+            <Text style={s.removeImgText}>✕</Text>
+          </TouchableOpacity>
+          <Text style={s.previewLabel}>{selectedDocument.name} — pronto pra converter/resumir</Text>
+        </View>
+      )}
+
       {/* Barra de voz: toggle + status */}
       <View style={s.voiceBar}>
         <TouchableOpacity
@@ -378,7 +438,7 @@ export default function ProteosScreen() {
           style={s.input}
           value={message}
           onChangeText={setMessage}
-          placeholder={selectedImage ? 'Pergunta sobre a imagem (opcional)...' : 'Converse com ProteOS...'}
+          placeholder={selectedImage ? 'Pergunta sobre a imagem (opcional)...' : selectedDocument ? 'Pergunta sobre o arquivo (opcional)...' : 'Converse com ProteOS...'}
           placeholderTextColor={colors.textMuted}
           multiline
           maxLength={500}
@@ -387,7 +447,7 @@ export default function ProteosScreen() {
         <TouchableOpacity
           style={[s.sendBtn, loading && s.sendBtnDisabled]}
           onPress={sendMessage}
-          disabled={loading || (!message.trim() && !selectedImage)}
+          disabled={loading || (!message.trim() && !selectedImage && !selectedDocument)}
         >
           <Text style={s.sendText}>→</Text>
         </TouchableOpacity>

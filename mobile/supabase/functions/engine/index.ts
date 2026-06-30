@@ -21,7 +21,7 @@ interface EngineResponse {
 
 interface DataGateResult {
   granted: boolean;
-  plan: 'free' | 'starter' | 'premium' | 'professional';
+  plan: 'free' | 'free_comunidade' | 'starter' | 'premium' | 'professional' | 'beck_office';
   layers: string[];
   error?: string;
 }
@@ -111,7 +111,13 @@ async function validateDataAccess(userId: string, supabaseClient: any, requiredL
       };
     }
 
-    // Map score to plan
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('is_admin, community_opt_in')
+      .eq('id', userId)
+      .single();
+
+    // Map score to plan (D-21: free_comunidade/beck_office não derivam do score)
     const planByScore = (score: number) => {
       if (score < 26) return 'free';
       if (score < 51) return 'starter';
@@ -119,14 +125,21 @@ async function validateDataAccess(userId: string, supabaseClient: any, requiredL
       return 'professional';
     };
 
-    const userPlan = planByScore(user.level);
+    let userPlan = planByScore(user.level);
+    if (profile?.is_admin) {
+      userPlan = 'beck_office';
+    } else if (userPlan === 'free' && profile?.community_opt_in) {
+      userPlan = 'free_comunidade';
+    }
 
     // Layers allowed by plan
     const layersByPlan: Record<string, string[]> = {
       'free': [],
+      'free_comunidade': ['bronze_social'],
       'starter': ['bronze'],
       'premium': ['bronze', 'silver'],
-      'professional': ['bronze', 'silver', 'gold']
+      'professional': ['bronze', 'silver', 'gold'],
+      'beck_office': ['bronze', 'silver', 'gold', 'admin']
     };
 
     const allowedLayers = layersByPlan[userPlan] || [];

@@ -7,8 +7,8 @@ import { FadeInView } from '../../components/FadeInView';
 interface LeaderboardEntry {
   rank: number;
   userId: string;
+  displayName: string;
   uviScore: number;
-  change?: number;
   isSelf: boolean;
 }
 
@@ -31,16 +31,23 @@ export default function LeaderboardScreen() {
         .limit(10);
 
       if (users) {
+        const userIds = users.map(u => u.user_id);
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, display_name')
+          .in('id', userIds);
+        const nameById = new Map((profiles ?? []).map(p => [p.id, p.display_name]));
+
         const entries = users.map((user, index) => ({
           rank: index + 1,
           userId: user.user_id,
-          uviScore: Math.round(user.level * 9.2 + Math.random() * 5),
-          change: Math.floor(Math.random() * 3) - 1,
+          displayName: nameById.get(user.user_id) || 'Aquariano',
+          uviScore: user.level,
           isSelf: user.user_id === session.session!.user.id,
         }));
         setLeaderboard(entries);
         const selfEntry = entries.find(e => e.isSelf);
-        setUserRank(selfEntry ?? { rank: 15, userId: session.session!.user.id, uviScore: 72, change: 2, isSelf: true });
+        setUserRank(selfEntry ?? null);
       }
     } catch (err) {
       console.error('Error loading leaderboard:', err);
@@ -80,7 +87,7 @@ export default function LeaderboardScreen() {
               </View>
               <View style={s.userCol}>
                 <Text style={[s.userName, entry.isSelf && s.userNameSelf]}>
-                  Aquariano#{Math.floor(Math.random() * 100)}
+                  {entry.displayName}
                 </Text>
                 {entry.isSelf && (
                   <View style={s.youBadge}>
@@ -90,11 +97,6 @@ export default function LeaderboardScreen() {
               </View>
               <View style={s.scoreCol}>
                 <Text style={s.score}>{entry.uviScore} IVI</Text>
-                {entry.change !== undefined && (
-                  <Text style={[s.change, entry.change > 0 ? s.up : entry.change < 0 ? s.down : s.flat]}>
-                    {entry.change > 0 ? '↑' : entry.change < 0 ? '↓' : '→'} {Math.abs(entry.change)}
-                  </Text>
-                )}
               </View>
             </View>
           ))}
@@ -111,11 +113,7 @@ export default function LeaderboardScreen() {
             </View>
             <View style={s.posInfo}>
               <Text style={s.posScore}>{userRank.uviScore} IVI</Text>
-              <Text style={s.posChange}>
-                {userRank.change && userRank.change > 0
-                  ? `⬆️ Subiu ${userRank.change} posição`
-                  : '→ Mantém posição'}
-              </Text>
+              <Text style={s.posChange}>Sua posição entre os Top 10</Text>
             </View>
           </View>
         </FadeInView>
@@ -184,10 +182,6 @@ const s = StyleSheet.create({
   youText: { fontSize: fontSize.xs, color: colors.primary, fontWeight: '700' },
   scoreCol: { alignItems: 'flex-end' },
   score: { fontSize: fontSize.body, fontWeight: '700', color: colors.gold },
-  change: { fontSize: fontSize.xs, marginTop: 2, fontWeight: '600' },
-  up: { color: colors.success },
-  down: { color: colors.error },
-  flat: { color: colors.textMuted },
 
   posCard: {
     backgroundColor: colors.card, borderRadius: radius.lg,

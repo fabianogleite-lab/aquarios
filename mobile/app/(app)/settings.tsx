@@ -18,6 +18,7 @@ const PLANS = [
   { key: 'starter',         label: 'Starter',         price: 'R$ 19,90/mês',  color: '#27ae60',            desc: 'ProteOS completo · Diário nativo · IVI completo · 1 wearable' },
   { key: 'premium',         label: 'Premium',         price: 'R$ 79,90/mês',  color: '#2980b9',            desc: 'Módulos à escolha · Comunidades plenas · IA contextual' },
   { key: 'professional',    label: 'Professional',    price: 'R$ 149,90/mês', color: colors.primary,       desc: 'Integração total · EteriOS completo · automação preditiva' },
+  { key: 'beck_office',     label: 'Back Office',     price: 'Interno',       color: '#8e44ad',            desc: 'Acesso administrativo · todas as camadas · uso interno only' },
 ];
 
 export default function SettingsScreen() {

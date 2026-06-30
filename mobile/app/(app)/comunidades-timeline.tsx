@@ -104,7 +104,9 @@ export default function ComunidadesTimelineScreen() {
     setSubmittingReply(true);
 
     try {
-      const { error } = await supabase.from('community_replies').insert({
+      console.log('[Reply] Attempting insert:', { post_id: postId, user_id: user.id, content: replyText.trim() });
+
+      const { data, error } = await supabase.from('community_replies').insert({
         post_id: postId,
         user_id: user.id,
         content: replyText.trim(),
@@ -113,8 +115,12 @@ export default function ComunidadesTimelineScreen() {
         is_marked_solution: false,
       });
 
+      console.log('[Reply] Insert response:', { data, error });
+
       if (error) {
-        Alert.alert('Erro ao enviar', error.message);
+        console.error('[Reply] Insert error:', error);
+        Alert.alert('Erro ao enviar', error.message || JSON.stringify(error));
+        setSubmittingReply(false);
         return;
       }
 
@@ -130,7 +136,7 @@ export default function ComunidadesTimelineScreen() {
       Alert.alert('✅ Sucesso', 'Sua resposta foi publicada!');
     } catch (err) {
       console.error('Error submitting reply:', err);
-      Alert.alert('Erro', 'Não conseguimos enviar sua resposta');
+      Alert.alert('Erro', String(err));
     } finally {
       setSubmittingReply(false);
     }

@@ -5,3 +5,5 @@ python-multipart==0.0.6
 supabase==2.31.0  # upgrade de 2.3.4: corrige erro 'proxy' do gotrue (httpx 0.28.x coerente). Validado local: create_client OK
 psycopg2-binary==2.9.9
 requests==2.31.0
+pybreaker==1.2.0  # Breaker A — isola a chamada N4 (Claude) na cascata SandeirOS
+tenacity==8.2.3   # retry com backoff, só atua quando o circuito está fechado

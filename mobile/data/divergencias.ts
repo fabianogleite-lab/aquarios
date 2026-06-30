@@ -73,10 +73,11 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: '7 eixos: Dental · Fisio · Nutrição · Oriental · Floresta · Mental · Psíquica · Rapidoc · 42 FAQs',
     codeReality: 'coming_soon · "Módulo médico, prontuário longitudinal" · Rapidoc citado',
     type: 'Escopo reduzido',
+    notes: 'DECIDIDO: Opção C (Implementar tudo) — Fabiano optou por escopo XL completo, contra recomendação.',
     options: [
       { letter: 'A', title: 'Lançamento gradual',     description: 'Começar por Nutrição (já existe!) + Mental + Dental nessa ordem. Cada eixo é uma feature flag.', effort: 'L', recommended: true },
       { letter: 'B', title: 'Gateway só de Rapidoc',  description: 'Manter como gateway de telemedicina. Nutrição fica como native_tool standalone.', effort: 'S' },
-      { letter: 'C', title: 'Implementar tudo',       description: 'Escopo XL, não recomendado.', effort: 'XL' },
+      { letter: 'C', title: 'Implementar tudo',       description: 'Escopo XL, não recomendado.', effort: 'XL', chosen: true },
     ],
   },
   {
@@ -89,9 +90,10 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Texto · OCR · Imagem · Voz (input) · API Omnichannel · Questionários não-invasivos',
     codeReality: 'Chat texto only + Cultural Voice Layer (output) · 4 personas (default/pragmatico/suporte/urgencia)',
     type: 'Capacidades de entrada faltantes',
+    notes: '✅ JÁ IMPLEMENTADO (achado 29/Jun, sessão anterior não documentou): proteos.tsx tem câmera + galeria + documento (expo-image-picker/document-picker), convertidos a base64 e enviados como content blocks de imagem direto pro Claude vision na chat edge function — supre "OCR+Imagem" sem precisar de Tesseract.js, porque o próprio Claude lê texto em imagem nativamente. Voz (Opção A) ainda não — ver useVoice hook, é só TTS de saída hoje.',
     options: [
       { letter: 'A', title: 'Voz primeiro',           description: 'Expo Speech-to-Text. ROI alto, esforço S.', effort: 'S', recommended: true },
-      { letter: 'B', title: 'OCR + Imagem',           description: 'Tesseract.js ou Google Cloud Vision. ROI médio.', effort: 'M' },
+      { letter: 'B', title: 'OCR + Imagem',           description: 'Tesseract.js ou Google Cloud Vision. ROI médio.', effort: 'M', chosen: true },
       { letter: 'C', title: 'API Omnichannel',        description: 'WhatsApp Business — depende de aprovação Meta. ROI alto B2B.', effort: 'L' },
       { letter: 'D', title: 'Manter texto only',      description: 'Focar em qualidade da Voz Cultural.', effort: 'XS' },
     ],
@@ -106,8 +108,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Documentação · tickets · garantia autoral · NÃO é saúde',
     codeReality: '"Arkhe Labs" só como branding · zero implementação',
     type: 'Módulo crítico ausente',
+    notes: '✅ IMPLEMENTADO 29/Jun: tela /arkhe (app/(app)/arkhe.tsx) com README in-app, explicação da garantia autoral via SHA-256 (sem expor intellectual_property_registry, que é service_role only por desenho), e formulário de ticket gravando em arkhe_tickets (migration 20260629000007, RLS dono-só). Link no menu ☰.',
     options: [
-      { letter: 'A', title: 'Módulo ARKHE com 3 funções', description: 'README in-app + Tickets + Garantia autoral via SHA-256 git commits.', effort: 'M' },
+      { letter: 'A', title: 'Módulo ARKHE com 3 funções', description: 'README in-app + Tickets + Garantia autoral via SHA-256 git commits.', effort: 'M', chosen: true },
       { letter: 'B', title: 'Só branding',                  description: 'Docs externos via GitHub Pages.', effort: 'XS' },
       { letter: 'C', title: 'ARKHE = Help Engine + FAQ',   description: 'Substituir services/faqEngine.ts por aquarios_arkhe_kb table.', effort: 'S', recommended: true },
     ],
@@ -122,9 +125,10 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Kernel barramento · core_kernel_state · cognitive_prompt_registry',
     codeReality: 'audit_logs + performance_metrics cumprem parcialmente · sem prompt registry',
     type: 'Conceito espalhado sem nome unificado',
+    notes: '✅ IMPLEMENTADO 29/Jun: tabela proteos_prompt_registry (migration 20260629000006) versiona os 4 prompts de persona, seedada com o conteúdo hardcoded atual (v1). chat/index.ts (getPersonaPrompt) busca a versão ativa mais recente por persona, com fallback pro hardcoded se a tabela falhar/estiver vazia. CULTURAL_ADDENDUM (14 locales) ainda não migrado pro registry — pode ser v2.',
     options: [
       { letter: 'A', title: 'Renomear conjunto',      description: 'Apelidar audit_logs + performance_metrics + persona_management de "Sophrosyne Layer".', effort: 'XS' },
-      { letter: 'B', title: 'Implementar prompt registry', description: 'Versionamento de prompts ProteOS (atualmente hardcoded).', effort: 'S', recommended: true },
+      { letter: 'B', title: 'Implementar prompt registry', description: 'Versionamento de prompts ProteOS (atualmente hardcoded).', effort: 'S', recommended: true, chosen: true },
       { letter: 'C', title: 'Ignorar como nome',      description: 'Manter por funções.', effort: 'XS' },
     ],
   },
@@ -138,8 +142,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Inviolável: em TODO o ecossistema, "módulos" = "eixos"',
     codeReality: 'Tabela: aquarios_modules · UI: "MÓDULOS" em coming-soon.tsx',
     type: 'Cosmético inviolável',
+    notes: 'DECIDIDO: Opção A (Migração total) — renomear tabela + todas as referências.',
     options: [
-      { letter: 'A', title: 'Migração total',         description: 'Renomear tabela + todas referências. Breaking mas mecânico.', effort: 'M' },
+      { letter: 'A', title: 'Migração total',         description: 'Renomear tabela + todas referências. Breaking mas mecânico.', effort: 'M', chosen: true },
       { letter: 'B', title: 'UI-only',                description: 'Manter "módulos" tecnicamente, exibir "eixos" só na UI.', effort: 'XS', recommended: true },
       { letter: 'C', title: 'Ignorar',                description: 'Admitir que "módulos" pegou.', effort: 'XS' },
     ],
@@ -154,10 +159,11 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Não menciona',
     codeReality: 'Wearables e IoT · coming_soon · depende de hygeios · telemetry_vitality_logs',
     type: 'Inovação',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md. DECIDIDO: Opção C (Manter independente).',
     options: [
       { letter: 'A', title: 'Documentar em DEVPACK v5',   description: 'Adicionar como novo módulo.', effort: 'XS', recommended: true },
       { letter: 'B', title: 'Mesclar em AsclepiOS',         description: 'Biometria como sub-eixo.', effort: 'XS' },
-      { letter: 'C', title: 'Manter independente',          description: '', effort: 'XS' },
+      { letter: 'C', title: 'Manter independente',          description: '', effort: 'XS', chosen: true },
     ],
   },
   {
@@ -170,8 +176,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Gamificação em Comunidades (M-11), sem nome',
     codeReality: 'aquarios_modules slug=aeropagos status=built · XP, badges, leaderboard, mentor',
     type: 'Inovação',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md.',
     options: [
-      { letter: 'A', title: 'Documentar DEVPACK v5', description: 'Referência: Areópago grego (conselho deliberativo).', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Documentar DEVPACK v5', description: 'Referência: Areópago grego (conselho deliberativo).', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Manter sem nome',        description: '', effort: 'XS' },
     ],
   },
@@ -221,10 +228,11 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Solidity + Polygon · Supply 10M DCT · 1 DCT = 1000 TKN',
     codeReality: 'ZERO blockchain. Token economy off-chain (PostgreSQL)',
     type: 'Escopo blockchain ausente',
+    notes: 'DECIDIDO: Opção C (Adiar Web3) — focar fiat/Stripe.',
     options: [
       { letter: 'A', title: 'Deploy testnet Mumbai',  description: 'Validar conceito sem custo.', effort: 'M' },
       { letter: 'B', title: 'Deploy mainnet Polygon', description: 'Adiciona credibilidade Web3 + complexidade regulatória.', effort: 'L' },
-      { letter: 'C', title: 'Adiar Web3',            description: 'Focar fiat/Stripe.', effort: 'XS', recommended: true },
+      { letter: 'C', title: 'Adiar Web3',            description: 'Focar fiat/Stripe.', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -237,9 +245,10 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: '1 USD = 5000 TKN · paridade explícita',
     codeReality: 'price_usd_cents + token_amount sem TKN unit unificada · 4 tipos isolados',
     type: 'Modelo de pricing divergente',
+    notes: 'DECIDIDO: Opção B (Wrapper UI) — exibir "ai_50 = 50 TKN AI" sem mudar DB. ⏳ 29/Jun: PanaceIA ainda é coming-soon.tsx (placeholder) — não existe tela hoje consumindo panaceia_token_packages, então o wrapper não tem onde plugar ainda. Fica bloqueado até a tela real de compra de tokens AI ser construída.',
     options: [
       { letter: 'A', title: 'Migrar para TKN unificado', description: 'Quebra packages atuais.', effort: 'M' },
-      { letter: 'B', title: 'Wrapper UI',                 description: 'Exibir "ai_50 = 50 TKN AI" sem mudar DB.', effort: 'XS', recommended: true },
+      { letter: 'B', title: 'Wrapper UI',                 description: 'Exibir "ai_50 = 50 TKN AI" sem mudar DB.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'C', title: 'Manter divergente',          description: 'Modelo atual já é completo.', effort: 'XS' },
     ],
   },
@@ -251,10 +260,11 @@ export const DIVERGENCIAS: Divergencia[] = [
     priority: 'P2',
     title: 'FAQ 42 questões — Verificar',
     devpackSays: '42 FAQs em SQL: 8 ZE + 9 DM + 8 CA + 17 outros',
-    codeReality: 'services/faqEngine.ts existe — precisa auditoria de contagem',
-    type: 'Implementação parcial provável',
+    codeReality: 'faqEngine.ts renomeado para services/alexandrios.ts em 27/05/2026 — 35 FAQs reais em config/faqs.json (não 42)',
+    type: 'Implementação parcial confirmada',
+    notes: '✅ AUDITADO 29/Jun: arquivo é services/alexandrios.ts (origem faqEngine.ts, renomeado 27/05). Contagem real = 35 FAQs (8 ZÉ, 9 DONA_MARIA, 8 CARLOS + 10 outros), não 42 como o DEVPACK v4 previa. Gap de 7 FAQs não documentado em nenhum lugar — decidir se completa as 42 ou ajusta a meta para 35.',
     options: [
-      { letter: 'A', title: 'Auditar faqEngine.ts',   description: 'Confirmar 42 FAQs.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Auditar faqEngine.ts',   description: 'Confirmar 42 FAQs.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Migrar para tabela',     description: 'aquarios_arkhe_kb searchable + versionável.', effort: 'S' },
     ],
   },
@@ -269,8 +279,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     codeReality: 'ZERO implementação',
     type: 'Depende de D-01',
     blockedBy: 'D-01',
+    notes: 'AUTO-RESOLVIDO — D-01 já decidido (Híbrido). HermeOS reposicionado, pipeline por país pode ser planejado.',
     options: [
-      { letter: 'A', title: 'Aguardar resolução D-01', description: 'HermeOS precisa ser reposicionado primeiro.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Aguardar resolução D-01', description: 'HermeOS precisa ser reposicionado primeiro.', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -283,9 +294,10 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Google Places API + widget React',
     codeReality: 'ZERO',
     type: 'Feature externa simples',
+    notes: 'DECIDIDO: Opção B (Widget Elfsight) — sem código, custo $5-10/mês.',
     options: [
       { letter: 'A', title: 'Places API',     description: 'API key Google + componente. ROI: trust signal.', effort: 'S' },
-      { letter: 'B', title: 'Widget Elfsight', description: 'Sem código. Custo $5-10/mês.', effort: 'XS' },
+      { letter: 'B', title: 'Widget Elfsight', description: 'Sem código. Custo $5-10/mês.', effort: 'XS', chosen: true },
       { letter: 'C', title: 'Adiar',          description: 'Não-crítico pré-launch.', effort: 'XS', recommended: true },
     ],
   },
@@ -299,8 +311,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Projeto de teste dentro de ProteOS',
     codeReality: 'ZERO referência',
     type: 'Projeto pessoal do fundador',
+    notes: 'DECIDIDO: Opção A (Projeto externo) — não entra no app. ✅ CONFIRMADO 29/Jun: única referência a "Odontolar" no app é store.tsx (ODONTOLAR_PACKAGE=tech.rapidoc.odontolar), que é o app Rapidoc/AsclepiOS legítimo, não o projeto pessoal "Odontolar Plus" do fundador. Zero resíduo real.',
     options: [
-      { letter: 'A', title: 'Projeto externo',        description: 'Não entra no app.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Projeto externo',        description: 'Não entra no app.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Feature flag admin',     description: 'aquarios_test_project, admin only.', effort: 'XS' },
     ],
   },
@@ -315,8 +328,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     codeReality: 'ZERO',
     type: 'Dependente de D-16',
     blockedBy: 'D-16',
+    notes: 'AUTO-RESOLVIDO por D-16 (projeto externo) — única opção. ✅ CONFIRMADO 29/Jun: zero referência a NicoChat/Shopify no app.',
     options: [
-      { letter: 'A', title: 'Ignorar pré-launch',     description: '', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Ignorar pré-launch',     description: '', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -329,8 +343,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Detalha 3 personas (Zé/Maria/Carlos) com 42 FAQs',
     codeReality: '130 personas culturais + 3 personas FAQ (engine/index.ts:355) — sistemas paralelos',
     type: 'Dois sistemas sem reconciliação',
+    notes: 'DECIDIDO: Opção A (Documentar coexistência).',
     options: [
-      { letter: 'A', title: 'Documentar coexistência', description: '3 personas = FAQ/segmentação · 130 personas = comunidade.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Documentar coexistência', description: '3 personas = FAQ/segmentação · 130 personas = comunidade.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Unificar',                 description: 'Mapear 3 FAQ a 3 arquétipos (Zé→Sobrevivente, Maria→Curador, Carlos→Guerreiro).', effort: 'S' },
       { letter: 'C', title: 'Remover FAQ personas',     description: 'Substituir engine/index.ts:355 por arquétipos.', effort: 'M' },
     ],
@@ -345,8 +360,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Cita 7 Leis Herméticas + Quarto Caminho + Bardo Thodol. Sem Pilar 2.',
     codeReality: '10 itens PS: Vigotski, Foucault, Freire, Almeida, Butler, Han, Bauman, Basaglia, Pichon-Rivière, Ciampa',
     type: 'Inovação superior do código',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md. DECIDIDO: Opção A (Atualizar DEVPACK v5).',
     options: [
-      { letter: 'A', title: 'Atualizar DEVPACK v5',   description: 'Adicionar Pilar 2 PS na nova versão.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Atualizar DEVPACK v5',   description: 'Adicionar Pilar 2 PS na nova versão.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Remover Pilar 2',         description: 'Manter só DEVPACK original. Perde sofisticação.', effort: 'S' },
     ],
   },
@@ -360,8 +376,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Sugere uso explícito como "base do ecossistema"',
     codeReality: 'is_public=false · nunca expostas ao usuário',
     type: 'Decisão filosófica mais sólida',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md. DECIDIDO: Opção A (Manter ocultas).',
     options: [
-      { letter: 'A', title: 'Manter ocultas',         description: 'Alinhado com Hermetismo real (esotérico = oculto).', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Manter ocultas',         description: 'Alinhado com Hermetismo real (esotérico = oculto).', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -374,8 +391,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: '5 níveis: free_anonimo / free_comunidade / starter / premium / professional / beck_office',
     codeReality: '4 níveis: free / starter / premium / professional',
     type: 'Mapping incompleto',
+    notes: '✅ IMPLEMENTADO 29/Jun: free_comunidade já existia em settings.tsx PLANS; adicionado beck_office lá. supabase/functions/engine/index.ts (HygeiOS Data Gate real) ganhou os dois planos: beck_office via profiles.is_admin, free_comunidade via profiles.community_opt_in (colunas novas, migration 20260629000004).',
     options: [
-      { letter: 'A', title: 'Adicionar níveis faltantes', description: 'free_comunidade e beck_office.', effort: 'XS' },
+      { letter: 'A', title: 'Adicionar níveis faltantes', description: 'free_comunidade e beck_office.', effort: 'XS', chosen: true },
       { letter: 'B', title: 'Manter 4 níveis',             description: 'beck_office vira "professional B2B" feature flag.', effort: 'XS', recommended: true },
     ],
   },
@@ -389,8 +407,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'profile_data_removed BOOLEAN + remove_persona_profile_data()',
     codeReality: 'persona_management sem coluna de remoção · profiles.is_bot=true',
     type: 'LGPD enhancement faltante',
+    notes: '✅ IMPLEMENTADO 29/Jun: migration 20260629000004 adiciona profile_data_removed/profile_removed_at/profile_removed_by em persona_management (se a tabela existir no banco).',
     options: [
-      { letter: 'A', title: 'Adicionar colunas',       description: 'profile_data_removed + at + by.', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Adicionar colunas',       description: 'profile_data_removed + at + by.', effort: 'XS', recommended: true, chosen: true },
       { letter: 'B', title: 'Usar is_active=false',    description: 'Soft delete simples.', effort: 'XS' },
     ],
   },
@@ -404,8 +423,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Não detalha',
     codeReality: '"22 arcanos + 3 livros basais + 7 leis herméticas"',
     type: 'Conceito proprietário do código',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md.',
     options: [
-      { letter: 'A', title: 'Documentar DEVPACK v5', description: '', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Documentar DEVPACK v5', description: '', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -418,8 +438,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Não menciona',
     codeReality: 'ecumenic_traditions.oracle_modern + oracle_label ocultos',
     type: 'Sistema esotérico proprietário',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md. Achado de segurança aqui (RLS USING(true), sem is_public) corrigido na Sessão 1 (migration 20260629000005).',
     options: [
-      { letter: 'A', title: 'Documentar',     description: '', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Documentar',     description: '', effort: 'XS', recommended: true, chosen: true },
     ],
   },
   {
@@ -432,8 +453,9 @@ export const DIVERGENCIAS: Divergencia[] = [
     devpackSays: 'Não detalha funções SQL',
     codeReality: 'hygeios_log_content_audit · panaceia_deliver_tokens · log_audit_event · upsert_bot_persona',
     type: 'Arquitetura SQL madura',
+    notes: '✅ DOCUMENTADO 29/Jun em docs/DEVPACK_V5_INOVACOES.md. DECIDIDO: Opção A (Manter).',
     options: [
-      { letter: 'A', title: 'Manter',         description: '', effort: 'XS', recommended: true },
+      { letter: 'A', title: 'Manter',         description: '', effort: 'XS', recommended: true, chosen: true },
     ],
   },
 ];

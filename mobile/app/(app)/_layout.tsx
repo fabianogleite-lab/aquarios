@@ -24,9 +24,10 @@ export default function AppLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: '⚗ AquariOS',
+          headerShown: false,
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>{'◈'}</Text>,
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen
@@ -67,8 +68,10 @@ export default function AppLayout() {
       <Tabs.Screen name="hidratacao" options={{ href: null, title: 'Hidratação' }} />
       <Tabs.Screen name="relacionamentos" options={{ href: null, title: 'Relacionamentos' }} />
       <Tabs.Screen name="jornada" options={{ href: null, title: 'Jornada' }} />
+      <Tabs.Screen name="configuracoes" options={{ href: null, title: 'Configurações' }} />
       <Tabs.Screen name="admin" options={{ href: null, title: '⚙ Admin' }} />
       <Tabs.Screen name="divergencias" options={{ href: null, title: '📊 Divergências DEVPACK v4' }} />
+      <Tabs.Screen name="arkhe" options={{ href: null, title: 'Arkhe Labs' }} />
       <Tabs.Screen name="diario-new" options={{ href: null, title: 'Nova Reflexão' }} />
       <Tabs.Screen
         name="diario"

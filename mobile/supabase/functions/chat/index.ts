@@ -47,6 +47,8 @@ function getCulturalAddendum(locale?: string): string {
   return match ? CULTURAL_ADDENDUM[match] : '';
 }
 
+// D-05: PERSONAS é o fallback hardcoded. Fonte de verdade versionada é
+// proteos_prompt_registry (prompt_key='persona:<nome>') — ver getPersonaPrompt().
 const PERSONAS: Record<string, string> = {
   default:
     "Voce e ProteOS, o assistente IA pessoal do AquariOS - Sistema Operacional Pessoal. Caloroso, profundo e pratico. Fala portugues brasileiro coloquial. Criador: Fabiano Gomes Leite, fundador da Arkhe Labs. Ajuda com autoconhecimento, produtividade e bem-estar. Conciso mas profundo; usa metaforas quando apropriado. Nunca inventa dados sobre o usuario. Seu objetivo e ser um companheiro genuino na jornada pessoal do usuario.",
@@ -133,6 +135,114 @@ Deno.serve(async (req) => {
       );
     }
 
+    // SandeirOS N1: checa cache semântico ANTES do Claude. Breaker B (estado externo,
+    // já que a edge function não tem memória entre invocações) evita bater num Oracle
+    // já comprovadamente fora — pula direto pro Claude sem pagar timeout.
+    const oracleUrl = Deno.env.get("ORACLE_SANDEIROS_URL") || "https://api.podiumtec.com.br";
+    const lastUserMessage = [...messages].reverse().find((m: { role: string }) => m.role === "user");
+    const promptText = typeof lastUserMessage?.content === "string" ? lastUserMessage.content : "";
+
+    const BREAKER_SERVICO = "sandeiros_oracle";
+    const BREAKER_COOLDOWN_MS = 30_000;
+    const BREAKER_FAIL_THRESHOLD = 3;
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    async function getPersonaPrompt(personaKey: string): Promise<string> {
+      try {
+        const { data } = await supabaseAdmin
+          .from("proteos_prompt_registry")
+          .select("content")
+          .eq("prompt_key", `persona:${personaKey}`)
+          .eq("active", true)
+          .order("version", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        return data?.content ?? PERSONAS[personaKey];
+      } catch {
+        return PERSONAS[personaKey];
+      }
+    }
+
+    async function breakerOpen(): Promise<boolean> {
+      const { data } = await supabaseAdmin
+        .from("circuit_breaker_state")
+        .select("estado, aberto_desde")
+        .eq("servico", BREAKER_SERVICO)
+        .maybeSingle();
+      if (!data || data.estado !== "OPEN") return false;
+      const abertoHa = Date.now() - new Date(data.aberto_desde).getTime();
+      return abertoHa < BREAKER_COOLDOWN_MS; // após o cooldown, vira HALF_OPEN (deixa tentar 1x)
+    }
+
+    async function breakerRegistrarFalha(): Promise<void> {
+      const { data } = await supabaseAdmin
+        .from("circuit_breaker_state")
+        .select("falhas_recentes")
+        .eq("servico", BREAKER_SERVICO)
+        .maybeSingle();
+      const falhas = (data?.falhas_recentes ?? 0) + 1;
+      const abre = falhas >= BREAKER_FAIL_THRESHOLD;
+      await supabaseAdmin.from("circuit_breaker_state").upsert({
+        servico: BREAKER_SERVICO,
+        falhas_recentes: abre ? 0 : falhas,
+        estado: abre ? "OPEN" : "CLOSED",
+        aberto_desde: abre ? new Date().toISOString() : null,
+        atualizado_em: new Date().toISOString(),
+      });
+      if (abre) {
+        await supabaseAdmin.rpc("registrar_fallout", {
+          p_user_id: null,
+          p_evento: "sandeiros_indisponivel",
+          p_tom: "tecnico",
+          p_mensagem: "Breaker B aberto: Oracle/SandeirOS indisponível após falhas consecutivas.",
+        });
+      }
+    }
+
+    async function breakerRegistrarSucesso(): Promise<void> {
+      await supabaseAdmin.from("circuit_breaker_state").upsert({
+        servico: BREAKER_SERVICO,
+        falhas_recentes: 0,
+        estado: "CLOSED",
+        aberto_desde: null,
+        atualizado_em: new Date().toISOString(),
+      });
+    }
+
+    if (promptText && !(await breakerOpen())) {
+      try {
+        const sandeirosRes = await fetch(`${oracleUrl}/sandeiros/responder`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: promptText,
+            idioma: locale || "pt",
+            categoria: persona,
+            humanizar: true,
+          }),
+        });
+        if (sandeirosRes.ok) {
+          await breakerRegistrarSucesso();
+          const sandeirosData = await sandeirosRes.json();
+          if (sandeirosData.fonte === "CACHE" || sandeirosData.fonte === "N2_LLAMA") {
+            const cachedText = sandeirosData.humanizado ?? sandeirosData.output;
+            return new Response(
+              JSON.stringify({ text: cachedText, fonte: sandeirosData.fonte }),
+              { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
+        } else {
+          await breakerRegistrarFalha();
+        }
+      } catch (e) {
+        console.error('[SandeirOS] indisponível, seguindo pro Claude direto:', e);
+        await breakerRegistrarFalha().catch(() => {});
+      }
+    }
+
     const anthropicKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!anthropicKey) {
       console.error('[ERROR] ANTHROPIC_API_KEY not configured');
@@ -141,6 +251,8 @@ Deno.serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const personaPrompt = await getPersonaPrompt(persona as string);
 
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -153,13 +265,22 @@ Deno.serve(async (req) => {
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1024,
         system: (() => {
-          const base = PERSONAS[persona as keyof typeof PERSONAS];
+          const base = personaPrompt;
           const addendum = getCulturalAddendum(locale as string);
           const ctx = userContext
             ? `\n\nCONTEXTO ATUAL DO USUÁRIO (dados reais do HygeiOS — use para personalizar respostas, não invente dados fora deste contexto):\n${userContext}`
             : '';
           const cultural = addendum ? `\n\nVoz Cultural Ativa: ${addendum}` : '';
-          return `${base}${cultural}${ctx}`;
+          // Bloco 1 (persona) repete em toda chamada com a mesma persona+locale: cacheável.
+          // Bloco 2 (contexto do usuário) muda por request: NÃO cacheável.
+          return [
+            {
+              type: "text",
+              text: `${base}${cultural}`,
+              cache_control: { type: "ephemeral" },
+            },
+            ...(ctx ? [{ type: "text", text: ctx }] : []),
+          ];
         })(),
         messages,
       }),
@@ -184,6 +305,24 @@ Deno.serve(async (req) => {
 
     const data = await anthropicRes.json();
     const text = data.content?.[0]?.text ?? "";
+
+    // Fecha o ciclo MISS->Claude->cache (subagente Bob). Fire-and-forget:
+    // nunca espera nem falha a resposta ao usuário por causa disso.
+    if (promptText && text) {
+      fetch(`${oracleUrl}/sandeiros/registrar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: promptText,
+          idioma: locale || "pt",
+          categoria: persona,
+          resposta: text,
+          fonte: "CLAUDE",
+          tokens_input: data.usage?.input_tokens ?? 0,
+          tokens_output: data.usage?.output_tokens ?? 0,
+        }),
+      }).catch((e) => console.error('[SandeirOS] registrar falhou (não bloqueante):', e));
+    }
 
     return new Response(
       JSON.stringify({ text }),
