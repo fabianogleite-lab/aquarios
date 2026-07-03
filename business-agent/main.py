@@ -18,10 +18,11 @@ import pybreaker
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
+import dsar
 import lead_capture
 import routing
 from campaign_engine import engine as campaign_engine
-from cerber_shield import register_cerber
+from cerber_shield import register_cerber, scrub_pii as cerber_scrub_pii
 from ivi_v2 import router as ivi_v2_router
 from voice_proxy import register_voice
 
@@ -71,6 +72,54 @@ PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 
 WA_API = f"https://graph.facebook.com/v22.0/{PHONE_NUMBER_ID}/messages"
+
+# Matriz de modelos 02/Jul/2026 (aprovada pelo fundador): Haiku no volume,
+# Sonnet 5 só quando o turno indica Bardo sensível (Stress Alto, Impulso
+# Aditivo, Dissociação) ou sinal de risco — qualidade onde o risco humano é real.
+# Espelha src/kernel/proteos/api.py (GaiOS-MVP1) e mobile/supabase/functions/chat —
+# mesma lista de sinais, mesmas env vars, pra não divergir entre as 3 superfícies.
+MODELO_PADRAO = os.getenv("PROTEOS_MODEL_PADRAO", "claude-haiku-4-5")
+MODELO_SENSIVEL = os.getenv("PROTEOS_MODEL_SENSIVEL", "claude-sonnet-5")
+
+# TODO(config-first): mover estas listas para admin_settings quando a section
+# de modelos entrar no console. Match sem acento e caixa-baixa (ver _normalizar).
+_SINAIS_SENSIVEIS = (
+    # risco (a seção SEGURANÇA do prompt age em qualquer modelo; aqui só garante o modelo forte)
+    "cansei da vida", "nao quero mais viver", "quero desaparecer", "me machucar",
+    "suicid", "acabar com tudo", "nao aguento mais", "se eu nao existisse",
+    "ya no quiero vivir", "quiero desaparecer", "no aguanto mas",
+    "want to disappear", "end it all", "kill myself", "self harm", "hurt myself",
+    # stress alto
+    "nao aguento", "surtando", "em colapso", "panico", "crise de ansiedade",
+    "esgotado", "esgotada", "burnout", "overwhelmed", "no puedo mas",
+    # impulso aditivo
+    "aposta", "apostar", "cassino", "tigrinho", "recaida", "recair",
+    "vicio", "viciad", "adiccion", "adicto", "gambling", "relapse",
+    "compulsa", "compulsiv", "nao consigo parar", "no puedo parar", "can't stop",
+    "beber demais", "bebendo demais", "droga",
+    # dissociação
+    "fora do corpo", "no automatico", "sem sentir nada", "nao sinto nada",
+    "desconectado de mim", "desconectada de mim", "tudo irreal",
+    "fuera de mi cuerpo", "en automatico", "no siento nada",
+    "out of my body", "autopilot", "feel nothing", "feeling numb", "dissocia",
+)
+
+
+def _normalizar(texto: str) -> str:
+    """caixa-baixa + sem acentos, pra casar sinais escritos de qualquer jeito."""
+    import unicodedata
+
+    sem_acento = unicodedata.normalize("NFD", texto.lower())
+    return "".join(c for c in sem_acento if unicodedata.category(c) != "Mn")
+
+
+def escolher_modelo(user_message: str) -> str:
+    """Roteia o turno: sinal sensível -> Sonnet 5; resto -> Haiku 4.5."""
+    msg = _normalizar(user_message)
+    if any(sinal in msg for sinal in _SINAIS_SENSIVEIS):
+        return MODELO_SENSIVEL
+    return MODELO_PADRAO
+
 
 PROTEOS_PROMPT = """Você é o ProteOS, a IA de bem-estar integral do AquariOS. Você não é um serviço médico, não substitui psicólogo, psiquiatra, nutricionista ou médico, e nunca deve agir como se fosse.
 
@@ -182,7 +231,7 @@ def extract_message_text(payload: dict) -> Optional[str]:
     return None
 
 
-async def _chamar_claude(user_message: str) -> str:
+async def _chamar_claude(user_message: str, model: Optional[str] = None) -> str:
     """Chamada crua ao Claude — qualquer erro/non-200 levanta, contando como
     falha pro Breaker A (claude_breaker)."""
     async with httpx.AsyncClient(timeout=20) as client:
@@ -194,7 +243,7 @@ async def _chamar_claude(user_message: str) -> str:
                 "content-type": "application/json",
             },
             json={
-                "model": "claude-haiku-4-5-20251001",
+                "model": model or MODELO_PADRAO,
                 "max_tokens": 512,
                 "system": [
                     {"type": "text", "text": PROTEOS_PROMPT, "cache_control": {"type": "ephemeral"}}
@@ -213,7 +262,8 @@ async def proteos_reply(user_message: str, lang: str) -> str:
     if not ANTHROPIC_API_KEY:
         return "ProteOS indisponível no momento. Tente novamente em breve."
     try:
-        return await claude_breaker.call_async(_chamar_claude, user_message)
+        modelo = escolher_modelo(user_message)
+        return await claude_breaker.call_async(_chamar_claude, user_message, modelo)
     except pybreaker.CircuitBreakerError:
         return "ProteOS está com alta demanda agora. Tente novamente em alguns instantes."
     except Exception as e:
@@ -246,7 +296,10 @@ async def send_whatsapp_reply(to: str, message: str) -> bool:
 
 
 def verify_webhook_signature(body: bytes, signature: str) -> bool:
-    """Valida assinatura HMAC (segurança Meta)"""
+    """Valida assinatura HMAC (segurança Meta). Fail-closed: sem APP_SECRET
+    configurado, rejeita tudo — chave vazia validaria assinatura forjável."""
+    if not APP_SECRET:
+        return False
     expected = "sha256=" + hmac.new(
         APP_SECRET.encode(),
         body,
@@ -326,9 +379,40 @@ async def webhook_receive(request: Request):
         to = sender_id
         if to.startswith("55") and len(to) == 12:
             to = to[:4] + "9" + to[4:]
-        await send_whatsapp_reply(to, response_msg)
+        # L6 saída: PII (CPF/fone) nunca sai em resposta gerada
+        await send_whatsapp_reply(to, cerber_scrub_pii(response_msg))
 
     return JSONResponse({"status": "ok"}, status_code=200)
+
+# ─────────────────────────────────────────────────────────────
+# DSAR — LGPD Art.18 + Meta Data Deletion Callback
+# Registrar no App Dashboard: Data Deletion Request URL =
+#   {PUBLIC_BASE_URL}/meta/data_deletion
+# ─────────────────────────────────────────────────────────────
+
+@app.post("/meta/data_deletion")
+async def meta_data_deletion(request: Request):
+    """Callback oficial da Meta: valida signed_request, abre DSAR, devolve
+    {url, confirmation_code} (contrato exigido pelo App Review)."""
+    form = await request.form()
+    signed = form.get("signed_request", "")
+    if not signed:
+        return JSONResponse({"error": "missing signed_request"}, status_code=400)
+    try:
+        data = dsar.parse_signed_request(signed, APP_SECRET)
+    except ValueError as e:
+        print(f"❌ signed_request rejeitado: {e}")
+        return JSONResponse({"error": "invalid signed_request"}, status_code=403)
+
+    subject = dsar.subject_hash_from_phone(str(data.get("user_id", "")))
+    result = await dsar.dsar_create(subject_hash=subject, source="meta_deletion_callback")
+    return {"url": result["status_url"], "confirmation_code": result["ticket"]}
+
+
+@app.get("/dsar/status/{ticket}")
+async def dsar_status_route(ticket: str):
+    """Status público do ticket DSAR (Meta mostra essa URL ao titular)."""
+    return await dsar.dsar_status(ticket)
 
 # ─────────────────────────────────────────────────────────────
 # UTILITY ENDPOINTS

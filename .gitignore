@@ -40,6 +40,10 @@ mvp*/**/hl[1-4]_*.json
 INFRA_HARDWARE_MAP.md
 INFRA_FREE_TIER_EXPIRY.md
 
+# Supabase CLI — scratch local; expõe project-ref + host do pooler (repo é PÚBLICO)
+# Cobre raiz e as cópias em mvp0/ mvp1/ (hardening 22/Jun, item 6)
+**/supabase/.temp/
+
 # Terraform — state/vars podem conter segredos; nunca versionar
 infra/**/.terraform/
 *.tfstate

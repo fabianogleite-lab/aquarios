@@ -1,0 +1,29 @@
+# ISO Autopilot — SoA (Declaração de Aplicabilidade) auto-gerada nightly.
+# Secrets do repo: SUPABASE_URL, SUPABASE_SERVICE_KEY (Settings > Secrets > Actions).
+# continue-on-error: controle STALE gera aviso no artifact, não quebra o repo.
+name: iso-autopilot
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 00:00 BRT
+  workflow_dispatch:
+
+jobs:
+  soa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Gerar SoA
+        continue-on-error: true
+        run: python tools/iso_soa.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: iso-soa-${{ github.run_number }}
+          path: SoA_auto.md
+          if-no-files-found: warn

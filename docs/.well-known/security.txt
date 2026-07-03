@@ -1,0 +1,5 @@
+Contact: mailto:security@podiumtec.com.br
+Expires: 2027-07-02T00:00:00Z
+Preferred-Languages: pt, en
+Canonical: https://podiumtec.com.br/.well-known/security.txt
+Policy: https://podiumtec.com.br/trust.html

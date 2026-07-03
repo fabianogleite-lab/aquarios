@@ -46,7 +46,48 @@ _PATTERNS: list[tuple[str, re.Pattern]] = [
     ("CMD_INJECTION",  re.compile(r"(?:exec|eval|system)\s*\(", re.I)),
     ("SHELL_INJECTION", re.compile(r"/bin/(?:sh|bash|dash)|cmd\.exe", re.I)),
     ("TEMPLATE_INJ",   re.compile(r"\{\{.*?\}\}|\$\{.*?\}")),
+    # Prompt injection (LLM) — mesma L6, alvo diferente: o payload tenta
+    # sequestrar o ProteOS, não o servidor (OWASP LLM01)
+    ("PROMPT_INJ_OVERRIDE", re.compile(r"ignore\s+(all\s+)?(previous|above|prior)\s+instructions", re.I)),
+    ("PROMPT_INJ_SYSPROMPT", re.compile(r"(reveal|show|print|repeat)\s+(your\s+)?(system\s+prompt|instructions)", re.I)),
+    ("PROMPT_INJ_TOKENS",   re.compile(r"<\|[a-z_]+\|>", re.I)),
 ]
+
+# ── PII na SAÍDA (LGPD): mascarar, nunca bloquear — resposta segue fluindo ───
+_PII_PATTERNS: list[tuple[str, re.Pattern]] = [
+    ("CPF",      re.compile(r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b")),
+    ("FONE_BR",  re.compile(r"\b\+?55\s?\(?\d{2}\)?\s?9?\d{4}-?\d{4}\b")),
+]
+
+
+def scrub_pii(text: str) -> str:
+    """Mascara PII em texto de SAÍDA (respostas do ProteOS via WhatsApp etc.).
+    Nunca levanta — no pior caso devolve o texto original."""
+    try:
+        for name, pattern in _PII_PATTERNS:
+            if pattern.search(text):
+                logger.warning("cerber[L6-out] PII mascarada: %s", name)
+                text = pattern.sub("[dado removido]", text)
+    except Exception:
+        pass
+    return text
+
+
+# ── Upload guard (fotos de refeição etc.) — chame antes de persistir arquivo ─
+_UPLOAD_ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp", "application/pdf"}
+_UPLOAD_BLOCKED_EXT = (".exe", ".js", ".vbs", ".ps1", ".scr", ".bat", ".com", ".pif", ".jar")
+_UPLOAD_MAX_MB = 10
+
+
+def validate_upload(filename: str, content_type: str, size: int) -> Optional[str]:
+    """Retorna o motivo da rejeição, ou None se o arquivo é aceitável."""
+    if content_type not in _UPLOAD_ALLOWED_MIME:
+        return f"mime_not_allowed:{content_type}"
+    if filename.lower().endswith(_UPLOAD_BLOCKED_EXT):
+        return "executable_blocked"
+    if size > _UPLOAD_MAX_MB * 1024 * 1024:
+        return "file_too_large"
+    return None
 
 
 def _detect_attack(body: bytes) -> Optional[str]:
@@ -147,6 +188,11 @@ class CerberShieldMiddleware(BaseHTTPMiddleware):
                 logger.critical("cerber[L6] %s ip_hash=%s", pattern, ip_h)
                 asyncio.create_task(_log_incident(ip_h, pattern, 6, "CRITICAL"))
                 return await _tarpit(30.0)
+
+        # 🔖 CARIMBO CerberOS (basal): request validada 1x na borda — daqui pra
+        # dentro o núcleo confia e NÃO revalida segurança. Autorização de DADO
+        # é outro plano (HygeiOS Data Gate), não se repete aqui.
+        request.state.cerber_stamp = datetime.now(timezone.utc).isoformat()
 
         return await call_next(request)
 

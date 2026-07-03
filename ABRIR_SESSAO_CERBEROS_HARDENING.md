@@ -2,6 +2,30 @@
 > Sessão **própria e presencial** — exige **rebuild + redeploy** do backend (não "deixa rodando").
 > Depois dela vem a **FINALIZAÇÃO do MVP1** (bloco gated: merge + publish + sigilo + backup).
 
+## ✅ RESOLVIDO 03/Jul — incidente da VM travada (era bloqueador, texto original preservado abaixo)
+Reboot feito pelo fundador (Actions → Reboot no console) → VM voltou "Running" em ~2min. Redeploy
+executado (main.py/cerber_shield.py/dsar.py/iso_evidence.py via scp) + restart do serviço + headers
+nginx aplicados + GitHub Secrets configurados (`SUPABASE_SERVICE_KEY`/`SUPABASE_URL` em
+fabianogleite-lab/aquarios). Rota `/meta/data_deletion` confirmada viva (400, não mais 404).
+Memória pós-restart estável (~200Mi available, sem re-disparar). **Falta só:** testar o DSAR
+de ponta a ponta clicando "Test" no painel Meta (App Dashboard → Data Deletion → Test) — a
+rota já responde, só falta o teste real do fluxo completo.
+
+## 🚨 BLOQUEADOR — resolver ANTES de qualquer outro item (incidente 03/Jul, texto original)
+**`aquarios-server-1` (Oracle VM, produção WhatsApp) está travada** — status "Running" no console
+OCI, mas SSH (porta 22) e HTTPS (porta 443) inacessíveis. Causa investigada e não foi ação externa
+(descartados: Fly/Neon, GitHub OAuth apps, ação via console/API Oracle — Work Requests vazio).
+**Hipótese confirmada pelos gráficos de Monitoring:** OOM/travamento de kernel — shape é
+`VM.Standard.E2.1.Micro` (só **1 GB de RAM**); CPU/memória/disco/load subiram juntos ~11:45→12:10 UTC
+(memory ~85-90%, Memory Allocation Stalls disparou = kernel forçando reclaim de página), depois
+**tudo caiu pra zero e ficou morto** a partir de ~12:15 UTC — travou logo após nosso restart do
+serviço consolidado (webhook+SandeirOS+ivi_v2 num só processo) pra rotacionar o `META_APP_SECRET`.
+**Ação pendente (só o fundador, via console):** Oracle Console → Compute → `aquarios-server-1` →
+**Actions → Reboot**. Depois do reboot, retomar o item 5 do roteiro abaixo (rebuild+redeploy já
+tinha sido feito antes da travada — confirmar se sobreviveu ou se precisa refazer).
+**Risco recorrente:** 1 GB de RAM é pouco pro serviço consolidado — considerar monitorar memória
+ou avaliar upgrade de shape se voltar a travar.
+
 ---
 
 Executar a **SESSÃO CerberOS + Hardening**. Escopo e estado real na memória `project_cerberos`.

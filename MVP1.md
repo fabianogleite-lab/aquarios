@@ -132,6 +132,10 @@ raiz/                  ← vivo (build/Pages/app). docs/ e mobile/ ficam aqui SE
 ---
 
 ## 8. Próximo (fora desta sessão)
-- **Sessão própria: CerberOS + Hardening.** `cerber_shield.py` existe em `business-agent/` mas **não está
-  ligado** no backend live (sem rate-limit/CORS/auth nos writes). Exige rebuild+redeploy →
-  **com o fundador presente**. Escopo e estado real na memória `project_cerberos`.
+- ✅ **CONCLUÍDA 03/Jul — Sessão CerberOS + Hardening.** Ver memória `project_cerberos` (estado completo)
+  e `ABRIR_SESSAO_CERBEROS_HARDENING.md` (resolvido). Webhook rotacionado, DSAR testado ponta-a-ponta,
+  guards reforçados, headers de segurança ativos, roteamento por Bardo sensível sincronizado com GaiOS-MVP1.
+- ⚠️ **Este documento está desatualizado quanto ao status geral do MVP1** — o trabalho ativo migrou pra
+  **GaiOS-MVP1** (repo canônico). Ver `GaiOS-MVP1/HANDOFF_MVP1_PLAYSTORE.md` (03/Jul) pro estado atual
+  e o caminho até a publicação na Play Store. A nomenclatura e as regras de sigilo (seções 2 e 7 acima)
+  continuam válidas.

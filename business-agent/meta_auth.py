@@ -7,8 +7,20 @@ from urllib.parse import urlencode, parse_qs, urlparse
 HERE = os.path.dirname(os.path.abspath(__file__))
 ENV_FILE = os.path.join(HERE, ".env")
 
+def _secret_from_env_or_dotenv(key: str) -> str:
+    val = os.environ.get(key, "")
+    if not val and os.path.exists(ENV_FILE):
+        with open(ENV_FILE) as f:
+            for line in f:
+                if line.startswith(f"{key}="):
+                    val = line.split("=", 1)[1].strip()
+                    break
+    if not val:
+        sys.exit(f"Faltando {key} — defina no ambiente ou em {ENV_FILE}. Nunca hardcode (repo público).")
+    return val
+
 META_APP_ID = "1891936851469173"
-META_APP_SECRET = os.environ.get("META_APP_SECRET", "")  # rotate at Meta dashboard; never hardcode
+META_APP_SECRET = _secret_from_env_or_dotenv("META_APP_SECRET")  # rotate at Meta dashboard; never hardcode
 META_BUSINESS_ID = "2274467833382298"
 REDIRECT_URI = "http://localhost:8765/callback"
 
