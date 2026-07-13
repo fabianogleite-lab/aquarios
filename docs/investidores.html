@@ -175,18 +175,6 @@
     </head>
 <body>
 
-<!-- GATE -->
-<div id="gate">
-    <div class="gate-logo">C&L · Ecossistema</div>
-    <div class="gate-sub">Área restrita — Material do Investidor<br>3 Projetos · Acesso mediante credencial</div>
-    <div class="gate-form">
-        <input class="gate-input" type="password" id="gateInput" placeholder="Senha de acesso" autocomplete="off">
-        <button class="gate-btn" onclick="checkGate()">Acessar →</button>
-        <div class="gate-err" id="gateErr"></div>
-    </div>
-    <div class="gate-note">Para solicitar acesso: contato@podiumtec.com.br</div>
-</div>
-
 <!-- NAV -->
 <nav>
     <div class="nav-logo">C&L · Ecossistema</div>
@@ -491,7 +479,7 @@
             <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;">
                 <div style="font-size:1.75rem;font-weight:800;letter-spacing:-0.04em;color:#16A34A;margin-bottom:0.25rem;">HVP</div>
                 <div style="font-size:0.75rem;font-weight:600;color:var(--text-muted);">Motor proprietário de ranqueamento</div>
-                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.6;">log₁p(dwell_ms/1000) × (1 + clicks/5) — trade secret com cláusula NDA</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.6;">Algoritmo proprietário de qualificação de atenção — detalhes técnicos sob NDA, disponíveis mediante solicitação qualificada</div>
             </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
@@ -591,32 +579,5 @@
     </div>
 </footer>
 
-<script>
-    // Senha simples — troque aqui para a senha real
-    const SENHA = 'aquarios2026';
-
-    function checkGate() {
-        const val = document.getElementById('gateInput').value;
-        const err = document.getElementById('gateErr');
-        if (val === SENHA) {
-            document.getElementById('gate').classList.add('hidden');
-            sessionStorage.setItem('inv_auth', '1');
-        } else {
-            err.textContent = 'Senha incorreta. Tente novamente.';
-            document.getElementById('gateInput').value = '';
-            document.getElementById('gateInput').focus();
-        }
-    }
-
-    // Manter autenticado na sessão
-    if (sessionStorage.getItem('inv_auth') === '1') {
-        document.getElementById('gate').classList.add('hidden');
-    }
-
-    // Enter key no campo de senha
-    document.getElementById('gateInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') checkGate();
-    });
-</script>
 </body>
 </html>

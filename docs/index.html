@@ -204,6 +204,12 @@
         .dim-name { font-size:1.05rem; font-weight:700; color:#fff; margin-bottom:0.5rem; }
         .dim-desc { font-size:0.775rem; color:rgba(255,255,255,0.4); line-height:1.65; }
         .dim-pct { margin-top:1rem; font-size:0.7rem; font-weight:700; letter-spacing:0.04em; }
+        .dim-slider-row { display:flex; align-items:center; gap:0.75rem; margin-top:1rem; }
+        .dim-slider { flex:1; -webkit-appearance:none; appearance:none; height:4px; border-radius:100px; background:rgba(255,255,255,0.12); outline:none; cursor:pointer; }
+        .dim-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background:#fff; cursor:pointer; box-shadow:0 0 0 3px rgba(255,255,255,0.15); }
+        .dim-slider::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:#fff; border:none; cursor:pointer; box-shadow:0 0 0 3px rgba(255,255,255,0.15); }
+        .dim-slider-val { font-size:0.8rem; font-weight:700; color:#fff; width:2.4rem; text-align:right; font-variant-numeric:tabular-nums; }
+        .ivi-cta { display:block; margin-top:0.5rem; text-align:center; font-size:0.72rem; color:rgba(255,255,255,0.35); }
 
         /* ── COMO FUNCIONA — 5 AGENTES ── */
         .agents-section { padding:7rem 2.5rem; max-width:1100px; margin:0 auto; }
@@ -332,7 +338,7 @@
         .footer-logo { font-size:1.2rem; font-weight:800; color:#fff; letter-spacing:-0.02em; margin-bottom:0.4rem; }
         .footer-tagline { font-size:0.775rem; color:rgba(255,255,255,0.35); margin-bottom:0.25rem; }
         .footer-sub { font-size:0.7rem; color:rgba(255,255,255,0.2); }
-        .footer-cols { display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; }
+        .footer-cols { display:grid; grid-template-columns:repeat(5,1fr); gap:2rem; }
         .footer-col-title { font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:1rem; }
         .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
         .footer-col ul li a { color:rgba(255,255,255,0.45); font-size:0.8rem; text-decoration:none; transition:color 0.2s; }
@@ -544,7 +550,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="fade">
         <div class="section-label">O que é</div>
         <h2 class="section-title">Não é um app de saúde.<br>É o app que cuida de você.</h2>
-        <p class="section-desc">AquariOS nasceu de uma crise real — um pré-infarto que fez seu criador perguntar: <em>onde foi que eu me perdi de mim?</em> A resposta não veio de um aplicativo. Veio do silêncio. E do silêncio nasceu um sistema que ouve antes de falar, que entende antes de agir, que cuida sem vigiar.</p>
+        <p class="section-desc">Você cuida dos pais, dos filhos, do time, dos clientes. <em>Cuida de todo mundo — quem cuida de você?</em> AquariOS nasceu de uma crise real do seu criador — um pré-infarto que virou pergunta: onde foi que eu me perdi de mim? A resposta não veio de um aplicativo. Veio do silêncio. E do silêncio nasceu um sistema que ouve antes de falar, que entende antes de agir, que cuida sem vigiar.</p>
         <blockquote class="quote">"Bilhões de pessoas precisam disso. Ninguém ofereceu, ainda."</blockquote>
     </div>
     <div class="mini-cards fade fade-d1">
@@ -596,35 +602,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </svg>
                     <div class="ivi-center">
                         <div class="ivi-number" id="iviNumber">0</div>
-                        <div class="ivi-band">iVi · BOM</div>
+                        <div class="ivi-band" id="iviBand">iVi · BOM</div>
                     </div>
                 </div>
-                <div class="ivi-formula">Score composto · 4 dimensões<br>Físico · Mental · Espiritual · Social</div>
+                <div class="ivi-formula">iVi = 0.35·Físico + 0.30·Mental<br>+ 0.20·Espiritual + 0.15·Social</div>
+                <span class="ivi-cta">↑ arraste os sliders ao lado e veja seu iVi mudar</span>
             </div>
             <div class="dim-cards">
                 <div class="dim-card fade">
                     <div class="dim-dot" style="background:var(--somatica)"></div>
-                    <div class="dim-tag">Dimensão 01</div>
+                    <div class="dim-tag">Dimensão 01 · peso 0.35</div>
                     <div class="dim-name">Físico</div>
                     <div class="dim-desc">Corpo, movimento, nutrição, sinais vitais e saúde clínica integrados em tempo real.</div>
+                    <div class="dim-slider-row">
+                        <input type="range" min="0" max="100" value="70" class="dim-slider" id="sliderFisico" oninput="computeIVI()">
+                        <span class="dim-pct" id="valFisico" style="color:var(--somatica)">70</span>
+                    </div>
                 </div>
                 <div class="dim-card fade fade-d1">
                     <div class="dim-dot" style="background:var(--psicologica)"></div>
-                    <div class="dim-tag">Dimensão 02</div>
+                    <div class="dim-tag">Dimensão 02 · peso 0.30</div>
                     <div class="dim-name">Mental</div>
                     <div class="dim-desc">Mente, emoções, padrões de pensamento e saúde psicológica com suporte de IA.</div>
+                    <div class="dim-slider-row">
+                        <input type="range" min="0" max="100" value="75" class="dim-slider" id="sliderMental" oninput="computeIVI()">
+                        <span class="dim-pct" id="valMental" style="color:var(--psicologica)">75</span>
+                    </div>
                 </div>
                 <div class="dim-card fade fade-d2">
                     <div class="dim-dot" style="background:var(--existencial)"></div>
-                    <div class="dim-tag">Dimensão 03</div>
+                    <div class="dim-tag">Dimensão 03 · peso 0.20</div>
                     <div class="dim-name">Espiritual</div>
                     <div class="dim-desc">Propósito, valores, espiritualidade e autoconhecimento — a dimensão que ancora tudo.</div>
+                    <div class="dim-slider-row">
+                        <input type="range" min="0" max="100" value="80" class="dim-slider" id="sliderEspiritual" oninput="computeIVI()">
+                        <span class="dim-pct" id="valEspiritual" style="color:var(--existencial)">80</span>
+                    </div>
                 </div>
                 <div class="dim-card fade fade-d3">
                     <div class="dim-dot" style="background:var(--social)"></div>
-                    <div class="dim-tag">Dimensão 04</div>
+                    <div class="dim-tag">Dimensão 04 · peso 0.15</div>
                     <div class="dim-name">Social</div>
                     <div class="dim-desc">Vínculos reais, comunidade, presença e conexão humana autêntica.</div>
+                    <div class="dim-slider-row">
+                        <input type="range" min="0" max="100" value="60" class="dim-slider" id="sliderSocial" oninput="computeIVI()">
+                        <span class="dim-pct" id="valSocial" style="color:var(--social)">60</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -797,6 +820,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <li><a href="investidores.html" style="color:var(--primary-light);font-weight:700;">Acessar material do investidor →</a></li>
                 </ul>
             </div>
+        </div>
+        <div class="fade" style="text-align:center;margin-top:3rem;">
+            <a href="https://wa.me/5511999999999?text=Quero+ser+parceiro+AquariOS" target="_blank" rel="noopener"
+               style="display:inline-flex;align-items:center;gap:0.6rem;background:rgba(37,211,102,0.15);color:#25D366;font-weight:700;font-size:0.95rem;padding:0.9rem 1.75rem;border-radius:12px;text-decoration:none;border:1px solid rgba(37,211,102,0.3);">
+                💬 Seja um parceiro AquariOS
+            </a>
         </div>
     </div>
 </div>
@@ -978,6 +1007,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <li><a href="#o-que-e">Manifesto</a></li>
                         <li><a href="mailto:contato@podiumtec.com.br">Contato</a></li>
                         <li><a href="#parceiros">Parceria</a></li>
+                        <li><a href="imprensa/">Imprensa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="footer-col-title">Ecossistema Podiumtec</div>
+                    <ul>
+                        <li><a href="escambos/">EscambOS</a></li>
+                        <li><a href="heysky/">heYskY</a></li>
+                        <li><a href="engenharia.html">Engenharia &amp; Arquitetura</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1021,32 +1059,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, { threshold: 0.08 });
     document.querySelectorAll('.fade').forEach(el => observer.observe(el));
 
-    // iVi animation
+    // iVi — calculadora interativa (fórmula pública: 0.35 Físico + 0.30 Mental + 0.20 Espiritual + 0.15 Social)
+    let iviAnimFrame = null;
+    function computeIVI() {
+        const fisico = +document.getElementById('sliderFisico').value;
+        const mental = +document.getElementById('sliderMental').value;
+        const espiritual = +document.getElementById('sliderEspiritual').value;
+        const social = +document.getElementById('sliderSocial').value;
+        document.getElementById('valFisico').textContent = fisico;
+        document.getElementById('valMental').textContent = mental;
+        document.getElementById('valEspiritual').textContent = espiritual;
+        document.getElementById('valSocial').textContent = social;
+        const score = Math.round(0.35 * fisico + 0.30 * mental + 0.20 * espiritual + 0.15 * social);
+        const band = document.getElementById('iviBand');
+        let bandLabel = 'BAIXO';
+        if (score >= 80) bandLabel = 'ÓTIMO';
+        else if (score >= 60) bandLabel = 'BOM';
+        else if (score >= 40) bandLabel = 'ATENÇÃO';
+        band.textContent = 'iVi · ' + bandLabel;
+        animateIVITo(score);
+    }
+    function animateIVITo(target) {
+        const arc = document.getElementById('iviArc');
+        const num = document.getElementById('iviNumber');
+        const C = 2 * Math.PI * 80;
+        const current = +num.textContent || 0;
+        if (iviAnimFrame) cancelAnimationFrame(iviAnimFrame);
+        const start = performance.now();
+        const duration = 500;
+        function tick(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            const val = Math.round(current + (target - current) * ease);
+            num.textContent = val;
+            arc.style.strokeDashoffset = C - (C * val / 100);
+            if (t < 1) iviAnimFrame = requestAnimationFrame(tick);
+        }
+        iviAnimFrame = requestAnimationFrame(tick);
+    }
     const iviObs = new IntersectionObserver((entries) => {
         entries.forEach(e => {
             if (!e.isIntersecting) return;
             iviObs.unobserve(e.target);
-            animateIVI(74);
+            computeIVI();
         });
     }, { threshold: 0.4 });
     iviObs.observe(document.getElementById('iviCircle'));
-
-    function animateIVI(target) {
-        const arc = document.getElementById('iviArc');
-        const num = document.getElementById('iviNumber');
-        const C = 2 * Math.PI * 80;
-        const start = performance.now();
-        const duration = 1600;
-        function tick(now) {
-            const t = Math.min((now - start) / duration, 1);
-            const ease = 1 - Math.pow(1 - t, 3);
-            const val = Math.round(target * ease);
-            num.textContent = val;
-            arc.style.strokeDashoffset = C - (C * val / 100);
-            if (t < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-    }
 
     // ── PRESENÇA GLOBAL — skins por país ──
     const DIM_COLOR = { fisico:'var(--somatica)', mental:'var(--psicologica)', espiritual:'var(--existencial)', social:'var(--social)' };
