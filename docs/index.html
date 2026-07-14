@@ -296,6 +296,12 @@
         .country-foot { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; padding-top:1.25rem; border-top:1px solid var(--border); }
         .privacy-badge { font-size:0.78rem; font-weight:600; color:var(--text); background:var(--bg); padding:0.4rem 0.9rem; border-radius:100px; }
         .country-fonte { font-size:0.7rem; color:var(--text-muted); font-style:italic; }
+        .country-cta {
+            display:inline-flex; align-items:center; gap:0.6rem; background:var(--primary); color:#fff;
+            font-size:0.85rem; font-weight:700; padding:0.7rem 1.4rem; border-radius:10px; border:0;
+            cursor:pointer; font-family:inherit; transition:opacity 0.2s;
+        }
+        .country-cta:hover { opacity:0.9; }
 
         /* ── WAITLIST ── */
         .waitlist-section { padding:7rem 2.5rem; max-width:680px; margin:0 auto; text-align:center; }
@@ -851,65 +857,68 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- WAITLIST -->
 <div id="waitlist" class="waitlist-section">
     <div class="fade">
-        <div class="section-label">Turma fundadora</div>
-        <h2 class="section-title">Seja um Beta Fundador.</h2>
-        <p class="section-desc" style="margin:0 auto">AquariOS já roda ao vivo em 6 países. Beta Fundador testa antes de todo mundo, ajuda a moldar o produto e fica com freemium para sempre — mais upgrades de tier conforme o AquariOS cresce. Não é lista de espera — é convite.</p>
+        <div class="section-label" id="wlLabel">Turma fundadora</div>
+        <h2 class="section-title" id="wlTitle">Seja um Beta Fundador.</h2>
+        <p class="section-desc" id="wlDesc" style="margin:0 auto">AquariOS já roda ao vivo em 6 países. Beta Fundador testa antes de todo mundo, ajuda a moldar o produto e fica com freemium para sempre — mais upgrades de tier conforme o AquariOS cresce. Não é lista de espera — é convite.</p>
     </div>
     <!-- Waitlist via FormSubmit → contato@podiumtec.com.br (ImprovMX→Gmail). Sem conta externa.
-         1ª submissão dispara e-mail de ativação (1 clique do fundador). Corrigido 06/Jul — antes era placeholder Formspree que perdia todo lead. -->
+         1ª submissão dispara e-mail de ativação (1 clique do fundador). Corrigido 06/Jul — antes era placeholder Formspree que perdia todo lead.
+         Campo `pais` oculto (14/Jul): setado por localizeWaitlist() quando o card do país é aberto —
+         é o que permite o /betas atribuir país real ao lead em vez de assumir BR por padrão. -->
     <form class="waitlist-form fade fade-d1" action="https://formsubmit.co/contato@podiumtec.com.br" method="POST">
         <input type="hidden" name="_subject" value="🌊 Novo lead — waitlist AquariOS">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="pais" id="paisField" value="br">
         <!-- Etapa 1: Perfil -->
         <div class="profile-step">
-            <div class="profile-step-label">Como você se relaciona com o AquariOS?</div>
+            <div class="profile-step-label" id="wlProfileLabel">Como você se relaciona com o AquariOS?</div>
             <div class="profile-cards">
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="usuario" required>
                     <div class="pcard-inner">
                         <div class="pcard-icon">🏃</div>
-                        <div class="pcard-label">Usuário</div>
-                        <div class="pcard-desc">Quero cuidar da minha saúde</div>
+                        <div class="pcard-label" id="pc-usuario-label">Usuário</div>
+                        <div class="pcard-desc" id="pc-usuario-desc">Quero cuidar da minha saúde</div>
                     </div>
                 </label>
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="profissional">
                     <div class="pcard-inner">
                         <div class="pcard-icon">🩺</div>
-                        <div class="pcard-label">Profissional</div>
-                        <div class="pcard-desc">Saúde ou terapia</div>
+                        <div class="pcard-label" id="pc-profissional-label">Profissional</div>
+                        <div class="pcard-desc" id="pc-profissional-desc">Saúde ou terapia</div>
                     </div>
                 </label>
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="empresa">
                     <div class="pcard-inner">
                         <div class="pcard-icon">🏢</div>
-                        <div class="pcard-label">Empresa</div>
-                        <div class="pcard-desc">RH ou benefícios</div>
+                        <div class="pcard-label" id="pc-empresa-label">Empresa</div>
+                        <div class="pcard-desc" id="pc-empresa-desc">RH ou benefícios</div>
                     </div>
                 </label>
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="investidor">
                     <div class="pcard-inner">
                         <div class="pcard-icon">📈</div>
-                        <div class="pcard-label">Investidor</div>
-                        <div class="pcard-desc">Oportunidade de mercado</div>
+                        <div class="pcard-label" id="pc-investidor-label">Investidor</div>
+                        <div class="pcard-desc" id="pc-investidor-desc">Oportunidade de mercado</div>
                     </div>
                 </label>
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="dev">
                     <div class="pcard-inner">
                         <div class="pcard-icon">⌨️</div>
-                        <div class="pcard-label">Dev</div>
-                        <div class="pcard-desc">Quero integrar ou contribuir</div>
+                        <div class="pcard-label" id="pc-dev-label">Dev</div>
+                        <div class="pcard-desc" id="pc-dev-desc">Quero integrar ou contribuir</div>
                     </div>
                 </label>
                 <label class="profile-card">
                     <input type="radio" name="perfil" value="parceiro">
                     <div class="pcard-inner">
                         <div class="pcard-icon">🤝</div>
-                        <div class="pcard-label">Parceiro</div>
-                        <div class="pcard-desc">Clínica, lab ou plano</div>
+                        <div class="pcard-label" id="pc-parceiro-label">Parceiro</div>
+                        <div class="pcard-desc" id="pc-parceiro-desc">Clínica, lab ou plano</div>
                     </div>
                 </label>
             </div>
@@ -917,16 +926,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- Etapa 2: Dados -->
         <div class="form-row">
             <div class="form-group">
-                <label for="nome">Nome</label>
+                <label for="nome" id="wlNomeLabel">Nome</label>
                 <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
             </div>
             <div class="form-group">
-                <label for="email">E-mail</label>
+                <label for="email" id="wlEmailLabel">E-mail</label>
                 <input type="email" id="email" name="email" placeholder="seu@email.com" required>
             </div>
         </div>
-        <button type="submit" class="form-submit">Quero entrar na lista →</button>
-        <p class="form-note">Sem spam. Sem venda de dados. Você pode sair quando quiser.</p>
+        <button type="submit" class="form-submit" id="wlSubmit">Quero entrar na lista →</button>
+        <p class="form-note" id="wlNote">Sem spam. Sem venda de dados. Você pode sair quando quiser.</p>
     </form>
 </div>
 
@@ -1134,10 +1143,90 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             texto:'Millones de familias venezolanas viven hoy separadas por la diáspora. El AquariOS mide la dimensión Social — el vínculo que la distancia no debería romper — y está disponible gratis, sin tarjeta, para quien más lo necesita ahora.',
             fonte:'' },
     };
+    // ── WAITLIST i18n — cada card de país direciona para a própria experiência
+    // (achado 14/Jul: os cards só trocavam um texto informativo e não levavam a
+    // lugar nenhum; o form ficava fixo em pt-BR sem nem capturar o país do lead,
+    // quebrando o mix do /betas). 1 conta Instagram publica os 6 países (contas
+    // sociais por país seguem pendência do fundador) — então o roteamento por
+    // país vive aqui no site (+ DMs/WhatsApp/imprensa), não no link da bio.
+    const COUNTRY_LANG = { br:'pt-br', pt:'pt-pt', us:'en', ng:'en', pe:'es', ve:'es' };
+    const FORM_I18N = {
+      'pt-br': {
+        label:'Turma fundadora', title:'Seja um Beta Fundador.',
+        desc:'AquariOS já roda ao vivo em 6 países. Beta Fundador testa antes de todo mundo, ajuda a moldar o produto e fica com freemium para sempre — mais upgrades de tier conforme o AquariOS cresce. Não é lista de espera — é convite.',
+        profileLabel:'Como você se relaciona com o AquariOS?',
+        roles:{ usuario:['Usuário','Quero cuidar da minha saúde'], profissional:['Profissional','Saúde ou terapia'],
+                empresa:['Empresa','RH ou benefícios'], investidor:['Investidor','Oportunidade de mercado'],
+                dev:['Dev','Quero integrar ou contribuir'], parceiro:['Parceiro','Clínica, lab ou plano'] },
+        nome:'Nome', nomePh:'Seu nome', email:'E-mail', emailPh:'seu@email.com',
+        submit:'Quero entrar na lista →', note:'Sem spam. Sem venda de dados. Você pode sair quando quiser.',
+        cta:'Quero ser Beta Fundador →',
+      },
+      'pt-pt': {
+        label:'Turma fundadora', title:'Torna-te Beta Fundador.',
+        desc:'O AquariOS já funciona ao vivo em 6 países. O Beta Fundador testa antes de todos, ajuda a moldar o produto e fica com o freemium para sempre — mais upgrades de tier conforme o AquariOS cresce. Não é lista de espera — é convite.',
+        profileLabel:'Como te relacionas com o AquariOS?',
+        roles:{ usuario:['Utilizador','Quero cuidar da minha saúde'], profissional:['Profissional','Saúde ou terapia'],
+                empresa:['Empresa','RH ou benefícios'], investidor:['Investidor','Oportunidade de mercado'],
+                dev:['Dev','Quero integrar ou contribuir'], parceiro:['Parceiro','Clínica, laboratório ou seguro'] },
+        nome:'Nome', nomePh:'O teu nome', email:'E-mail', emailPh:'oteu@email.com',
+        submit:'Quero entrar na lista →', note:'Sem spam. Sem venda de dados. Sais quando quiseres.',
+        cta:'Quero ser Beta Fundador →',
+      },
+      en: {
+        label:'Founding class', title:'Become a Founding Beta.',
+        desc:"AquariOS is already live in 6 countries. Founding Beta testers get in before everyone else, help shape the product, and keep the freemium tier forever — plus tier upgrades as AquariOS grows. It's not a waitlist — it's an invitation.",
+        profileLabel:'How do you relate to AquariOS?',
+        roles:{ usuario:['User','I want to care for my health'], profissional:['Professional','Health or therapy'],
+                empresa:['Company','HR or benefits'], investidor:['Investor','Market opportunity'],
+                dev:['Dev','I want to integrate or contribute'], parceiro:['Partner','Clinic, lab or plan'] },
+        nome:'Name', nomePh:'Your name', email:'Email', emailPh:'you@email.com',
+        submit:'I want in →', note:'No spam. No selling your data. Leave whenever you want.',
+        cta:'Join Founding Beta →',
+      },
+      es: {
+        label:'Clase fundadora', title:'Sé un Beta Fundador.',
+        desc:'AquariOS ya funciona en vivo en 6 países. Beta Fundador prueba antes que todos, ayuda a moldear el producto y se queda con el freemium para siempre — más upgrades de tier mientras AquariOS crece. No es lista de espera — es invitación.',
+        profileLabel:'¿Cómo te relacionas con AquariOS?',
+        roles:{ usuario:['Usuario','Quiero cuidar mi salud'], profissional:['Profesional','Salud o terapia'],
+                empresa:['Empresa','RR. HH. o beneficios'], investidor:['Inversor','Oportunidad de mercado'],
+                dev:['Dev','Quiero integrar o contribuir'], parceiro:['Socio','Clínica, laboratorio o seguro'] },
+        nome:'Nombre', nomePh:'Tu nombre', email:'Correo', emailPh:'tu@correo.com',
+        submit:'Quiero entrar →', note:'Sin spam. Sin venta de datos. Sales cuando quieras.',
+        cta:'Quiero ser Beta Fundador →',
+      },
+    };
+
+    function localizeWaitlist(code) {
+        const t = FORM_I18N[COUNTRY_LANG[code] || 'pt-br'];
+        document.getElementById('wlLabel').textContent = t.label;
+        document.getElementById('wlTitle').textContent = t.title;
+        document.getElementById('wlDesc').textContent = t.desc;
+        document.getElementById('wlProfileLabel').textContent = t.profileLabel;
+        Object.entries(t.roles).forEach(([role, [label, desc]]) => {
+            document.getElementById('pc-' + role + '-label').textContent = label;
+            document.getElementById('pc-' + role + '-desc').textContent = desc;
+        });
+        document.getElementById('wlNomeLabel').textContent = t.nome;
+        document.getElementById('nome').placeholder = t.nomePh;
+        document.getElementById('wlEmailLabel').textContent = t.email;
+        document.getElementById('email').placeholder = t.emailPh;
+        document.getElementById('wlSubmit').textContent = t.submit;
+        document.getElementById('wlNote').textContent = t.note;
+        document.getElementById('paisField').value = code;
+    }
+
+    function goToWaitlist(code) {
+        showCountry(code);
+        history.replaceState(null, '', '?pais=' + code + '#waitlist');
+        document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+    }
+
     function showCountry(code){
         const c = COUNTRY_SKINS[code];
         document.querySelectorAll('.country-tab').forEach(b => b.classList.toggle('active', b.dataset.country === code));
         const fonteHtml = c.fonte ? `<span class="country-fonte">${c.fonte}</span>` : '';
+        const cta = FORM_I18N[COUNTRY_LANG[code] || 'pt-br'].cta;
         document.getElementById('countryPanel').innerHTML = `
             <div class="country-head">
                 <div class="country-flag">${c.flag}</div>
@@ -1151,9 +1240,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="country-foot">
                 <span class="privacy-badge">🔒 ${c.regime}</span>
                 ${fonteHtml}
+            </div>
+            <div style="margin-top:1.25rem">
+                <button type="button" class="country-cta" onclick="goToWaitlist('${code}')">${cta}</button>
             </div>`;
+        localizeWaitlist(code);
     }
-    showCountry('br');
+    {
+        const paisUrl = new URLSearchParams(window.location.search).get('pais');
+        showCountry(COUNTRY_SKINS[paisUrl] ? paisUrl : 'br');
+    }
 
     // ── DETALHE DOS MÓDULOS / AGENTES (cada card leva a um lugar) ──
     const DETAILS = {
