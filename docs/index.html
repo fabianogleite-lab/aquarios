@@ -8,7 +8,34 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-KVWTTDFSF6');
+  // Google Ads — frente "Google" do patrocinado (15/Jul/2026). SUBSTITUIR AW-XXXXXXXXX
+  // pelo ID de conversão real assim que a conta Google Ads existir (Ferramentas →
+  // Conversões → Nova ação de conversão → Site → copia o "AW-.../ID de conversão").
+  // O evento de conversão em si (Lead) é disparado em obrigado.html, não aqui.
+  gtag('config', 'AW-XXXXXXXXX');
 </script>
+
+<!-- Meta Pixel — frente "Meta" do patrocinado (Instagram + Facebook + WhatsApp Ads
+     compartilham este mesmo Pixel/conta de anúncios, 15/Jul/2026). SUBSTITUIR
+     SEU_PIXEL_ID pelo ID real assim que o Pixel existir (Meta Events Manager →
+     Conectar fontes de dados → Web → Pixel → copiar o ID numérico).
+     PageView aqui = toda página; o evento Lead fica só em obrigado.html
+     (dispara só em cadastro de verdade, não em qualquer clique). -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', 'SEU_PIXEL_ID');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=SEU_PIXEL_ID&ev=PageView&noscript=1"
+/></noscript>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AquariOS — Sistema Operacional Pessoal</title>
@@ -868,6 +895,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <form class="waitlist-form fade fade-d1" action="https://formsubmit.co/contato@podiumtec.com.br" method="POST">
         <input type="hidden" name="_subject" value="🌊 Novo lead — waitlist AquariOS">
         <input type="hidden" name="_captcha" value="false">
+        <!-- Redirect pra obrigado.html (15/Jul/2026): é lá que o Pixel do Meta e o
+             Google Ads disparam o evento de conversão real — só depois do
+             FormSubmit confirmar o envio, nunca antes (evita contar clique como
+             cadastro). -->
+        <input type="hidden" name="_next" value="https://podiumtec.com.br/obrigado.html">
         <input type="hidden" name="pais" id="paisField" value="br">
         <!-- Etapa 1: Perfil -->
         <div class="profile-step">
