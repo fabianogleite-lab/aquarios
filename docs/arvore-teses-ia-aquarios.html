@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6 Teses de IA × AquariOS</title>
+<style>
+  :root{
+    --bg:#eff2f0;
+    --bg-elevated:#ffffff;
+    --ink:#182420;
+    --ink-muted:#4b5b56;
+    --rule:#d8ded9;
+    --accent:#1f6e82;
+    --accent-ink:#ffffff;
+    --state-have-bg:#e3f1e7; --state-have-fg:#1f6b3f;
+    --state-plan-bg:#f7ecd9; --state-plan-fg:#8a611f;
+    --state-add-bg:#f0e6f3;  --state-add-fg:#6b3e85;
+    --shadow: 0 1px 2px rgba(24,36,32,.06), 0 6px 20px rgba(24,36,32,.05);
+
+    --font-display: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --font-body: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#11161a;
+      --bg-elevated:#171d22;
+      --ink:#e7ece9;
+      --ink-muted:#9aa8a3;
+      --rule:#2a3339;
+      --accent:#5cc0d4;
+      --accent-ink:#0b1416;
+      --state-have-bg:#163326; --state-have-fg:#6fcb94;
+      --state-plan-bg:#2e260f; --state-plan-fg:#e0b563;
+      --state-add-bg:#2a1f31;  --state-add-fg:#cb9bde;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#11161a; --bg-elevated:#171d22; --ink:#e7ece9; --ink-muted:#9aa8a3; --rule:#2a3339;
+    --accent:#5cc0d4; --accent-ink:#0b1416;
+    --state-have-bg:#163326; --state-have-fg:#6fcb94;
+    --state-plan-bg:#2e260f; --state-plan-fg:#e0b563;
+    --state-add-bg:#2a1f31;  --state-add-fg:#cb9bde;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"]{
+    --bg:#eff2f0; --bg-elevated:#ffffff; --ink:#182420; --ink-muted:#4b5b56; --rule:#d8ded9;
+    --accent:#1f6e82; --accent-ink:#ffffff;
+    --state-have-bg:#e3f1e7; --state-have-fg:#1f6b3f;
+    --state-plan-bg:#f7ecd9; --state-plan-fg:#8a611f;
+    --state-add-bg:#f0e6f3;  --state-add-fg:#6b3e85;
+    --shadow: 0 1px 2px rgba(24,36,32,.06), 0 6px 20px rgba(24,36,32,.05);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent);}
+  ::selection{ background:var(--accent); color:var(--accent-ink); }
+
+  .wrap{
+    max-width:800px;
+    margin:0 auto;
+    padding:3.5rem 1.5rem 6rem;
+  }
+
+  header.doc-head{
+    margin-bottom:2.75rem;
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+    display:inline-block;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(1.9rem, 1.55rem + 1.4vw, 2.7rem);
+    letter-spacing:-.01em;
+    text-wrap:balance;
+    margin:.5rem 0 .6rem;
+  }
+  .lede{
+    max-width:62ch;
+    color:var(--ink-muted);
+    font-size:1.05rem;
+  }
+
+  .legend{
+    margin-top:1.75rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:.6rem;
+    padding-top:1.5rem;
+    border-top:1px solid var(--rule);
+  }
+  .chip{
+    font-family:var(--font-mono);
+    font-size:.74rem;
+    letter-spacing:.03em;
+    padding:.3rem .65rem;
+    border-radius:99px;
+    display:inline-flex;
+    align-items:center;
+    gap:.4rem;
+  }
+  .chip::before{ content:""; width:7px; height:7px; border-radius:50%; }
+  .chip.have{ background:var(--state-have-bg); color:var(--state-have-fg); }
+  .chip.have::before{ background:var(--state-have-fg); }
+  .chip.plan{ background:var(--state-plan-bg); color:var(--state-plan-fg); }
+  .chip.plan::before{ background:var(--state-plan-fg); }
+  .chip.add{ background:var(--state-add-bg); color:var(--state-add-fg); }
+  .chip.add::before{ background:var(--state-add-fg); }
+
+  /* tree spine */
+  ol.tree{
+    list-style:none;
+    margin:0; padding:0;
+    position:relative;
+  }
+  ol.tree::before{
+    content:"";
+    position:absolute;
+    left:15px; top:8px; bottom:8px;
+    width:2px;
+    background:var(--rule);
+  }
+  .tese{
+    position:relative;
+    padding-left:2.6rem;
+    margin-bottom:2.25rem;
+  }
+  .tese::before{
+    content:"";
+    position:absolute;
+    left:9px; top:10px;
+    width:14px; height:14px;
+    border-radius:50%;
+    background:var(--bg-elevated);
+    border:2px solid var(--rule);
+    transition:border-color .2s ease, background .2s ease;
+    z-index:1;
+  }
+  .tese.chosen::before{
+    border-color:var(--accent);
+    background:var(--accent);
+  }
+
+  .card{
+    background:var(--bg-elevated);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:1.6rem 1.7rem 1.5rem;
+    box-shadow:var(--shadow);
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .tese.chosen .card{
+    border-color:var(--accent);
+  }
+
+  .card-head{
+    display:flex;
+    align-items:baseline;
+    gap:.6rem;
+    flex-wrap:wrap;
+  }
+  .tag-num{
+    font-family:var(--font-mono);
+    font-size:.72rem;
+    color:var(--ink-muted);
+    letter-spacing:.05em;
+  }
+  h2{
+    font-family:var(--font-display);
+    font-size:1.32rem;
+    font-weight:600;
+    margin:0;
+    text-wrap:balance;
+  }
+  .desc{
+    color:var(--ink-muted);
+    font-size:.97rem;
+    margin:.35rem 0 1.1rem;
+    max-width:60ch;
+  }
+
+  h3.section-label{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin:1.15rem 0 .55rem;
+  }
+
+  ul.items{
+    margin:0 0 0;
+    padding-left:1.1rem;
+  }
+  ul.items > li{ margin-bottom:.55rem; font-size:.96rem; }
+  ul.items > li:last-child{ margin-bottom:0; }
+  ul.items b{ font-weight:600; }
+  ul.items ul{ margin-top:.3rem; padding-left:1.1rem; }
+  ul.items ul li{ margin-bottom:.3rem; font-size:.94rem; color:var(--ink-muted); }
+
+  .classify{
+    display:grid;
+    gap:.7rem;
+    margin-top:.3rem;
+  }
+  .row{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:.35rem .8rem;
+    align-items:start;
+    padding:.7rem .8rem;
+    border-radius:10px;
+    background:var(--bg);
+  }
+  .row .tag{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:.2rem .5rem;
+    border-radius:99px;
+    white-space:nowrap;
+    align-self:start;
+  }
+  .row.have .tag{ background:var(--state-have-bg); color:var(--state-have-fg); }
+  .row.plan .tag{ background:var(--state-plan-bg); color:var(--state-plan-fg); }
+  .row.add .tag{  background:var(--state-add-bg);  color:var(--state-add-fg); }
+  .row p{ margin:0; font-size:.93rem; grid-column:1 / -1; }
+  .row .tag{ grid-column:1; }
+
+  @media (min-width: 560px){
+    .row{ grid-template-columns:7.5rem 1fr; }
+    .row .tag{ grid-column:1; }
+    .row p{ grid-column:2; }
+  }
+
+  .pick{
+    margin-top:1.2rem;
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+    flex-wrap:wrap;
+  }
+  button.choose{
+    font-family:var(--font-mono);
+    font-size:.78rem;
+    letter-spacing:.03em;
+    background:transparent;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    padding:.5rem .9rem;
+    border-radius:99px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  button.choose:hover{ background:var(--accent); color:var(--accent-ink); }
+  button.choose:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  button.choose[aria-pressed="true"]{
+    background:var(--accent);
+    color:var(--accent-ink);
+  }
+  .pick-note{
+    font-size:.82rem;
+    color:var(--ink-muted);
+  }
+
+  footer.summary{
+    position:sticky;
+    bottom:0;
+    margin-top:2.5rem;
+    background:var(--bg-elevated);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    padding:1.1rem 1.4rem;
+    box-shadow:var(--shadow);
+  }
+  footer.summary .label{
+    font-family:var(--font-mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+  }
+  footer.summary .value{
+    font-family:var(--font-display);
+    font-size:1.15rem;
+    margin-top:.2rem;
+  }
+  footer.summary .value.empty{ color:var(--ink-muted); font-family:var(--font-body); font-size:.95rem; }
+  footer.summary .clear{
+    font-family:var(--font-mono);
+    font-size:.76rem;
+    color:var(--ink-muted);
+    background:none;
+    border:none;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:0;
+    margin-top:.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="doc-head">
+    <div class="eyebrow">AquariOS — Leitura Estratégica</div>
+    <h1>6 Teses de Negócio em IA × o que o AquariOS já é</h1>
+    <p class="lede">Réplica da árvore original com todos os itens, cruzada com o estado real do repositório: o que já está construído, o que consta no roadmap, e onde há espaço para acrescentar ou mudar de rumo. Cada tese pode ser marcada como prioridade — a escolha é sua.</p>
+    <div class="legend">
+      <span class="chip have">Já tem</span>
+      <span class="chip plan">Previsto</span>
+      <span class="chip add">Pode acrescentar / modificar</span>
+    </div>
+  </header>
+
+  <main>
+    <ol class="tree" id="tree">
+
+      <li class="tese" data-id="servicos">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">01</span>
+            <h2>Serviços AI-Native</h2>
+          </div>
+          <p class="desc">Empresas de serviço que usam IA como backbone operacional — vendem resultado e capacidade humana+IA, não apenas licenças de software.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Por que funciona</b> — mercado de serviços muito maior que SaaS (escopo e ticket médio); reduz churn e aumenta preço por resultado.</li>
+            <li><b>Como operacionalizar</b>
+              <ul>
+                <li>Automação interna: processos manuais viram pipelines de IA, entrega com menos gente e mais margem.</li>
+                <li>Oferta: vender o serviço ao cliente final, embalando a automação como vantagem competitiva.</li>
+              </ul>
+            </li>
+            <li><b>Exemplos</b> — contabilidade automatizada como serviço; due diligence / M&amp;A automatizado.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p><code>business-agent/</code> já roda sob a razão social real da C&amp;L Gestora de Recursos, com <code>campaign_engine.py</code>, <code>lead_capture.py</code> e <code>whatsapp_voice_bridge.py</code> automatizando aquisição de clientes para a ODONTOLAR.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>Tier Enterprise do White Paper — dashboard de acompanhamento de clientes, API e white-label para coaches, terapeutas e organizações.</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>Tratar como unidade de negócio própria — growth-as-a-service para clínicas de saúde/bem-estar, cobrando por resultado (agendamento, lead) em vez de fee fixo.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="Serviços AI-Native" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tese" data-id="brain">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">02</span>
+            <h2>Company Brain</h2>
+          </div>
+          <p class="desc">Single source of truth que agrega todo o contexto operacional para habilitar agentes IA com conhecimento do negócio.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Componentes</b> — ingestão e indexação de documentos, políticas e histórico; prompts/skills que traduzem conhecimento em conectores invocáveis.</li>
+            <li><b>Benefícios estratégicos</b> — torna-se System of Record (alto switching cost), vantagem defensável, automação contextualizada.</li>
+            <li><b>Referências</b> — Second Brain (Carpentry) e Gbrain (YC) como modelos de pipeline de conhecimento.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p>iVi Engine + Data Lake (ETL/ELT, S3, DuckDB) oculto + FAQ engine (42 FAQs, <code>alexandrios.ts</code>) — mas é um "Personal Brain" do usuário, não corporativo.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>V2 ("Contexto Inteligente", S37–S45) ativa analytics cross-módulo e contexto histórico; CerberOS como camada de governança de dados.</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>Generalizar a ingestão — hoje pessoal — para um Company Brain B2B: dar aos clientes do <code>business-agent</code> um agente com contexto real da própria clínica/empresa.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="Company Brain" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tese" data-id="hedge">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">03</span>
+            <h2>Hedge Funds AI-Native</h2>
+          </div>
+          <p class="desc">Fundos que criam estratégias que só existem graças ao processamento em escala e inferência de IA.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Por que é diferencial</b> — permite estratégias inéditas cruzando earning calls, Glassdoor, LinkedIn e sinais de mercado.</li>
+            <li><b>Operação/arquitetura</b> — ingestão contínua → agentes analíticos que sintetizam insights → execução de trades via APIs de corretagem.</li>
+            <li><b>Ferramentas</b> — Alpaca, Trading Agents, Dexter.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p>Nada operacional — mas a entidade legal já é formalmente uma "Gestora de Recursos" (o nome está no CNPJ), hoje usada só como gateway de ingestão de telemetria.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>V4 (2028–2030) — "IA financeira contextual": robo-advisor, score de crédito contextual, dentro do HermeOS.</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>A tese mais distante do core wellness; não priorizar agora — mas a casca jurídica já pronta reduz o custo de entrada se decidirem antecipar.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="Hedge Funds AI-Native" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tese" data-id="saas">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">04</span>
+            <h2>SaaS Challengers</h2>
+          </div>
+          <p class="desc">Construir challengers ao SaaS legado explorando preço mais baixo ou reimaginação AI-native do produto.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Motivo</b> — crescimento de receita SaaS em queda, múltiplos comprimidos, custo de construir software caiu.</li>
+            <li><b>Estratégias</b>
+              <ul>
+                <li>Versão barata do incumbente.</li>
+                <li>Produto AI-native com capacidades novas.</li>
+                <li>Open-source + serviços/hosting.</li>
+              </ul>
+            </li>
+            <li><b>Exemplo</b> — Linear vs Jira.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p><code>business-agent/</code> (Python/FastAPI auto-hospedado) tecnicamente já poderia competir com HubSpot/Zapier para PMEs de saúde — mas não é posicionado assim.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>Nada explícito no roadmap atual.</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>Decidir se o <code>business-agent</code> é ferramenta interna ou produto open-core + hosting para o nicho saúde/bem-estar — hoje é indefinido.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="SaaS Challengers" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tese" data-id="agentes">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">05</span>
+            <h2>Software para Agentes</h2>
+          </div>
+          <p class="desc">Produtos cuja UX não é humano-centrada, mas agent-centric — documentação programática, skills, CLIs, APIs e contratos machine-to-machine.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Diferença de design</b> — humanos querem interface e tutoriais; agentes querem docs, skills, endpoints e SLAs.</li>
+            <li><b>Oportunidades</b> — reimaginar CRM, analytics e marketing para consumo por agentes; SDKs/standards de integração.</li>
+            <li><b>Exemplo</b> — agente que opera plataformas sociais sem interação humana direta.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p>Edge Functions <code>/engine</code> (6 actions) e <code>/chat</code> já são endpoints programáticos — mas pensados para o app mobile, não para agentes de terceiros.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>v7.0 "Plataforma" — API aberta para integradores e SDK para devs; V5 fala em IA multiagente distribuída (cada módulo vira um agente especializado).</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>Antecipar uma camada de skills/tools (estilo MCP) para o ProteOS e o <code>business-agent</code>, permitindo que agentes dos próprios clientes controlem campanhas via API em vez de UI.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="Software para Agentes" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+      <li class="tese" data-id="agencias">
+        <div class="card">
+          <div class="card-head">
+            <span class="tag-num">06</span>
+            <h2>Agências AI-Native</h2>
+          </div>
+          <p class="desc">Firmas de serviço (marketing, growth, consultoria) entregues por times híbridos humano+IA, escaláveis como software mas faturadas como serviço.</p>
+
+          <h3 class="section-label">Itens da árvore</h3>
+          <ul class="items">
+            <li><b>Modelo</b> — margens de software com faturamento de serviço; cobrar por resultado, operar com equipes enxutas.</li>
+            <li><b>Por que escalam melhor</b> — expertise humana + automação permite cobrar prêmio e replicar processos para múltiplos clientes.</li>
+            <li><b>Exemplos</b> — conteúdo SEO+IA, campanhas automatizadas, transformação digital para saúde e clínicas odontológicas.</li>
+          </ul>
+
+          <h3 class="section-label">Classificação</h3>
+          <div class="classify">
+            <div class="row have"><span class="tag">Já tem</span><p>A tese mais madura do repositório: <code>campaign_engine.py</code> + <code>whatsapp_voice_bridge.py</code> + <code>voice_proxy.py</code> + <code>cerber_shield.py</code> entregando resultado real para a ODONTOLAR — o mesmo exemplo "clínica odontológica" da tese original.</p></div>
+            <div class="row plan"><span class="tag">Previsto</span><p>Nenhuma expansão documentada além do escopo atual (Meta + ODONTOLAR).</p></div>
+            <div class="row add"><span class="tag">Acrescentar</span><p>Empacotar e replicar o motor para outros clientes verticais (nutricionistas, terapeutas), com cross-sell natural: usuários B2C do app que são profissionais viram clientes da agência.</p></div>
+          </div>
+
+          <div class="pick">
+            <button class="choose" data-name="Agências AI-Native" aria-pressed="false">Priorizar esta tese</button>
+            <span class="pick-note"></span>
+          </div>
+        </div>
+      </li>
+
+    </ol>
+  </main>
+
+  <footer class="summary" id="summary">
+    <div class="label">Sua prioridade</div>
+    <div class="value empty" id="summary-value">Nenhuma tese escolhida ainda — clique em "Priorizar esta tese" em qualquer card.</div>
+    <button class="clear" id="clear-btn" hidden>Limpar escolha</button>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY = "aquarios-tese-escolha";
+  var buttons = Array.prototype.slice.call(document.querySelectorAll("button.choose"));
+  var summaryValue = document.getElementById("summary-value");
+  var clearBtn = document.getElementById("clear-btn");
+
+  function applySelection(id){
+    buttons.forEach(function(btn){
+      var li = btn.closest(".tese");
+      var isChosen = li.dataset.id === id;
+      btn.setAttribute("aria-pressed", isChosen ? "true" : "false");
+      li.classList.toggle("chosen", isChosen);
+    });
+    if(id){
+      var chosenBtn = buttons.find(function(b){ return b.closest(".tese").dataset.id === id; });
+      summaryValue.textContent = chosenBtn ? chosenBtn.dataset.name : "";
+      summaryValue.classList.remove("empty");
+      clearBtn.hidden = false;
+    } else {
+      summaryValue.textContent = "Nenhuma tese escolhida ainda — clique em \"Priorizar esta tese\" em qualquer card.";
+      summaryValue.classList.add("empty");
+      clearBtn.hidden = true;
+    }
+  }
+
+  buttons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var li = btn.closest(".tese");
+      var id = li.dataset.id;
+      var alreadyChosen = btn.getAttribute("aria-pressed") === "true";
+      var next = alreadyChosen ? "" : id;
+      try{ localStorage.setItem(KEY, next); }catch(e){}
+      applySelection(next);
+    });
+  });
+
+  clearBtn.addEventListener("click", function(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    applySelection("");
+  });
+
+  var saved = "";
+  try{ saved = localStorage.getItem(KEY) || ""; }catch(e){}
+  applySelection(saved);
+})();
+</script>
+</body>
+</html>
