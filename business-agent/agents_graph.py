@@ -1,7 +1,8 @@
 """
 business-agent/agents_graph.py
 Orquestração multiagente do ProteOS via LangGraph — loop de tool-calling
-entre "agentes" (hoje: 1 modelo + 2 ferramentas + 1 guarda de saída).
+entre "agentes" (hoje: 1 modelo + 1 ferramenta + 1 gate de autorização +
+1 guarda de saída).
 
 Contexto (ver conversa anterior): o AquariOS já tinha nomes reservados para
 uma arquitetura multiagente (ProteOS, AsclepiOS, CerberOS, SandeirOS...),
@@ -13,14 +14,21 @@ Este arquivo é o primeiro pedaço real dessa orquestração, em Python, porque
 Mapeamento do que existia → o que isso substitui/porta:
   mobile/services/alexandrios.ts (searchKB)     → tool `search_faq` abaixo
   mobile/services/asclepiOS.ts   (auditOutput)  → nó `audit` abaixo
+                                                    (autorização "essa tool
+                                                    pode ser chamada?")
   mobile/hooks/useIntentRouter.ts (heurística
     de Math.random() fingindo "system load")    → NÃO portado (era simulado,
                                                     não uma decisão real —
                                                     o roteamento aqui é feito
                                                     pelo próprio modelo via
                                                     tool-calling)
-  services/cerberos.ts (7 camadas, placeholder) → NÃO implementado aqui.
-    Continua não existindo. Não finja que existe.
+  services/cerberos.ts (7 camadas, placeholder) → nó `cerberos_gate` abaixo.
+    Continua NÃO sendo uma defesa de 7 camadas — é um escopo menor e real:
+    bloqueia a chamada de qualquer tool cujo módulo não esteja `active` em
+    shared/os_registry.json. É AUTORIZAÇÃO DE MÓDULO (roda ANTES da tool
+    executar), diferente do `audit` (que é SEGURANÇA DE CONTEÚDO e roda
+    DEPOIS que o modelo responde). Os dois são complementares, não a
+    mesma coisa.
 
 Uso:
     from agents_graph import reply
@@ -37,12 +45,12 @@ import re
 from typing import Optional
 
 from langchain_anthropic import ChatAnthropic
-from langchain_core.messages import SystemMessage
+from langchain_core.messages import SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import MessagesState
-from langgraph.prebuilt import ToolNode, tools_condition
+from langgraph.prebuilt import ToolNode
 
 logger = logging.getLogger("cl.agents_graph")
 
@@ -98,6 +106,36 @@ def search_faq(query: str) -> str:
 
 TOOLS = [search_faq]
 
+# ── CerberOS Gate — autorização de módulo (shared/os_registry.json) ─────────
+# Roda ANTES da tool executar. Não é o mesmo registry de UI de
+# mobile/config/modules-registry.ts (aquele descreve visibilidade de card
+# pro usuário); este descreve se existe lógica de backend real invocável
+# por um agente. Fail-closed: se QUALQUER tool_call da rodada não estiver
+# `active` no registry, a rodada inteira é bloqueada (nenhuma tool roda) e
+# o modelo recebe de volta uma explicação em vez do resultado da tool.
+_REGISTRY_PATH = pathlib.Path(__file__).resolve().parent.parent / "shared" / "os_registry.json"
+_registry_cache: Optional[dict] = None
+
+
+def _load_registry() -> dict:
+    global _registry_cache
+    if _registry_cache is None:
+        try:
+            data = json.loads(_REGISTRY_PATH.read_text(encoding="utf-8"))
+            _registry_cache = data.get("modules", {})
+        except Exception as exc:
+            logger.error("os_registry.json não carregado (%s): %s", _REGISTRY_PATH, exc)
+            _registry_cache = {}
+    return _registry_cache
+
+
+def _module_status(tool_name: str) -> str:
+    """Status de autorização para uma tool. Módulo ausente do registry é
+    tratado como 'coming_soon' (fail-closed) — nunca assume 'active' por
+    omissão."""
+    return _load_registry().get(tool_name, {}).get("status", "coming_soon")
+
+
 # ── Nó de auditoria — porta de asclepiOS.ts (BANNED_PHRASES) ────────────────
 # Roda DEPOIS do modelo responder, nunca antes. "Lei do silêncio": se
 # reprova, o graph não tenta reescrever sozinho (isso exigiria reabrir o
@@ -143,16 +181,60 @@ def _audit(state: State):
     return {"messages": []}
 
 
+def _cerberos_gate(state: State):
+    last = state["messages"][-1]
+    tool_calls = getattr(last, "tool_calls", None) or []
+
+    blocked = [c for c in tool_calls if _module_status(c["name"]) != "active"]
+    if not blocked:
+        return {}  # nada bloqueado — no-op, roteamento manda pra "tools"
+
+    blocked_names = {c["name"] for c in blocked}
+    logger.warning("CerberOS bloqueou tool_calls não autorizadas: %s", blocked_names)
+
+    # Fail-closed: gera ToolMessage pra CADA tool_call da rodada (não só a
+    # bloqueada) — o protocolo de tool-calling exige uma resposta por
+    # tool_use_id antes do modelo poder responder de novo.
+    results = []
+    for call in tool_calls:
+        if call["name"] in blocked_names:
+            mod = _load_registry().get(call["name"], {})
+            nome = mod.get("display_name", call["name"])
+            content = f"[CerberOS] Módulo '{nome}' está em construção (coming_soon) e não pode ser chamado ainda."
+        else:
+            content = "[CerberOS] Chamada não executada: outra tool na mesma rodada foi bloqueada."
+        results.append(ToolMessage(content=content, tool_call_id=call["id"]))
+
+    return {"messages": results}
+
+
+def _route_after_agent(state: State) -> str:
+    last = state["messages"][-1]
+    if getattr(last, "tool_calls", None):
+        return "cerberos_gate"
+    return "audit"
+
+
+def _route_after_gate(state: State) -> str:
+    # Se o gate acabou de anexar ToolMessages (bloqueio), a última mensagem
+    # deixa de ser o AIMessage com tool_calls — volta pro modelo responder
+    # em linguagem natural. Se não bloqueou nada (no-op), a última mensagem
+    # continua sendo o AIMessage original — segue pra execução real.
+    return "agent" if isinstance(state["messages"][-1], ToolMessage) else "tools"
+
+
 def build_graph(checkpointer=None):
     graph = StateGraph(State)
     graph.add_node("agent", _call_model)
+    graph.add_node("cerberos_gate", _cerberos_gate)
     graph.add_node("tools", ToolNode(TOOLS))
     graph.add_node("audit", _audit)
 
     graph.set_entry_point("agent")
-    # tools_condition: se a última mensagem do modelo tem tool_calls, vai
-    # para "tools"; senão, segue para "audit" (loop de tool-calling padrão).
-    graph.add_conditional_edges("agent", tools_condition, {"tools": "tools", END: "audit"})
+    # agent -> tem tool_calls? cerberos_gate autoriza antes de qualquer
+    # execução; sem tool_calls, vai direto pro audit de saída.
+    graph.add_conditional_edges("agent", _route_after_agent, {"cerberos_gate": "cerberos_gate", "audit": "audit"})
+    graph.add_conditional_edges("cerberos_gate", _route_after_gate, {"tools": "tools", "agent": "agent"})
     graph.add_edge("tools", "agent")  # resultado da ferramenta volta pro modelo
     graph.add_edge("audit", END)
 

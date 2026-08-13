@@ -1,0 +1,104 @@
+{
+  "_meta": {
+    "proposito": "Registry de tools invocáveis por agentes LLM — usado pelo gate CerberOS (business-agent/agents_graph.py). NÃO é o mesmo campo `status` de mobile/config/modules-registry.ts: aquele descreve visibilidade de card na UI pro usuário final; este descreve se existe LÓGICA DE BACKEND real que um agente pode chamar como tool. Um módulo pode estar 'active' na UI e 'coming_soon' aqui, se hoje só existe como tela/conteúdo estático sem função invocável — foi o caso encontrado em fitness/meditacao/longevidade/preventiva/sono/estresse/energia/nutricao ao auditar o repositório (nenhum tem service ou hook com lógica própria, só o card no registry).",
+    "convenção": "status: 'active' = pode virar tool hoje | 'gate' = é o próprio guardião, não é invocável | 'coming_soon' = sem lógica de backend ainda, CerberOS bloqueia se alguém tentar expor como tool",
+    "atualizado_em": "2026-08-13"
+  },
+  "modules": {
+    "search_faq": {
+      "display_name": "AlexandriOS (busca de FAQ)",
+      "status": "active",
+      "description": "Busca na base de FAQs — mobile/config/faqs.json, implementado em business-agent/agents_graph.py e mobile/services/alexandrios.ts"
+    },
+    "cerberos": {
+      "display_name": "CerberOS",
+      "status": "gate",
+      "description": "O próprio gate de autorização de módulo — não é invocável como tool"
+    },
+    "asclepios_audit": {
+      "display_name": "AsclepiOS Audit",
+      "status": "active",
+      "description": "Filtro de frases banidas na saída — não é tool, roda como guarda pós-modelo (nó `audit`)"
+    },
+    "asclepios_clinical": {
+      "display_name": "AsclepiOS Médico",
+      "status": "coming_soon",
+      "description": "Futuro agente médico com LLM próprio — sem código hoje"
+    },
+    "sandeiros": {
+      "display_name": "SandeirOS",
+      "status": "coming_soon",
+      "description": "Engine simbólica dos 22 arcanos — sem service invocável hoje"
+    },
+    "hermeos": {
+      "display_name": "HermeOS",
+      "status": "coming_soon",
+      "description": "Inteligência financeira pessoal — sem código hoje"
+    },
+    "eterios": {
+      "display_name": "EteriOS",
+      "status": "coming_soon",
+      "description": "Wearables e IoT — sem código hoje"
+    },
+    "ecumenicos": {
+      "display_name": "EcumenicOS",
+      "status": "coming_soon",
+      "description": "Sabedoria inter-religiosa — sem código hoje"
+    },
+    "panaceia": {
+      "display_name": "PanaceIA",
+      "status": "coming_soon",
+      "description": "Marketplace consciente — sem código hoje"
+    },
+    "aeropagos": {
+      "display_name": "AeropagOS",
+      "status": "coming_soon",
+      "description": "Gamificação por lotes — sem código hoje"
+    },
+    "beck_office": {
+      "display_name": "Beck Office",
+      "status": "coming_soon",
+      "description": "Plataforma B2B para clínicas — sem código hoje"
+    },
+    "preventiva": {
+      "display_name": "Preventiva",
+      "status": "coming_soon",
+      "description": "Card ativo na UI (modules-registry.ts), mas sem service invocável por agente"
+    },
+    "fitness": {
+      "display_name": "Fitness",
+      "status": "coming_soon",
+      "description": "Nenhuma linha de código além do card de registry — auditado em 13/08/2026"
+    },
+    "nutricao": {
+      "display_name": "Nutrição",
+      "status": "coming_soon",
+      "description": "Tela real com dados no Supabase (app/(app)/nutricao.tsx), mas sem function invocável por agente ainda"
+    },
+    "meditacao": {
+      "display_name": "Meditação",
+      "status": "coming_soon",
+      "description": "Nenhuma linha de código além do card de registry — auditado em 13/08/2026"
+    },
+    "sono": {
+      "display_name": "Sono",
+      "status": "coming_soon",
+      "description": "Só aparece como palavra-chave de matching em useIntentRouter.ts, sem lógica de módulo"
+    },
+    "estresse": {
+      "display_name": "Estresse",
+      "status": "coming_soon",
+      "description": "Só aparece como palavra-chave de matching em useCommunityRouter.ts, sem lógica de módulo"
+    },
+    "energia": {
+      "display_name": "Energia",
+      "status": "coming_soon",
+      "description": "Só aparece como palavra-chave de matching em useCommunityRouter.ts, sem lógica de módulo"
+    },
+    "longevidade": {
+      "display_name": "Longevidade",
+      "status": "coming_soon",
+      "description": "Nenhuma linha de código além do card de registry — auditado em 13/08/2026"
+    }
+  }
+}
