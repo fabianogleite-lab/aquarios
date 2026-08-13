@@ -7,6 +7,7 @@ uvicorn
 httpx
 pydantic
 python-dotenv
+python-multipart  # voice_proxy.py usa Form(...) — FastAPI exige isso
 
 # ProteOS (Anthropic) — SDK oficial, com prompt caching
 anthropic>=0.40.0
