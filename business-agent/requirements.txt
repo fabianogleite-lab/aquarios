@@ -1,0 +1,23 @@
+# business-agent/requirements.txt
+# Dependências reais do webhook Meta + ProteOS + bridge de voz (nao existia
+# arquivo antes; instalacao era manual via META_INTEGRATION_COMPLETE.md).
+
+fastapi
+uvicorn
+httpx
+pydantic
+python-dotenv
+
+# ProteOS (Anthropic) — SDK oficial, com prompt caching
+anthropic>=0.40.0
+
+# Persistência / leads / conversas
+supabase
+
+# instagram_poster.py
+pillow
+cairosvg
+
+# agents_graph.py — orquestração multiagente com loop de tool-calling
+langgraph>=0.2.0
+langchain-anthropic>=0.3.0

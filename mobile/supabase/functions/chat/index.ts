@@ -142,6 +142,48 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Prompt caching: o bloco estável (persona + voz cultural) é o mesmo para
+    // toda mensagem de uma persona/locale — vira um bloco de system cacheável.
+    // O contexto do usuário (HygeiOS) muda a cada envio, então fica FORA do
+    // bloco cacheado (senão invalidaria o cache a cada mensagem).
+    // Nota: claude-haiku-4-5 exige um prefixo minimo de ~4096 tokens para
+    // cachear — persona+cultural sozinhos ficam abaixo disso; o cache passa a
+    // valer conforme o historico da conversa cresce (breakpoint em messages,
+    // abaixo).
+    const stableSystem = (() => {
+      const base = PERSONAS[persona as keyof typeof PERSONAS];
+      const addendum = getCulturalAddendum(locale as string);
+      const cultural = addendum ? `\n\nVoz Cultural Ativa: ${addendum}` : '';
+      return `${base}${cultural}`;
+    })();
+
+    const systemBlocks: Array<Record<string, unknown>> = [
+      { type: "text", text: stableSystem, cache_control: { type: "ephemeral" } },
+    ];
+    if (userContext) {
+      systemBlocks.push({
+        type: "text",
+        text: `CONTEXTO ATUAL DO USUÁRIO (dados reais do HygeiOS — use para personalizar respostas, não invente dados fora deste contexto):\n${userContext}`,
+      });
+    }
+
+    // Cacheia o prefixo da conversa: marca o último bloco da penúltima
+    // mensagem (a última entrada do histórico, antes do turno novo do
+    // usuário). Cada requisição subsequente reaproveita esse prefixo.
+    const cachedMessages = Array.isArray(messages) && messages.length > 1
+      ? messages.map((m: any, i: number) => {
+          if (i !== messages.length - 2) return m;
+          const content = typeof m.content === "string"
+            ? [{ type: "text", text: m.content }]
+            : [...m.content];
+          content[content.length - 1] = {
+            ...content[content.length - 1],
+            cache_control: { type: "ephemeral" },
+          };
+          return { ...m, content };
+        })
+      : messages;
+
     const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -152,16 +194,8 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: "claude-haiku-4-5-20251001",
         max_tokens: 1024,
-        system: (() => {
-          const base = PERSONAS[persona as keyof typeof PERSONAS];
-          const addendum = getCulturalAddendum(locale as string);
-          const ctx = userContext
-            ? `\n\nCONTEXTO ATUAL DO USUÁRIO (dados reais do HygeiOS — use para personalizar respostas, não invente dados fora deste contexto):\n${userContext}`
-            : '';
-          const cultural = addendum ? `\n\nVoz Cultural Ativa: ${addendum}` : '';
-          return `${base}${cultural}${ctx}`;
-        })(),
-        messages,
+        system: systemBlocks,
+        messages: cachedMessages,
       }),
     });
 
@@ -184,6 +218,17 @@ Deno.serve(async (req) => {
 
     const data = await anthropicRes.json();
     const text = data.content?.[0]?.text ?? "";
+
+    // Observabilidade do cache (sem PII): confirma se o breakpoint está
+    // realmente sendo lido. cache_read_input_tokens = 0 em requisições
+    // repetidas indica um invalidador silencioso no prefixo.
+    if (data.usage) {
+      console.log('[cache]', {
+        cache_read: data.usage.cache_read_input_tokens ?? 0,
+        cache_write: data.usage.cache_creation_input_tokens ?? 0,
+        input: data.usage.input_tokens ?? 0,
+      });
+    }
 
     return new Response(
       JSON.stringify({ text }),

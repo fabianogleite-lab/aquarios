@@ -8,10 +8,12 @@ Run: uvicorn main:app --host 0.0.0.0 --port 8000
 import hashlib
 import hmac
 import json
+import logging
 import os
 from typing import Optional
 
 import httpx
+from anthropic import Anthropic, APIStatusError
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
@@ -21,6 +23,8 @@ from campaign_engine import engine as campaign_engine
 from cerber_shield import register_cerber
 from voice_proxy import register_voice
 
+logger = logging.getLogger("cl.proteos")
+
 app = FastAPI(title="AquariOS Meta Webhook")
 
 # Config
@@ -29,6 +33,9 @@ APP_SECRET = os.getenv("META_APP_SECRET", "")
 ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN", "")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+
+# Cliente único reaproveitado entre requests (conexões mantidas vivas).
+_anthropic = Anthropic(api_key=ANTHROPIC_API_KEY) if ANTHROPIC_API_KEY else None
 
 WA_API = f"https://graph.facebook.com/v22.0/{PHONE_NUMBER_ID}/messages"
 
@@ -81,28 +88,42 @@ def extract_message_text(payload: dict) -> Optional[str]:
 
 
 async def proteos_reply(user_message: str, lang: str) -> str:
-    """Chama Claude (Anthropic) com o system prompt do ProteOS"""
-    if not ANTHROPIC_API_KEY:
+    """Chama Claude (Anthropic) com o system prompt do ProteOS.
+
+    Prompt caching: PROTEOS_PROMPT é idêntico em toda chamada (não varia por
+    usuário/idioma), então é o candidato natural a cache_control — o
+    breakpoint no fim do bloco de system cacheia esse prefixo entre
+    conversas diferentes. Nota: claude-haiku-4-5 exige prefixo mínimo de
+    ~4096 tokens para cachear; PROTEOS_PROMPT sozinho (~600 tokens) fica
+    abaixo disso — a marcação é inofensiva (não cacheia nada até o prefixo
+    crescer o suficiente) e já deixa o código pronto para quando o histórico
+    de conversa for anexado aqui. Hoje esta função não mantém memória entre
+    mensagens (cada chamada manda só user_message); agents_graph.py resolve
+    isso via checkpointer, se/quando esse fluxo for adotado.
+    """
+    if not _anthropic:
         return "ProteOS indisponível no momento. Tente novamente em breve."
-    async with httpx.AsyncClient(timeout=20) as client:
-        resp = await client.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": ANTHROPIC_API_KEY,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": "claude-haiku-4-5-20251001",
-                "max_tokens": 512,
-                "system": PROTEOS_PROMPT,
-                "messages": [{"role": "user", "content": user_message}],
-            },
+    try:
+        resp = _anthropic.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=512,
+            system=[{
+                "type": "text",
+                "text": PROTEOS_PROMPT,
+                "cache_control": {"type": "ephemeral"},
+            }],
+            messages=[{"role": "user", "content": user_message}],
         )
-    if resp.status_code == 200:
-        return resp.json()["content"][0]["text"]
-    print(f"❌ Anthropic erro: {resp.status_code} {resp.text[:200]}")
-    return "ProteOS indisponível no momento. Tente novamente em breve."
+        logger.info(
+            "proteos cache: read=%s write=%s input=%s",
+            resp.usage.cache_read_input_tokens,
+            resp.usage.cache_creation_input_tokens,
+            resp.usage.input_tokens,
+        )
+        return next((b.text for b in resp.content if b.type == "text"), "")
+    except APIStatusError as exc:
+        logger.error("Anthropic erro: %s %s", exc.status_code, str(exc)[:200])
+        return "ProteOS indisponível no momento. Tente novamente em breve."
 
 
 async def send_whatsapp_reply(to: str, message: str) -> bool:
