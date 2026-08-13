@@ -115,7 +115,7 @@ Responder **HTTP 200** com JSON:
 
 ```json
 {
-  "url": "https://podiumtec.com.br/delete-status?code=<confirmation_code>",
+  "url": "https://aquarios.app/delete-status?code=<confirmation_code>",
   "confirmation_code": "<confirmation_code>"
 }
 ```

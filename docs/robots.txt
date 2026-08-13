@@ -1,4 +1,4 @@
-# robots.txt para podiumtec.com.br
+# robots.txt para aquarios.app
 # Permite crawling de todas as páginas e submetedomínios
 
 User-agent: *
@@ -12,5 +12,5 @@ Disallow: /.well-known/
 Crawl-delay: 1
 
 # Sitemap
-Sitemap: https://podiumtec.com.br/sitemap.xml
-Sitemap: https://podiumtec.com.br/escambos/sitemap.xml
+Sitemap: https://aquarios.app/sitemap.xml
+Sitemap: https://aquarios.app/escambos/sitemap.xml

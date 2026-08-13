@@ -40,7 +40,7 @@ A Controladora assegura que o Encarregado atua com autonomia técnica e **sem co
 
 ## 4. Publicidade (LGPD art. 41, §1º)
 
-A identidade e o canal de contato do Encarregado serão divulgados de forma clara e acessível no site: **Política de Privacidade §1 e §19** e **rodapé** de podiumtec.com.br.
+A identidade e o canal de contato do Encarregado serão divulgados de forma clara e acessível no site: **Política de Privacidade §1 e §19** e **rodapé** de aquarios.app.
 
 ## 5. Vigência
 

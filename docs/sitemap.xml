@@ -4,7 +4,7 @@
 
   <!-- Página principal — AquariOS -->
   <url>
-    <loc>https://podiumtec.com.br/</loc>
+    <loc>https://aquarios.app/</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -12,7 +12,7 @@
 
   <!-- Sobre engenharia e tecnologia -->
   <url>
-    <loc>https://podiumtec.com.br/engenharia.html</loc>
+    <loc>https://aquarios.app/engenharia.html</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -20,7 +20,7 @@
 
   <!-- Hub investidores — 3 projetos -->
   <url>
-    <loc>https://podiumtec.com.br/investidores.html</loc>
+    <loc>https://aquarios.app/investidores.html</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -28,7 +28,7 @@
 
   <!-- Backoffice/Dashboard -->
   <url>
-    <loc>https://podiumtec.com.br/backoffice.html</loc>
+    <loc>https://aquarios.app/backoffice.html</loc>
     <lastmod>2026-06-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -36,21 +36,21 @@
 
   <!-- Políticas e termos -->
   <url>
-    <loc>https://podiumtec.com.br/privacy-policy.html</loc>
+    <loc>https://aquarios.app/privacy-policy.html</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://podiumtec.com.br/terms.html</loc>
+    <loc>https://aquarios.app/terms.html</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <url>
-    <loc>https://podiumtec.com.br/deletion.html</loc>
+    <loc>https://aquarios.app/deletion.html</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
@@ -58,7 +58,7 @@
 
   <!-- EscambOS — Marketplace landing -->
   <url>
-    <loc>https://podiumtec.com.br/escambos/</loc>
+    <loc>https://aquarios.app/escambos/</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -66,7 +66,7 @@
 
   <!-- Heysky Energia Solar — Franquia Power Mais -->
   <url>
-    <loc>https://podiumtec.com.br/heysky/</loc>
+    <loc>https://aquarios.app/heysky/</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
